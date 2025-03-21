@@ -12,9 +12,9 @@ const ContentBlock = ({
                       }: ContentBlockProps) => {
     return (
         <Flex className={'flex-col w-full  h-full gap-[1.25rem]'}>
-            <Section className={'relative h-[3.5rem]'}>
-                <Flex className={'items-center h-full'}>
-                    <p>{title}</p>
+            <Section className={'relative '}>
+                <Flex className={'items-center   h-[3.5rem]'}>
+                    <p className={'text-headline-small'}>{title}</p>
                 </Flex>
             </Section>
             {children}

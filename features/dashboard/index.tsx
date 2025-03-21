@@ -1,13 +1,10 @@
 import React from 'react';
-import AsideDashboard from "@/features/dashboard/aside";
+import PerfumeList from "@/components/perfume-list";
 
 const DashboardContent = () => {
     return (
         <div className={'flex '}>
-
-
-            DashboardContent
-
+            <PerfumeList />
         </div>
     );
 };

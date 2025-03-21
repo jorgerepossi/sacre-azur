@@ -7,3 +7,8 @@ export  interface Perfume {
     price: number
     description: string
 }
+
+export interface Brand {
+    id: string;
+    name: string;
+}

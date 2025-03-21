@@ -25,6 +25,8 @@ const config: Config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         background_white: "var(--background-white)",
+        primary_text_dark: "var(--primary_text_dark)",
+        secondary_text_dark: "var(--secondary-text-dark)",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -59,6 +61,96 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      fontSize: {
+        display: [
+          '2.25rem', // 36px
+          {
+            lineHeight: '2.75rem', // 44px
+            fontWeight: '700',
+            letterSpacing: '0px',
+          },
+        ],
+        'display-medium': [
+          '2rem', // 16px
+          {
+            lineHeight: '2.5rem', // 40px
+            fontWeight: '600',
+            letterSpacing: '0px',
+          },
+        ],
+        'title-large': [
+          '1.375rem', // 22px
+          {
+            lineHeight: '1.75rem', // 28px
+            fontWeight: '500',
+            letterSpacing: '0px',
+          },
+        ],
+        'title-small': [
+          '1rem',
+          {
+            lineHeight: '1.5rem', // 24px
+            fontWeight: '500',
+            letterSpacing: '0.15px',
+          },
+        ],
+        headline: '1.75rem', // 28px
+        'headline-small': [
+          '1.5rem', // 24px
+          {
+            lineHeight: '2rem', // 32px
+            fontWeight: '500',
+          },
+        ],
+        'headline-subtitle': [
+          '1rem',
+          {
+            lineHeight: '1.5rem', // 24px
+            fontWeight: '500',
+            letterSpacing: '0.15px',
+          },
+        ],
+        'body-small': [
+          '12px',
+          {
+            lineHeight: '1rem',
+            letterSpacing: '0.5px',
+            fontWeight: 'normal',
+          },
+        ],
+        'body-medium': [
+          '14px',
+          {
+            lineHeight: '1.25rem',
+            letterSpacing: '0.25px',
+            fontWeight: 'normal',
+          },
+        ],
+        'body-large': [
+          '1rem',
+          {
+            lineHeight: '1.5rem', // 24px
+            fontWeight: '400',
+            letterSpacing: '0.5px',
+          },
+        ],
+        'body-xsmall': [
+          '11px',
+          {
+            lineHeight: '1.25rem',
+            fontWeight: '500',
+            letterSpacing: '0.5px',
+          },
+        ],
+        'label-large': [
+          '14px',
+          {
+            lineHeight: '1.25rem',
+            fontWeight: '500',
+            letterSpacing: '0.1px',
+          },
+        ],
       },
     },
   },
