@@ -13,6 +13,7 @@ type FormValues = {
     external_link: string;
     brand_id: string;
     image?: FileList;
+    in_stock: boolean;
 };
 
 export function useEditPerfume() {
@@ -45,6 +46,7 @@ export function useEditPerfume() {
                 profit_margin: data.profit_margin,
                 external_link: data.external_link,
                 brand_id: data.brand_id,
+                in_stock: data.in_stock,
             });
 
 
@@ -98,6 +100,7 @@ export function useEditPerfume() {
             external_link: data.external_link,
             brand_id: data.brand_id,
             image: imageUrl,
+            in_stock: data.in_stock,
         };
 
         const { error } = await supabase.from("perfume").update(updates).eq("id", perfumeId);

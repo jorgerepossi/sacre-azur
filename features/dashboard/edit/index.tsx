@@ -4,21 +4,25 @@ import {useEditPerfume} from "@/hooks/useEditPerfume";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {Select, SelectTrigger, SelectContent, SelectGroup, SelectItem, SelectValue} from "@/components/ui/select";
-import {Textarea} from "@/components/ui/textarea";
+
 import {Card} from "@/components/ui/card";
 import Flex from "@/components/flex";
 import {Label} from "@/components/ui/label";
 import React from "react";
+import RichTextEditor from "@/components/rich-text-editor";
+import {useRouter} from "next/navigation";
+import BrandSelectOptions from "@/components/brand-select-options";
+import {Switch} from "@/components/ui/switch";
 
 export default function EditPerfumeContent() {
+    const router = useRouter();
     const {
         control,
         handleSubmit,
         loading,
         preview,
         brands,
-        brandsLoading,
-        brandsError,
+
         handleImageChange,
         onSubmit,
     } = useEditPerfume();
@@ -28,7 +32,12 @@ export default function EditPerfumeContent() {
     }
 
 
-    console.log('preview', preview)
+
+    const handleCancel = () => {
+        router.push("/dashboard");
+    };
+
+
 
     return (
         <Card className="max-w-[700px] mx-auto p-[1.5rem] gap-[2rem]">
@@ -43,11 +52,12 @@ export default function EditPerfumeContent() {
                 <Controller name="description" control={control} render={({field}) =>
                     <Flex className={'flex-col gap-[1rem] w-full'}>
                         <Label htmlFor={'description'} className={'text-muted-foreground'}> Description</Label>
-                        <Textarea {...field} id={'description'} placeholder="Description" className={'!min-h-[150px]'}/>
+                        <RichTextEditor value={field.value} onChange={field.onChange} />
+
                     </Flex>
                 }/>
 
-                <div className="flex gap-4">
+                <Flex className=" gap-4">
                     <Flex className={'flex-col gap-[1rem]'}>
                         <Controller name="price" control={control} render={({field}) =>
                             <Flex className={'flex-col gap-[1rem] w-full'}>
@@ -77,28 +87,13 @@ export default function EditPerfumeContent() {
                                         <SelectValue placeholder="Select a Brand"/>
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectGroup>
-                                            {brandsLoading ? (
-                                                <SelectItem value="loading" disabled>Loading brands...</SelectItem>
-                                            ) : brandsError ? (
-                                                <SelectItem value="error" disabled>Error loading brands</SelectItem>
-                                            ) : (
-                                                brands
-                                                    ?.slice()
-                                                    .sort((a, b) => a.name.localeCompare(b.name))
-                                                    .map((brand) => (
-                                                        <SelectItem key={brand.id} value={brand.id}>
-                                                            {brand.name}
-                                                        </SelectItem>
-                                                    ))
-                                            )}
-                                        </SelectGroup>
+                                        <BrandSelectOptions brands={brands} />
                                     </SelectContent>
                                 </Select>
                             </Flex>
                         )}
                     />
-                </div>
+                </Flex>
 
                 <Controller name="external_link" control={control} render={({field}) =>
                     <Flex className={'flex-col gap-[1rem] w-full'}>
@@ -107,13 +102,33 @@ export default function EditPerfumeContent() {
                     </Flex>}
                 />
 
+                <Controller
+                    name="in_stock"
+                    control={control}
+                    render={({ field }) => (
+                        <Flex className="items-center gap-2">
+                            <Label htmlFor="in_stock">In Stock</Label>
+                            <Switch
+                                id="in_stock"
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                            />
+                        </Flex>
+                    )}
+                />
+
+
 
                 <input type="file" accept="image/*" onChange={handleImageChange} className="border p-2 rounded"/>
 
 
                 {preview && <img src={preview} alt="Preview" className="w-32 h-32 object-cover mt-2"/>}
                 <Flex className={'w-full gap-[1rem]'}>
-                    <Button type={'button'} variant={'outline'} className={'flex-1'}>Cancel </Button>
+                    <Button
+                        type={'button'}
+                        variant={'outline'}
+                        className={'flex-1'}
+                        onClick={handleCancel}>Cancel </Button>
                     <Button type="submit" disabled={loading} className={'flex-1'}>
                         {loading ? "Saving..." : "Update Perfume"}
                     </Button>

@@ -26,7 +26,7 @@ const config: Config = {
         foreground: "hsl(var(--foreground))",
         background_white: "var(--background-white)",
         primary_text_dark: "var(--primary_text_dark)",
-        secondary_text_dark: "var(--secondary-text-dark)",
+        secondary_text_dark: "hsl(var(--secondary-text-dark))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

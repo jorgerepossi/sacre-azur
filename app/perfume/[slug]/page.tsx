@@ -1,21 +1,33 @@
-"use client";
-import { use } from "react";
+
 import { notFound } from "next/navigation";
-import { perfumes } from "@/constants/perfumes";
 import { createSlug } from "@/utils/slugGenerator";
 import PerfumeDetails from "@/components/perfume-detail";
+import { supabase } from "@/lib/supabaseClient";
+
+type Params = {
+    slug: string;
+};
+
+export default async function PerfumeDetailPage({ params }: { params: Params }) {
+    const slug = params.slug;
 
 
-export default function PerfumeDetail({ params }: { params: Promise<{ slug: string }> }) {
-    const { slug } = use(params);
-    const slugParts = slug?.split("_");
-    const id = Number.parseInt(slugParts?.[slugParts.length - 1]);
+    const slugParts = slug.split("_");
+    const id = slugParts[slugParts.length - 1];
 
-    const perfume = perfumes.find((p) => p.id === id);
-    if (!perfume) notFound();
+    if (!id) return notFound();
+
+
+    const { data: perfume, error } = await supabase
+        .from("perfume")
+        .select("*, brand(*)")
+        .eq("id", id)
+        .single();
+
+    if (error || !perfume) return notFound();
 
     const expectedSlug = `${createSlug(perfume.name)}_${perfume.id}`;
-    if (slug !== expectedSlug) notFound();
+    if (slug !== expectedSlug) return notFound();
 
     return <PerfumeDetails perfume={perfume} />;
 }

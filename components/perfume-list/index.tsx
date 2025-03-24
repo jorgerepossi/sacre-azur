@@ -1,58 +1,38 @@
 "use client";
-
-import Image from "next/image";
+import { useState } from "react";
 import { useFetchPerfumes } from "@/hooks/useFetchPerfumes";
-import SmallLoader from "@/components/loaders/small";
+
+
+import { useStockFilter } from "@/hooks/useStockFilter";
+import {usePerfumeNameFilter} from "@/hooks/usePerfumeNameFilter";
+import {usePerfumeBrandFilter} from "@/hooks/usePerfumeBrandFilter";
 import ContentBlock from "@/components/content-block";
-import Link from "next/link";
-import {Button} from "@/components/ui/button";
+import PerfumeListContent from "@/features/dashboard/list/perfume-list";
+import PerfumeSearchList from "@/components/perfume-search-filter";
+import {Perfume} from "@/types/perfume.type";
 
 export default function PerfumeList() {
     const { data: perfumes, isLoading, error } = useFetchPerfumes();
 
-    if (isLoading) return <SmallLoader />;
-    if (error) return <p>❌ Error al cargar los perfumes</p>;
+    const [nameFilter, setNameFilter] = useState("");
+    const [brandFilter, setBrandFilter] = useState<string | null>(null);
+    const [onlyInStock, setOnlyInStock] = useState(false);
+
+    const nameFiltered: Perfume[] = usePerfumeNameFilter(perfumes || [], nameFilter);
+    const brandFiltered = usePerfumeBrandFilter(nameFiltered, brandFilter);
+    const finalPerfumes = useStockFilter(brandFiltered, onlyInStock);
 
     return (
-        <ContentBlock title={"Perfumes"}>
-            <ul className={'overflow-y-scroll max-h-[890px]'}>
-                {perfumes?.map((perfume) => (
-                    <li key={perfume.id} className="border p-4 rounded-lg mb-4">
-                        <h3 className="font-bold text-lg">{perfume.name}</h3>
-                        <p className="text-gray-600">{perfume.description}</p>
-                        <p className="text-blue-500 font-semibold"> Precio: ${perfume.price}</p>
-                        <p className="text-blue-500 font-semibold"> {perfume.external_link}</p>
-
-
-                        <Image
-                            src={perfume.image}
-                            alt={perfume.name}
-                            width={100}
-                            height={100}
-                            className="rounded-md"
-                        />
-
-
-                        {perfume.brand && (
-                            <div className="flex items-center mt-2">
-                                {perfume.brand.image && (
-                                    <Image
-                                        src={perfume.brand.image}
-                                        alt={perfume.brand.name}
-                                        width={40}
-                                        height={40}
-                                        className="rounded-full mr-2"
-                                    />
-                                )}
-                                <span className="text-gray-800 font-medium">{perfume.brand.name}</span>
-                            </div>
-                        )}
-                        <Link href={`/dashboard/edit?id=${perfume.id}`}>
-                            <Button variant="outline">Edit</Button>
-                        </Link>
-                    </li>
-                ))}
-            </ul>
+        <ContentBlock title="Perfumes">
+            <PerfumeSearchList
+                nameFilter={nameFilter}
+                setNameFilter={setNameFilter}
+                brandFilter={brandFilter}
+                setBrandFilter={setBrandFilter}
+                onlyInStock={onlyInStock}
+                setOnlyInStock={setOnlyInStock}
+            />
+            <PerfumeListContent data={finalPerfumes || []} />
         </ContentBlock>
     );
 }

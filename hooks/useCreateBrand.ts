@@ -6,11 +6,23 @@ export const useCreateBrand = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ name, imageFile }: { name: string; imageFile: File }) => {
+        mutationFn: async ({
+                               name,
+                               imageFile,
+                           }: {
+            name: string;
+            imageFile: File;
+        }) => {
             try {
                 const imageUrl = await uploadBrandImage(imageFile);
 
-                const { data, error } = await supabase.from("brand").insert([{ name, image: imageUrl }]);
+                const { data, error } = await supabase.from("brand").insert([
+                    {
+                        name,
+                        image: imageUrl,
+                        active: true,
+                    },
+                ]);
 
                 if (error) {
                     console.error("Supabase Error:", error);
@@ -25,7 +37,7 @@ export const useCreateBrand = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["brands"] });
-        }
-    });
+        },
 
+    });
 };

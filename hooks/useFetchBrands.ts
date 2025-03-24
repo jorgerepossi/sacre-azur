@@ -6,7 +6,7 @@ const fetchBrands = async () => {
     const supabase = createClient();
     const { data, error } = await supabase
         .from("brand")
-        .select("id, name");
+        .select("id, name, active, image")
 
     if (error) {
         throw new Error(error.message);

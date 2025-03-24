@@ -51,7 +51,7 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 263.4 70% 50.4%;
     --primary_text_dark: #f9f9f9 ;
-    --secondary-text-dark: #f9f9f9 ;
+    --secondary-text-dark: #64748B;
   }
 }
 
@@ -62,8 +62,26 @@
   body {
     @apply bg-background text-foreground;
   }
+  h1{
+    @apply text-2xl font-bold my-4;
+  }
+  h2{
+    @apply text-xl font-semibold my-3;
+  }
+  h3{
+    @apply text-lg font-medium my-2;
+  }
+
+  p{
+    @apply my-2 leading-relaxed text-sm;
+  }
+  code {
+    @apply bg-muted border border-muted rounded-md p-[.5rem] text-neutral-500;
+  }
 }
 
-html, body {
+html, body{
   height: 100%;
 }
+
+

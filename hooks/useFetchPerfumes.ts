@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabaseClient";
 const fetchPerfumes = async () => {
     const { data, error } = await supabase
         .from("perfume")
-        .select("*, brand(name, image)")
+        .select("*, brand(name, image)").order("created_at")
 
     if (error) {
         console.error("❌ Error obteniendo perfumes:", error.message);

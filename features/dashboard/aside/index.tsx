@@ -14,10 +14,10 @@ import {Button} from "@/components/ui/button";
 const AsideDashboard = () => {
     return (
         <aside className={'flex flex-col justify-between w-[200px]  h-full py-4 bg-background_white border-r '}>
-            <Box className={'flex flex-col '}>
+            <Flex className={'flex flex-col '}>
                 {MENU_ASIDE_DASHBOARD.map((item) => (
                     <Box key={item.id} className={' hover:cursor-pointer border-b hover:bg-accent transition-colors '}>
-                        <Button variant={'ghost'}  className={'!items-start justify-start'} asChild >
+                        <Button variant={'ghost'}  className={'! justify-start'} asChild >
 
                         <Link href={item.link} className={'w-full text-left  '}  >
                             <Box className="flex gap-[.5rem] items-center text-[14px]   hover:underline-offset-0 " >
@@ -30,7 +30,7 @@ const AsideDashboard = () => {
                         </Button>
                     </Box>
                 ))}
-            </Box>
+            </Flex>
             <Flex className="justify-center items-center py-4 min-w-[10rem]"><Power/></Flex>
         </aside>
     );
