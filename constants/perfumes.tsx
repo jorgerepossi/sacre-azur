@@ -1,5 +1,4 @@
-import {Perfume} from "@/types/perfume.type";
-export const perfumes: Perfume[] = [
+export const perfumes= [
     {
         id: 1,
         name: "Coco Mademoiselle",

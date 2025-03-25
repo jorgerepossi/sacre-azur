@@ -1,13 +1,13 @@
 import { create } from "zustand";
-import {Perfume} from "@/types/perfume.type";
+import { persist, createJSONStorage } from "zustand/middleware"; // Importa los middlewares
+import { Perfume } from "@/types/perfume.type";
 
 type CartItem = {
     id: string;
     name: string;
     quantity: number;
     price: number;
-    size: string; // o number
-
+    size: string;
 };
 
 type CartStore = {
@@ -17,26 +17,34 @@ type CartStore = {
     clearCart: () => void;
 };
 
-export const useCartStore = create<CartStore>((set, get) => ({
-    items: [],
-    addItem: (item) => {
-        const existing = get().items.find(
-            (i) => i.id === item.id && i.size === item.size
-        );
-        if (existing) {
-            set({
-                items: get().items.map((i) =>
-                    i.id === item.id && i.size === item.size
-                        ? { ...i, quantity: i.quantity + item.quantity }
-                        : i
-                ),
-            });
-        } else {
-            set({ items: [...get().items, item] });
+export const useCartStore = create<CartStore>()(
+    persist( // Envuelve el store con persist
+        (set, get) => ({
+            items: [],
+            addItem: (item) => {
+                const existing = get().items.find(
+                    (i) => i.id === item.id && i.size === item.size
+                );
+                if (existing) {
+                    set({
+                        items: get().items.map((i) =>
+                            i.id === item.id && i.size === item.size
+                                ? { ...i, quantity: i.quantity + item.quantity }
+                                : i
+                        ),
+                    });
+                } else {
+                    set({ items: [...get().items, item] });
+                }
+            },
+            removeItem: (id) => {
+                set({ items: get().items.filter((i) => i.id !== id) });
+            },
+            clearCart: () => set({ items: [] }),
+        }),
+        {
+            name: "cart-storage", // Clave única para localStorage
+            storage: createJSONStorage(() => localStorage), // Usa localStorage
         }
-    },
-    removeItem: (id) => {
-        set({ items: get().items.filter((i) => i.id !== id) });
-    },
-    clearCart: () => set({ items: [] }),
-}));
+    )
+);
