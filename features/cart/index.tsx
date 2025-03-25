@@ -22,7 +22,7 @@ const CartPageContent = () => {
             name: item.name,
             size: item.size,
             quantity: item.quantity,
-            total: getItemTotal(item).toFixed(2),
+            total: formatNumberWithDots(getItemTotal(item)),
         }));
 
         const msg = encodeURIComponent(
@@ -31,7 +31,7 @@ const CartPageContent = () => {
                     (o, i) =>
                         `${i + 1}. ${o.name} - ${o.size}ml x${o.quantity} = $${o.total}`
                 )
-                .join("\n")}\n\n🧾 Total: $${total}`
+                .join("\n")}\n\n🧾 Total: $${formatNumberWithDots(Number(total))}`
         );
 
         const phone = process.env.NEXT_PUBLIC_SITE_PHONE;
