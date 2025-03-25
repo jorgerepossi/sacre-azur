@@ -56,6 +56,7 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        button_black: "#000000"
       },
       borderRadius: {
         lg: "var(--radius)",

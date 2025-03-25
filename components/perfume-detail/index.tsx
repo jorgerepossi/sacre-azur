@@ -44,6 +44,7 @@ export default function PerfumeDetails({ perfume }: Props) {
         });
         toast.success("Added to cart");
     };
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
     return (
         <div className="container py-10">
@@ -127,7 +128,7 @@ export default function PerfumeDetails({ perfume }: Props) {
                                 variant="outline"
                                 className="flex items-center gap-2"
                                 onClick={() => {
-                                    const link = `${window.location.origin}/perfume/${createSlug(perfume.name)}_${perfume.id}`;
+                                    const link = `${baseUrl}/perfume/${createSlug(perfume.name)}_${perfume.id}`;
                                     navigator.clipboard.writeText(link);
                                     toast.success("Link copied to clipboard!");
                                 }}

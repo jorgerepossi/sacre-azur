@@ -1,14 +1,24 @@
 
 "use client";
 
-
 import React, {useMemo} from 'react';
-import {useCartStore} from "@/stores/cartStore";
+import { useRouter } from 'next/navigation'
+
+import {toast} from "react-hot-toast";
+
 import {getItemTotal} from "@/utils/cartUtils";
+
+
 import {formatNumberWithDots} from "@/lib/formatNumberWithDots";
+
 import {Button} from "@/components/ui/button";
+import {useCartStore} from "@/stores/cartStore";
+import {saveOrder} from "@/lib/api/saveOrder";
 
 const CartPageContent = () => {
+    const router = useRouter();
+
+
     const items = useCartStore((state) => state.items);
     const clearCart = useCartStore((state) => state.clearCart);
 
@@ -17,26 +27,30 @@ const CartPageContent = () => {
         [items]
     );
 
-    const handleFinish = () => {
-        const order = items.map((item: any) => ({
-            name: item.name,
-            size: item.size,
-            quantity: item.quantity,
-            total: formatNumberWithDots(getItemTotal(item)),
-        }));
 
-        const msg = encodeURIComponent(
-            `📦 Pedido de Perfumes:\n\n${order
-                .map(
-                    (o, i) =>
-                        `${i + 1}. ${o.name} - ${o.size}ml x${o.quantity} = $${o.total}`
-                )
-                .join("\n")}\n\n🧾 Total: $${formatNumberWithDots(Number(total))}`
-        );
 
-        const phone = process.env.NEXT_PUBLIC_SITE_PHONE;
-        window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
+    const handleFinish = async () => {
+        try {
+            const order = items.map((item) => ({
+                name: item.name,
+                size: item.size,
+                quantity: item.quantity,
+                price: item.price,
+            }));
+
+            const order_code = await saveOrder(order);
+
+            clearCart();
+
+
+            router.push(`/order-confirmed?code=${order_code}`);
+        } catch (err) {
+            toast.error("Error saving order");
+            console.error("SaveOrder failed", err);
+        }
     };
+
+
 
     return (
         <div className="container py-10">

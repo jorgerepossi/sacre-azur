@@ -22,33 +22,34 @@ const createSlug = (name: string) => {
 
 const ItemPerfume = ({item}: ItemPerfumeProps) => {
     return (
-        <Card className="overflow-hidden">
+        <Flex className="overflow-hidden w-full border bg-background_white">
 
-            <CardContent className="p-0">
-                <Flex className={'flex-row md:flex-col p-[1rem]'}>
+            <Flex className="p-0 w-full">
+                <Flex className={'flex-row md:flex-col p-[1rem] w-full'}>
 
                     <Flex className={'justify-between pt-[2rem] pb-[1rem] flex-col md:flex-row'}>
                         <Flex className={'flex-1  flex-col'}>
                             <p className="font-bold">{item.name}</p>
                             <p className="text-body-medium text-muted-foreground m-0">by {item.brand.name}</p>
                         </Flex>
-                        <Flex className={'justify-center items-center'}>
-                            <Image src={item.image || "/placeholder.svg"} alt={item.name} width={150} height={150}
+                        <Flex className={' flex-1  justify-center items-center py-4 md:py-2 max-w-[120px] '}>
+                            <Image src={item.image || "/placeholder.svg"} alt={item.name} width={100} height={100}
                                    className="object-cover"/>
                         </Flex>
                     </Flex>
-                    <Flex className={'px-[.5rem] py-[1rem] gap-[1rem] border-t-2 border-neutral-200 '}>
-                        <Button className={'w-full'} variant={'ghost'}> uno </Button>
-                        <Link href={`/perfume/${createSlug(item.name)}_${item.id}`} className="w-full">
-                            <Button className={'w-full'}> View Detail </Button>
+                    <Flex className={'  pt-[16px] gap-[1rem] border-t-2 border-muted justify-between '}>
+                        <Button className={'w-[120px]'} variant={'ghost'}> Add wishlist </Button>
+
+                        <Link href={`/perfume/${createSlug(item.name)}_${item.id}`} className="w-[120px]">
+                            <Button className={'w-full  !bg-button-black'} color={'bg-button-black'}> View Detail </Button>
                         </Link>
                     </Flex>
                 </Flex>
 
 
-            </CardContent>
+            </Flex>
 
-        </Card>
+        </Flex>
     );
 };
 
