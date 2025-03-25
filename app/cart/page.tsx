@@ -3,37 +3,38 @@
 import { useCartStore } from "@/stores/cartStore";
 import { Button } from "@/components/ui/button";
 import { useMemo } from "react";
+import { getItemTotal } from "@/utils/cartUtils";
 
 export default function CartPage() {
     const items = useCartStore((state) => state.items);
     const clearCart = useCartStore((state) => state.clearCart);
 
     const total = useMemo(
-        () => items.reduce((sum, item) => sum + item.total, 0).toFixed(2),
+        () => items.reduce((sum, item) => sum + getItemTotal(item), 0).toFixed(2),
         [items]
     );
 
     const handleFinish = () => {
-        const order = items.map((item) => ({
-            name: item.perfume.name,
-            brand: item.perfume.brand.name,
+        const order = items.map((item: any) => ({
+            name: item.name,
             size: item.size,
             quantity: item.quantity,
-            total: item.total,
+            total: getItemTotal(item).toFixed(2),
         }));
 
         const msg = encodeURIComponent(
             `📦 Pedido de Perfumes:\n\n${order
                 .map(
                     (o, i) =>
-                        `${i + 1}. ${o.name} (${o.brand}) - ${o.size}ml x${o.quantity} = $${o.total}`
+                        `${i + 1}. ${o.name} - ${o.size}ml x${o.quantity} = $${o.total}`
                 )
                 .join("\n")}\n\n🧾 Total: $${total}`
         );
-        const phone = process.env.NEXT_PUBLIC_SITE_PHONE;
 
+        const phone = process.env.NEXT_PUBLIC_SITE_PHONE;
         window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
     };
+
     return (
         <div className="container py-10">
             <h1 className="text-3xl font-bold mb-6">🛒 Cart</h1>
@@ -47,13 +48,12 @@ export default function CartPage() {
                             className="border p-4 rounded-md flex justify-between items-center"
                         >
                             <div>
-                                <p className="font-bold">{item.perfume.name}</p>
+                                <p className="font-bold">{item.name}</p>
                                 <p className="text-muted-foreground">
-                                    Brand: {item.perfume.brand.name} | Size: {item.size}ml | Qty:{" "}
-                                    {item.quantity}
+                                    Size: {item.size}ml | Qty: {item.quantity}
                                 </p>
                             </div>
-                            <p className="font-semibold">${item.total}</p>
+                            <p className="font-semibold">${getItemTotal(item).toFixed(2)}</p>
                         </div>
                     ))}
 
