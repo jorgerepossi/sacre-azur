@@ -1,10 +1,12 @@
-import OrderConfirmedPage from "@/features/confirmed-page";
 import { Suspense } from "react";
+
+import SmallLoader from "@/components/loaders/small";
+import OrderConfirmedPage from "@/features/confirmed-page";
 
 
 export default function OrderConfirmedWrapper() {
     return (
-        <Suspense fallback={<p className="p-6">Loading...</p>}>
+        <Suspense fallback={<SmallLoader />}>
             <OrderConfirmedPage />
         </Suspense>
     );
