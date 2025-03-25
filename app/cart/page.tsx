@@ -1,8 +1,8 @@
 "use client";
 
-import {useCartStore} from "@/stores/cartStore";
-import {Button} from "@/components/ui/button";
-import {useMemo} from "react";
+import { useCartStore } from "@/stores/cartStore";
+import { Button } from "@/components/ui/button";
+import { useMemo } from "react";
 
 export default function CartPage() {
     const items = useCartStore((state) => state.items);
