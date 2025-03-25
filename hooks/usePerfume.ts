@@ -12,22 +12,23 @@ const formatPrice = (price: number) => {
     return new Intl.NumberFormat("es-AR").format(Math.floor(price)); // Ensure no decimals
 };
 
-export const usePerfume = (pricePer100ml: number,  profit: number) => {
+export const usePerfume = (pricePer100ml: number, profit: number) => {
     const [selectedSize, setSelectedSize] = useState(sizes[0]);
     const [quantity, setQuantity] = useState(1);
-    const [profitMargin, setProfitMargin] = useState(profit); // Default profit margin in %
-
+    const [profitMargin, setProfitMargin] = useState(profit);
 
     const marginMultiplier = 1 + profitMargin / 100;
+    const baseUnitPrice = (pricePer100ml * selectedSize.value) / 100;
+    const rawUnitPrice = baseUnitPrice * marginMultiplier;
+    const rawTotalPrice = rawUnitPrice * quantity;
 
-
-    const rawTotalPrice = parseFloat(calculateDecantPriceWithMargin(pricePer100ml, selectedSize.value, quantity, marginMultiplier));
-    const totalPrice = formatPrice(rawTotalPrice);
+    const totalPrice = new Intl.NumberFormat("es-AR").format(Math.floor(rawTotalPrice));
 
     return {
         sizes,
         quantity,
         totalPrice,
+        rawUnitPrice,
         profitMargin,
         selectedSize,
         setQuantity,

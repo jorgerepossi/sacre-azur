@@ -18,7 +18,7 @@ type CartStore = {
 };
 
 export const useCartStore = create<CartStore>()(
-    persist( // Envuelve el store con persist
+    persist(
         (set, get) => ({
             items: [],
             addItem: (item) => {

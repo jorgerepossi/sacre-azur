@@ -1,15 +1,14 @@
 import { Perfume } from "@/types/perfume.type";
 
 export interface CartItem {
-    id: number;
+    id: string;
     name: string;
-    price: number;
-    profit_margin?: number;
+    price: number; // precio unitario calculado con margen
     quantity: number;
     size: number;
     image: string;
+    profit_margin: number;
 }
-
 export interface GetTotal {
     name: string
     size: number
