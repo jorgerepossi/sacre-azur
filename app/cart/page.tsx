@@ -1,9 +1,8 @@
-
 "use client";
 
-import { useCartStore } from "@/stores/cartStore";
-import { Button } from "@/components/ui/button";
-import { useMemo } from "react";
+import {useCartStore} from "@/stores/cartStore";
+import {Button} from "@/components/ui/button";
+import {useMemo} from "react";
 
 export default function CartPage() {
     const items = useCartStore((state) => state.items);
@@ -31,14 +30,10 @@ export default function CartPage() {
                 )
                 .join("\n")}\n\n🧾 Total: $${total}`
         );
-
-
         const phone = process.env.NEXT_PUBLIC_SITE_PHONE;
 
         window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
     };
-
-
     return (
         <div className="container py-10">
             <h1 className="text-3xl font-bold mb-6">🛒 Cart</h1>
