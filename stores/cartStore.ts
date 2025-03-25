@@ -1,52 +1,40 @@
 import { create } from "zustand";
-import { Perfume } from "@/types/perfume.type";
 
-export type CartItem = {
-    perfume: Perfume;
+type CartItem = {
+    id: string;
+    name: string;
     quantity: number;
-    size: number;
-    total: number;
+    price: number;
+    size: string;
 };
 
 type CartStore = {
     items: CartItem[];
     addItem: (item: CartItem) => void;
-    removeItem: (id: number) => void;
+    removeItem: (id: string) => void;
     clearCart: () => void;
 };
 
-export const useCart = create<CartStore>((set) => ({
+export const useCartStore = create<CartStore>((set, get) => ({
     items: [],
-
-    addItem: (newItem) =>
-        set((state) => {
-            const existingIndex = state.items.findIndex(
-                (item) =>
-                    item.perfume.id === newItem.perfume.id &&
-                    item.size === newItem.size
-            );
-
-            if (existingIndex !== -1) {
-                // Actualizar cantidad y total si ya existe el item con ese tamaño
-                const updatedItems = [...state.items];
-                const existingItem = updatedItems[existingIndex];
-
-                updatedItems[existingIndex] = {
-                    ...existingItem,
-                    quantity: existingItem.quantity + newItem.quantity,
-                    total: existingItem.total + newItem.total,
-                };
-
-                return { items: updatedItems };
-            }
-            
-            return { items: [...state.items, newItem] };
-        }),
-
-    removeItem: (id) =>
-        set((state) => ({
-            items: state.items.filter((item) => item.perfume.id !== id),
-        })),
-
+    addItem: (item) => {
+        const existing = get().items.find(
+            (i) => i.id === item.id && i.size === item.size
+        );
+        if (existing) {
+            set({
+                items: get().items.map((i) =>
+                    i.id === item.id && i.size === item.size
+                        ? { ...i, quantity: i.quantity + item.quantity }
+                        : i
+                ),
+            });
+        } else {
+            set({ items: [...get().items, item] });
+        }
+    },
+    removeItem: (id) => {
+        set({ items: get().items.filter((i) => i.id !== id) });
+    },
     clearCart: () => set({ items: [] }),
 }));

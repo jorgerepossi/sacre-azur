@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 
+
 const Header = () => {
     const items = useCartStore((state) => state.items);
     return (
