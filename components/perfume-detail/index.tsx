@@ -40,7 +40,7 @@ export default function PerfumeDetails({ perfume }: Props) {
             price: rawUnitPrice,
             size: String(selectedSize.value),
             quantity: quantity,
-            image: perfume.image,
+            //image: perfume.image,
         });
         toast.success("Added to cart");
     };
