@@ -1,4 +1,6 @@
-import {Product} from "@/features/dashboard/orders/order-table";
+import { Product } from "@/utils/order-utils";
+
+
 
 export type OrderProduct = {
     product_id: string;
