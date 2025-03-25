@@ -141,10 +141,12 @@ export default function PerfumeDetails({perfume}: Props) {
                             className="w-full"
                             onClick={() => {
                                 useCartStore.getState().addItem({
-                                    perfume,
-                                    size: selectedSize.value,
+                                    id: String(perfume.id),
+                                    name: perfume.name,
+                                    price: perfume.price,
+                                    size: selectedSize.value.toString(),
                                     quantity,
-                                    total: Number(totalPrice),
+
                                 });
                                 toast.success("Added to cart");
                             }}

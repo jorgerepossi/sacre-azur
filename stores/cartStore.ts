@@ -1,11 +1,13 @@
 import { create } from "zustand";
+import {Perfume} from "@/types/perfume.type";
 
 type CartItem = {
     id: string;
     name: string;
     quantity: number;
     price: number;
-    size: string;
+    size: string; // o number
+
 };
 
 type CartStore = {
