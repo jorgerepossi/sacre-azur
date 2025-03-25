@@ -3,7 +3,14 @@ import { createSlug } from "@/utils/slugGenerator";
 import PerfumeDetails from "@/components/perfume-detail";
 import { supabase } from "@/lib/supabaseClient";
 
-export default async function Page({ params }: { params: { slug: string } }) {
+// Define el tipo correcto para las props
+interface PageProps {
+    params: {
+        slug: string;
+    };
+}
+
+export default async function Page({ params }: PageProps) {
     const { slug } = params;
     const slugParts = slug.split("_");
     const id = slugParts[slugParts.length - 1];
