@@ -1,34 +1,83 @@
-"use client";
-import React from "react";
-import { useOrders } from "@/hooks/useOrders";
-import { OrderType } from "@/types/order.type";
+"use client"
 
-const OrdersContent = () => {
-    const { data: orders, isLoading, error } = useOrders();
+import { useState } from "react"
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
+import Box from "@/components/box"
+import ContentBlock from "@/components/content-block"
+import useFetchOrders from "@/hooks/useFetchOrders"
+import { type Order, type SortConfig, filterOrders, sortOrders } from "@/utils/order-utils"
+import LoadingState from "./loading-state"
+import ErrorState from "./error-state"
+import SearchBar from "./search-bar"
+import OrdersTableHeader from "./orders-table-header"
+import OrderRow from "./order-row"
+//import OrdersTable from "@/features/dashboard/orders/order-table";
 
-    if (isLoading) return <p>Cargando...</p>;
-    if (error) return <p>Error al cargar las órdenes</p>;
-    if (!orders || orders.length === 0) return <p>No se encontraron listas</p>;
+export default function OrdersTable() {
+    const { data: orders, isLoading, error } = useFetchOrders()
+    const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({})
+    const [searchTerm, setSearchTerm] = useState("")
+    const [sortConfig, setSortConfig] = useState<SortConfig>({
+        key: "created_at",
+        direction: "descending",
+    })
+
+    const toggleRowExpansion = (id: string) => {
+        setExpandedRows((prev) => ({
+            ...prev,
+            [id]: !prev[id],
+        }))
+    }
+
+    const requestSort = (key: keyof Order) => {
+        let direction: "ascending" | "descending" = "ascending"
+        if (sortConfig.key === key && sortConfig.direction === "ascending") {
+            direction = "descending"
+        }
+        setSortConfig({ key, direction })
+    }
+
+    if (isLoading) {
+        return <LoadingState />
+    }
+
+    if (error) {
+        return <ErrorState />
+    }
+
+    const filteredOrders = filterOrders(orders || [], searchTerm)
+    const filteredAndSortedOrders = sortOrders(filteredOrders, sortConfig)
 
     return (
-        <ul>
-            {orders.map((order: OrderType) => (
-                <li key={order.id}>
-                    <h3>Orden: {order.order_code}</h3>
-                    <p>Email: {order.order_email}</p>
-                    <p>Fecha: {new Date(order.created_at).toLocaleDateString()}</p>
-                    <h4>Productos:</h4>
-                    <ul>
-                        {order.order_products.map((product, index) => (
-                            <li key={index}>
-                                ID: {product.product_id}, Cantidad: {product.quantity}, Precio: ${product.price}
-                            </li>
-                        ))}
-                    </ul>
-                </li>
-            ))}
-        </ul>
-    );
-};
+        <ContentBlock title="Orders">
+            <div>
+                <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
 
-export default OrdersContent;
+                <Box className="rounded-md border">
+                    <Table>
+                        <OrdersTableHeader onRequestSort={requestSort} />
+                        <TableBody>
+                            {filteredAndSortedOrders.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
+                                        No orders found
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                filteredAndSortedOrders.map((order) => (
+                                    <OrderRow
+                                        key={order.id}
+                                        order={order}
+                                        isExpanded={expandedRows[order.id]}
+                                        onToggleExpand={() => toggleRowExpansion(order.id)}
+                                    />
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                </Box>
+            </div>
+        </ContentBlock>
+    )
+}
+

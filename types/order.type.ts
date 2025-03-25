@@ -1,3 +1,5 @@
+import {Product} from "@/features/dashboard/orders/order-table";
+
 export type OrderProduct = {
     product_id: string;
     quantity: number;
@@ -11,3 +13,13 @@ export type OrderType = {
     order_products: OrderProduct[];
     created_at: string;
 };
+
+
+export type Order = {
+    id: string;
+    order_code: string;
+    created_at: string;
+    is_sent: boolean;
+    order_email: string;
+    order_products: Product[]
+}

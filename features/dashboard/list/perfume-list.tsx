@@ -21,7 +21,7 @@ interface PerfumeListProps {
 }
 
 const PerfumeListContent = ({data}: PerfumeListProps) => {
-    console.log(data)
+
     return (
         <Card>
 

@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import BrandSelectOptions from "@/components/brand-select-options";
 import { useFetchBrands } from "@/hooks/useFetchBrands";
 import { Button } from "../ui/button";
+import {Search} from "lucide-react";
 
 type Props = {
     nameFilter: string;
@@ -34,13 +35,15 @@ const PerfumeSearchList = ({
     const { data: brands } = useFetchBrands();
 
     return (
-        <Card className="p-[1rem]">
+
             <Flex className="justify-between gap-[1rem] flex-wrap">
-                <Flex className="w-full max-w-[300px]">
+                <Flex className="relative w-full max-w-[300px]">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         type="text"
                         placeholder="Search..."
                         value={nameFilter}
+                        className="pl-8"
                         onChange={(e) => setNameFilter(e.target.value)}
                     />
                 </Flex>
@@ -82,7 +85,7 @@ const PerfumeSearchList = ({
 
                 </Flex>
             </Flex>
-        </Card>
+
     );
 };
 
