@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import Flex from "@/components/flex";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+
 
 import { Perfume } from "@/types/perfume.type";
 
@@ -24,7 +24,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
   return (
     <Flex className="!hover:shadow-md w-full overflow-hidden rounded-lg border bg-background_white !shadow-sm transition-all duration-300 hover:-translate-y-1">
       <Flex className="w-full p-0">
-        <Flex className={"w-full flex-row p-[1rem] md:flex-col"}>
+        <Flex className={"w-full  p-[1rem] flex-col"}>
           <Flex className={"flex-1 items-center justify-center py-4 md:py-2"}>
             <Image
               src={item.image || "/placeholder.svg"}
@@ -52,8 +52,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
             }
           >
             <Button className={"w-[120px]"} variant={"ghost"}>
-              {" "}
-              Add wishlist{" "}
+              Add wishlist
             </Button>
 
             <Link
@@ -64,8 +63,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
                 className={"!bg-button-black w-full"}
                 color={"bg-button-black"}
               >
-                {" "}
-                View Detail{" "}
+                View Detail
               </Button>
             </Link>
           </Flex>

@@ -68,7 +68,7 @@ export default function MultiNoteSelector({
               </SelectContent>
             </Select>
 
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className="mt-2 py-6 flex flex-wrap gap-2">
               {selectedNotes?.map((noteId) => {
                 const note = notes.find((n) => n.id.toString() === noteId);
                 return (

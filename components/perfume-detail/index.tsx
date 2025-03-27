@@ -72,7 +72,7 @@ export default function PerfumeDetails({ perfume }: Props) {
             />
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-2">
             <Flex className="items-center justify-between">
               <h1 className="text-3xl font-bold">
                 {perfume.name} - {perfume.brand.name}
@@ -100,7 +100,7 @@ export default function PerfumeDetails({ perfume }: Props) {
               )}
             </Flex>
 
-            <Flex className="flex-col space-y-4">
+            <Flex className="flex-col  md:space-y-4 space-y-1 py-[2rem] border-t-2">
               <h2 className="m-0 text-xl font-semibold">Acordes principales</h2>
 
               {perfume?.perfume_note_relation?.length ? (
@@ -125,8 +125,8 @@ export default function PerfumeDetails({ perfume }: Props) {
                 </p>
               )}
             </Flex>
-            <Flex className={"gap-[3rem]"}>
-              <Flex className="items-center gap-4">
+            <Flex className={" flex-col md:flex-row gap-[1rem] md:gap-[3rem] py-[1rem] md:py-[3rem] border-t-2"}>
+              <Flex className="items-start gap-4 flex-col">
                 <label className="font-semibold">Size:</label>
                 <select
                   className="rounded-lg border p-2"
@@ -146,23 +146,25 @@ export default function PerfumeDetails({ perfume }: Props) {
                 </select>
               </Flex>
 
-              <Flex className="items-center gap-4">
-                <Label className="font-semibold">Quantity:</Label>
-                <button
-                  type="button"
-                  className="rounded-lg border px-3 py-1"
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                >
-                  -
-                </button>
-                <span className="px-4">{quantity}</span>
-                <button
-                  type="button"
-                  className="rounded-lg border px-3 py-1"
-                  onClick={() => setQuantity(quantity + 1)}
-                >
-                  +
-                </button>
+              <Flex className="  items-start gap-4 flex-col justify-between">
+                <label className="font-semibold"> Quantity:</label>
+                <Flex className={' gap-1 items-center h-[40px] '}>
+                  <button
+                      type="button"
+                      className="rounded-lg border px-3 py-1"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  >
+                    -
+                  </button>
+                  <span className="px-4">{quantity}</span>
+                  <button
+                      type="button"
+                      className="rounded-lg border px-3 py-1"
+                      onClick={() => setQuantity(quantity + 1)}
+                  >
+                    +
+                  </button>
+                </Flex>
               </Flex>
             </Flex>
 
@@ -172,12 +174,12 @@ export default function PerfumeDetails({ perfume }: Props) {
 
             <Flex className="items-center gap-[2rem]">
               <Button
-                variant="outline"
-                className="flex items-center gap-2"
-                onClick={() => {
-                  const link = `${baseUrl}/perfume/${createSlug(perfume.name)}_${perfume.id}`;
-                  navigator.clipboard.writeText(link);
-                  toast.success("Link copied to clipboard!");
+                  variant="outline"
+                  className="flex items-center gap-2"
+                  onClick={() => {
+                    const link = `${baseUrl}/perfume/${createSlug(perfume.name)}_${perfume.id}`;
+                    navigator.clipboard.writeText(link);
+                    toast.success("Link copied to clipboard!");
                 }}
               >
                 <Copy className="h-4 w-4" />

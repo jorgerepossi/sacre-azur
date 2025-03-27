@@ -1,12 +1,13 @@
 import React from "react";
 
 import PerfumeList from "@/components/perfume-list";
+import Flex from "@/components/flex";
 
 const DashboardContent = () => {
   return (
-    <div className={"flex"}>
+    <Flex>
       <PerfumeList />
-    </div>
+    </Flex>
   );
 };
 
