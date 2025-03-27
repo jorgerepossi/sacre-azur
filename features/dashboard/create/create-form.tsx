@@ -126,14 +126,21 @@ const CreateForm = () => {
               </Flex>
             )}
           />
-
+            <Controller
+                name="note_ids"
+                control={control}
+                render={({ field }) => (
           <Flex className="flex-col gap-[1rem]">
             <MultiNoteSelector
               control={control}
               name="note_ids"
               notes={orderNotes ?? []}
+              selectedNotes={field.value || []}
+              onNotesChange={field.onChange}
             />
           </Flex>
+                )}
+            />
 
           <Flex className="gap-[1rem]">
             <Button

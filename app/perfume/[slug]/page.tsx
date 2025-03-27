@@ -10,8 +10,9 @@ import { supabase } from "@/lib/supabaseClient";
 
 import { createSlug } from "@/utils/slugGenerator";
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default async function Page({ params }: {  params: Promise<{ slug: string }>; }) {
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
   const slugParts = slug.split("_");
   const id = slugParts[slugParts.length - 1];
 
@@ -33,12 +34,12 @@ export default async function Page({ params }: { params: { slug: string } }) {
   if (error || !perfume) return notFound();
 
   const expectedSlug = `${createSlug(perfume.name)}_${perfume.id}`;
+
   if (slug !== expectedSlug) return notFound();
 
   return (
     <Suspense fallback={<SmallLoader />}>
       <PerfumeDetails perfume={perfume} />
-      );
     </Suspense>
   );
 }

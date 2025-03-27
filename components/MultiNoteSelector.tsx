@@ -33,7 +33,7 @@ export default function MultiNoteSelector({
   control,
 }: Props) {
   const addNote = (noteId: string) => {
-    if (!selectedNotes.includes(noteId)) {
+    if (!selectedNotes?.includes(noteId)) {
       onNotesChange([...selectedNotes, noteId]);
     }
   };
@@ -59,7 +59,7 @@ export default function MultiNoteSelector({
                     <SelectItem
                       key={note.id}
                       value={note.id.toString()}
-                      disabled={selectedNotes.includes(note.id.toString())}
+                      disabled={selectedNotes?.includes(note.id.toString())}
                     >
                       {note.name}
                     </SelectItem>
@@ -69,7 +69,7 @@ export default function MultiNoteSelector({
             </Select>
 
             <div className="mt-2 flex flex-wrap gap-2">
-              {selectedNotes.map((noteId) => {
+              {selectedNotes?.map((noteId) => {
                 const note = notes.find((n) => n.id.toString() === noteId);
                 return (
                   <div
