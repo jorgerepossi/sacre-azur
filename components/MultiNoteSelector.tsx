@@ -1,24 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import { X } from "lucide-react";
+import { Controller, useFormContext } from "react-hook-form";
 
-import { X as IconClose } from "lucide-react";
-import { Controller } from "react-hook-form";
-
-import Flex from "@/components/flex";
-import { buttonVariants } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
   SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 
-import { cn } from "@/lib/utils";
-
 type Note = {
-  id: string;
+  id: number;
   name: string;
 };
 
@@ -26,52 +21,45 @@ type Props = {
   control: any;
   name: string;
   notes: Note[];
+  selectedNotes: string[];
+  onNotesChange: (value: string[]) => void;
 };
 
-export default function MultiNoteSelector({ control, name, notes }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleNote = (currentValue: string[], id: string) => {
-    const updated = currentValue.includes(id)
-      ? currentValue.filter((item) => item !== id)
-      : [...currentValue, id];
-    return updated;
+export default function MultiNoteSelector({
+  name,
+  notes,
+  selectedNotes,
+  onNotesChange,
+  control,
+}: Props) {
+  const addNote = (noteId: string) => {
+    if (!selectedNotes.includes(noteId)) {
+      onNotesChange([...selectedNotes, noteId]);
+    }
   };
 
-  const handleRemoveNote = (currentValue: string[], id: string) => {
-    return currentValue.filter((item) => item !== id);
+  const removeNote = (noteId: string) => {
+    onNotesChange(selectedNotes.filter((id) => id !== noteId));
   };
 
   return (
-    <Controller
-      control={control}
-      name={name}
-      defaultValue={[]}
-      render={({ field: { value, onChange } }) => {
-        const selectedIds = new Set(value || []);
-        const selectedNotes = notes.filter((note) => selectedIds.has(note.id));
-
-        return (
-          <div className="space-y-2">
-            <Select open={isOpen} onOpenChange={setIsOpen} value={value}>
-              <SelectTrigger onClick={() => setIsOpen(!isOpen)}>
-                Seleccionar notas
+    <div className="space-y-2">
+      <Controller
+        name={name}
+        control={control}
+        render={() => (
+          <>
+            <Select onValueChange={addNote}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select notes..." />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   {notes.map((note) => (
                     <SelectItem
                       key={note.id}
-                      value={note.id}
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        const newValue = toggleNote(value || [], note.id);
-                        onChange(newValue);
-                      }}
-                      className={cn(
-                        "cursor-pointer",
-                        selectedIds.has(note.id) && "bg-muted font-semibold",
-                      )}
+                      value={note.id.toString()}
+                      disabled={selectedNotes.includes(note.id.toString())}
                     >
                       {note.name}
                     </SelectItem>
@@ -80,29 +68,29 @@ export default function MultiNoteSelector({ control, name, notes }: Props) {
               </SelectContent>
             </Select>
 
-            {selectedNotes.length > 0 && (
-              <Flex className="mt-2 flex-wrap gap-x-[1rem] gap-y-[1rem] py-[1rem]">
-                {selectedNotes.map((note) => (
-                  <Flex
-                    key={note.id}
-                    className="flex items-center gap-1 rounded-full border bg-muted px-[16px]"
+            <div className="mt-2 flex flex-wrap gap-2">
+              {selectedNotes.map((noteId) => {
+                const note = notes.find((n) => n.id.toString() === noteId);
+                return (
+                  <div
+                    key={noteId}
+                    className="flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-sm"
                   >
-                    {note.name}
-                    <Flex
-                      onClick={() =>
-                        onChange(handleRemoveNote(value || [], note.id))
-                      }
-                      className={`${cn(buttonVariants({ variant: "ghost" }))} w-[24px] !p-0 text-xs`}
+                    <span>{note?.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeNote(noteId)}
+                      className="text-gray-500 hover:text-red-600"
                     >
-                      <IconClose size={"12px"} />
-                    </Flex>
-                  </Flex>
-                ))}
-              </Flex>
-            )}
-          </div>
-        );
-      }}
-    />
+                      <X size={14} />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+      />
+    </div>
   );
 }

@@ -8,6 +8,7 @@ import { Controller } from "react-hook-form";
 
 import BrandSelectOptions from "@/components/brand-select-options";
 import Flex from "@/components/flex";
+import MultiNoteSelector from "@/components/MultiNoteSelector";
 import RichTextEditor from "@/components/rich-text-editor";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -16,8 +17,6 @@ import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
-  SelectGroup,
-  SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -33,8 +32,8 @@ export default function EditPerfumeContent() {
     loading,
     preview,
     brands,
-
     handleImageChange,
+    orderNotes,
     onSubmit,
   } = useEditPerfume();
 
@@ -59,7 +58,6 @@ export default function EditPerfumeContent() {
           render={({ field }) => (
             <Flex className={"w-full flex-col gap-[1rem]"}>
               <Label htmlFor={"name"} className={"text-muted-foreground"}>
-                {" "}
                 Name
               </Label>
               <Input {...field} id={"name"} type="text" placeholder="Name" />
@@ -75,7 +73,6 @@ export default function EditPerfumeContent() {
                 htmlFor={"description"}
                 className={"text-muted-foreground"}
               >
-                {" "}
                 Description
               </Label>
               <RichTextEditor value={field.value} onChange={field.onChange} />
@@ -91,7 +88,6 @@ export default function EditPerfumeContent() {
               render={({ field }) => (
                 <Flex className={"w-full flex-col gap-[1rem]"}>
                   <Label htmlFor={"price"} className={"text-muted-foreground"}>
-                    {" "}
                     Price
                   </Label>
                   <Input
@@ -111,7 +107,6 @@ export default function EditPerfumeContent() {
               render={({ field }) => (
                 <Flex className={"w-full flex-col gap-[1rem]"}>
                   <Label htmlFor={"profit"} className={"text-muted-foreground"}>
-                    {" "}
                     Profit
                   </Label>
                   <Input
@@ -131,8 +126,7 @@ export default function EditPerfumeContent() {
             render={({ field }) => (
               <Flex className={"w-full flex-col gap-[1rem]"}>
                 <Label htmlFor={"brand_id"} className={"text-muted-foreground"}>
-                  {" "}
-                  Change Brand{" "}
+                  Change Brand
                 </Label>
                 <Select
                   onValueChange={field.onChange}
@@ -159,7 +153,6 @@ export default function EditPerfumeContent() {
                 htmlFor={"external_link"}
                 className={"text-muted-foreground"}
               >
-                {" "}
                 External Link
               </Label>
               <Input
@@ -167,6 +160,23 @@ export default function EditPerfumeContent() {
                 id={"external_link"}
                 type="text"
                 placeholder="External Link"
+              />
+            </Flex>
+          )}
+        />
+
+        <Controller
+          name="note_ids"
+          control={control}
+          render={({ field }) => (
+            <Flex className="flex-col gap-[1rem]">
+              <Label className="text-muted-foreground">Fragrance Notes</Label>
+              <MultiNoteSelector
+                control={control}
+                name="note_ids"
+                notes={orderNotes}
+                selectedNotes={field.value || []}
+                onNotesChange={field.onChange}
               />
             </Flex>
           )}

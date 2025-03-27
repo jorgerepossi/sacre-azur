@@ -16,6 +16,7 @@ export const useCreatePerfume = () => {
       external_link,
       imageFile,
       brand_id,
+      note_ids, // Nuevo parámetro
     }: CreatePerfumeInputType) => {
       const { data: imageData, error: imageError } = await supabase.storage
         .from("perfume-images")
@@ -44,9 +45,27 @@ export const useCreatePerfume = () => {
             image: imageUrl,
             brand_id,
           },
-        ]);
+        ])
+        .select("id");
 
       if (error) throw new Error("Error creando perfume: " + error.message);
+
+      const createdPerfumeId = perfumeData[0].id;
+
+      if (note_ids && note_ids.length > 0) {
+        const { error: relationError } = await supabase
+          .from("perfume_note_relation")
+          .insert(
+            note_ids.map((note_id) => ({
+              perfume_id: createdPerfumeId,
+              note_id: note_id,
+            })),
+          );
+
+        if (relationError)
+          throw new Error("Error guardando notas: " + relationError.message);
+      }
+
       return perfumeData;
     },
     onSuccess: () => {

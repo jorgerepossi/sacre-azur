@@ -4,8 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { useCartStore } from "@/stores/cartStore";
-import { Copy } from "lucide-react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Copy } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
@@ -37,6 +36,7 @@ export default function PerfumeDetails({ perfume }: Props) {
   } = usePerfume(perfume.price, perfume.profit_margin);
 
   const { control, handleSubmit } = useForm();
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
   const onSubmit = () => {
     useCartStore.getState().addItem({
@@ -45,11 +45,11 @@ export default function PerfumeDetails({ perfume }: Props) {
       price: rawUnitPrice,
       size: String(selectedSize.value),
       quantity: quantity,
-      //image: perfume.image,
     });
     toast.success("Added to cart");
   };
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+
+  console.log(perfume);
 
   return (
     <div className="container py-10">
@@ -86,51 +86,84 @@ export default function PerfumeDetails({ perfume }: Props) {
               />
             </Flex>
 
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold">Description</h2>
-              <div
-                className="prose max-w-none text-muted-foreground"
-                dangerouslySetInnerHTML={{ __html: perfume.description }}
-              />
-            </div>
+            <Flex className="flex-col space-y-4">
+              <h2 className="m-0 text-xl font-semibold">Description</h2>
+              {perfume.description.length ? (
+                <div
+                  className="prose max-w-none text-muted-foreground"
+                  dangerouslySetInnerHTML={{ __html: perfume.description }}
+                />
+              ) : (
+                <p className="text-muted-foreground">
+                  No se encontró descripcióm
+                </p>
+              )}
+            </Flex>
 
-            <div className="flex items-center gap-4">
-              <label className="font-semibold">Size:</label>
-              <select
-                className="rounded-lg border p-2"
-                value={selectedSize.value}
-                onChange={(e) => {
-                  const newSize = sizes.find(
-                    (s) => s.value === Number(e.target.value),
-                  );
-                  if (newSize) setSelectedSize(newSize);
-                }}
-              >
-                {sizes.map((s) => (
-                  <option key={s.label} value={s.value}>
-                    {s.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <Flex className="flex-col space-y-4">
+              <h2 className="m-0 text-xl font-semibold">Acordes principales</h2>
 
-            <Flex className="items-center gap-4">
-              <Label className="font-semibold">Quantity:</Label>
-              <button
-                type="button"
-                className="rounded-lg border px-3 py-1"
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              >
-                -
-              </button>
-              <span className="px-4">{quantity}</span>
-              <button
-                type="button"
-                className="rounded-lg border px-3 py-1"
-                onClick={() => setQuantity(quantity + 1)}
-              >
-                +
-              </button>
+              {perfume?.perfume_note_relation?.length ? (
+                <Flex className={"flex-wrap gap-[16px]"}>
+                  {perfume?.perfume_note_relation.map(
+                    (relation) =>
+                      relation.perfume_notes && (
+                        <div
+                          key={relation.perfume_notes.id}
+                          className="rounded-full border bg-muted px-[1rem]"
+                        >
+                          <p className="text-body-small text-muted-foreground">
+                            {relation.perfume_notes.name}
+                          </p>
+                        </div>
+                      ),
+                  )}
+                </Flex>
+              ) : (
+                <p className="text-muted-foreground">
+                  No fragrance notes available
+                </p>
+              )}
+            </Flex>
+            <Flex className={"gap-[3rem]"}>
+              <Flex className="items-center gap-4">
+                <label className="font-semibold">Size:</label>
+                <select
+                  className="rounded-lg border p-2"
+                  value={selectedSize.value}
+                  onChange={(e) => {
+                    const newSize = sizes.find(
+                      (s) => s.value === Number(e.target.value),
+                    );
+                    if (newSize) setSelectedSize(newSize);
+                  }}
+                >
+                  {sizes.map((s) => (
+                    <option key={s.label} value={s.value}>
+                      {s.label}
+                    </option>
+                  ))}
+                </select>
+              </Flex>
+
+              <Flex className="items-center gap-4">
+                <Label className="font-semibold">Quantity:</Label>
+                <button
+                  type="button"
+                  className="rounded-lg border px-3 py-1"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                >
+                  -
+                </button>
+                <span className="px-4">{quantity}</span>
+                <button
+                  type="button"
+                  className="rounded-lg border px-3 py-1"
+                  onClick={() => setQuantity(quantity + 1)}
+                >
+                  +
+                </button>
+              </Flex>
             </Flex>
 
             <div className="space-y-2">
@@ -154,6 +187,7 @@ export default function PerfumeDetails({ perfume }: Props) {
                 href={perfume.external_link || ""}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="text-primary hover:underline"
               >
                 Fragrantica
               </Link>

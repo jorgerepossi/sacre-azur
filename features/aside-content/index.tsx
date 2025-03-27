@@ -42,7 +42,6 @@ const AsideContent = ({ className }: SidebarProps) => {
   const { data: brands, isLoading, error } = useFetchBrands();
 
   const toggleBrand = (brandId: string) => {
-
     setSelectedBrands((prev) =>
       prev.includes(brandId)
         ? prev.filter((id) => id !== brandId)

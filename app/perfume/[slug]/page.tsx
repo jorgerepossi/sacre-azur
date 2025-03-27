@@ -1,26 +1,32 @@
+// app/perfume/[slug]/page.tsx
+import React, { Suspense } from "react";
+
 import { notFound } from "next/navigation";
 
+import SmallLoader from "@/components/loaders/small";
 import PerfumeDetails from "@/components/perfume-detail";
 
 import { supabase } from "@/lib/supabaseClient";
 
 import { createSlug } from "@/utils/slugGenerator";
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const resolvedParams = await params;
-  const { slug } = resolvedParams;
+export default async function Page({ params }: { params: { slug: string } }) {
+  const { slug } = params;
   const slugParts = slug.split("_");
   const id = slugParts[slugParts.length - 1];
 
   if (!id) return notFound();
-
   const { data: perfume, error } = await supabase
     .from("perfume")
-    .select("*, brand(*)")
+    .select(
+      `
+    *,
+    brand(*),
+    perfume_note_relation:perfume_note_relation (
+      perfume_notes:note_id (id, name)
+    )
+  `,
+    )
     .eq("id", id)
     .single();
 
@@ -29,5 +35,10 @@ export default async function Page({
   const expectedSlug = `${createSlug(perfume.name)}_${perfume.id}`;
   if (slug !== expectedSlug) return notFound();
 
-  return <PerfumeDetails perfume={perfume} />;
+  return (
+    <Suspense fallback={<SmallLoader />}>
+      <PerfumeDetails perfume={perfume} />
+      );
+    </Suspense>
+  );
 }

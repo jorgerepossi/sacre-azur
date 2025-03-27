@@ -30,6 +30,7 @@ const CreateForm = () => {
     isLoading,
     handleSubmit,
     fileInputRef,
+    orderNotes,
     createPerfume,
     handleImageChange,
     handleIconClick,
@@ -130,7 +131,7 @@ const CreateForm = () => {
             <MultiNoteSelector
               control={control}
               name="note_ids"
-              notes={notes ?? []}
+              notes={orderNotes ?? []}
             />
           </Flex>
 

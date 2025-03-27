@@ -27,6 +27,10 @@ export const useCreatePerfumeForm = () => {
   const { data: notes } = useFetchNotes();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  const orderNotes = notes
+    ? [...notes].sort((a, b) => a.name.localeCompare(b.name))
+    : [];
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
@@ -51,6 +55,7 @@ export const useCreatePerfumeForm = () => {
         external_link: data.external_link,
         imageFile,
         brand_id: data.brand_id,
+        note_ids: data.note_ids,
       },
       {
         onSuccess: () => {
@@ -82,6 +87,7 @@ export const useCreatePerfumeForm = () => {
     error,
     fileInputRef,
     notes,
+    orderNotes,
     setValue,
   };
 };

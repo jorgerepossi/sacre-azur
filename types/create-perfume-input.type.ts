@@ -6,4 +6,5 @@ export type CreatePerfumeInputType = {
   external_link: string;
   imageFile: File;
   brand_id: string;
+  note_ids: string[];
 };
