@@ -6,54 +6,51 @@ import { useState, useContext, createContext } from "react"
 import { Check, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import Flex from "@/components/flex"
+import {useFetchBrands} from "@/hooks/useFetchBrands";
 
-const brands = [
-    "Chanel",
-    "Dior",
-    "Gucci",
-    "Tom Ford",
-    "Versace",
-    "Prada",
-    "Armani",
-    "Calvin Klein",
-    "Burberry",
-    "Yves Saint Laurent",
-    "Lancôme"
-]
 
 
 export const BrandFilterContext = createContext<{
-    selectedBrands: string[]
+    selectedBrands: string[] // Asegurar tipo string
     setSelectedBrands: React.Dispatch<React.SetStateAction<string[]>>
 }>({
     selectedBrands: [],
     setSelectedBrands: () => {},
-})
+});
 
 export function BrandFilterProvider({ children }: { children: React.ReactNode }) {
-    const [selectedBrands, setSelectedBrands] = useState<string[]>([])
+    const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
 
     return (
-        <BrandFilterContext.Provider value={{ selectedBrands, setSelectedBrands }}>{children}</BrandFilterContext.Provider>
-    )
+        <BrandFilterContext.Provider value={{ selectedBrands, setSelectedBrands }}>
+            {children}
+        </BrandFilterContext.Provider>
+    );
 }
-
 interface SidebarProps {
     className?: string
 }
 const AsideContent = ({ className }: SidebarProps)  => {
     const { selectedBrands, setSelectedBrands } = useContext(BrandFilterContext)
     const [isOpen, setIsOpen] = useState(true)
+    const { data: brands, isLoading, error } = useFetchBrands();
 
-    const toggleBrand = (brand: string) => {
+    const toggleBrand = (brandId: string) => { // Cambiar parámetro a number
         setSelectedBrands((prev) =>
-            prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
+            prev.includes(brandId)
+                ? prev.filter((id) => id !== brandId)
+                : [...prev, brandId]
         );
     };
 
-    const orderByName = [...brands].sort((a, b) => a.localeCompare(b))
+    const orderedBrands = brands
+        ? [...brands].sort((a, b) => a.name.localeCompare(b.name))
+        : [];
 
+    if(isLoading) return (<p>Cargando marcas...</p>)
 
+    console.log('filtered', {brands, selectedBrands})
     return (
         <div className={cn("space-y-4", className)}>
 
@@ -71,21 +68,26 @@ const AsideContent = ({ className }: SidebarProps)  => {
             </div>
 
             <div className={cn("space-y-4", !isOpen && "hidden")}>
-
+                <Flex className={'border-b-2'}>
+                    <p> Filter </p>
+                </Flex>
                 <div>
                     <h3 className="mb-2 text-lg font-semibold">Brands</h3>
                     <div className="space-y-2">
-                        {orderByName.map((brand) => (
-                            <div key={brand} className="flex items-center">
+                        {orderedBrands.map((brand) => (
+                            <div key={brand.id} className="flex items-center">
                                 <button
+                                    key={brand.id}
                                     className="flex items-center gap-2 text-sm hover:text-primary"
-                                    onClick={() => toggleBrand(brand)}
+                                    onClick={() => toggleBrand(brand.id)}
                                 >
                                     <div
                                         className="flex h-4 w-4 items-center justify-center rounded border border-primary">
-                                        {selectedBrands.includes(brand) && <Check className="h-3 w-3 text-primary"/>}
+                                        {selectedBrands.includes(brand.id) && (
+                                            <Check className="h-3 w-3 text-primary"/>
+                                        )}
                                     </div>
-                                    <span>{brand}</span>
+                                    <span>{brand.name}</span>
                                 </button>
                             </div>
                         ))}

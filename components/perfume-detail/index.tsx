@@ -6,13 +6,14 @@ import Link from "next/link";
 import { Copy } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useCartStore } from "@/stores/cartStore";
-import { Button } from "@/components/ui/button";
+import {Button, buttonVariants} from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Perfume } from "@/types/perfume.type";
 import Flex from "@/components/flex";
 import { createSlug } from "@/utils/slugGenerator";
 import { Label } from "@/components/ui/label";
 import { usePerfume } from "@/hooks/usePerfume";
+import {cn} from "@/lib/utils";
 
 
 
@@ -48,7 +49,7 @@ export default function PerfumeDetails({ perfume }: Props) {
 
     return (
         <div className="container py-10">
-            <Link href="/" className="inline-flex items-center mb-6 text-primary hover:underline">
+            <Link href="/" className={`${cn(buttonVariants({variant: 'ghost'}))} inline-flex items-center mb-6 text-primary `}>
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to all perfumes
             </Link>

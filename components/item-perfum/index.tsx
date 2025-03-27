@@ -22,20 +22,23 @@ const createSlug = (name: string) => {
 
 const ItemPerfume = ({item}: ItemPerfumeProps) => {
     return (
-        <Flex className="overflow-hidden w-full border bg-background_white">
+        <Flex className="overflow-hidden w-full border bg-background_white !shadow-sm
+          transition-all duration-300
+          !hover:shadow-md
+          hover:-translate-y-1 rounded-lg">
 
             <Flex className="p-0 w-full">
                 <Flex className={'flex-row md:flex-col p-[1rem] w-full'}>
-
+                    <Flex className={' flex-1  justify-center items-center py-4 md:py-2   '}>
+                        <Image src={item.image || "/placeholder.svg"} alt={item.name} width={200} height={100}
+                               className="object-cover"/>
+                    </Flex>
                     <Flex className={'justify-between pt-[2rem] pb-[1rem] flex-col md:flex-row'}>
-                        <Flex className={'flex-1  flex-col'}>
-                            <p className="font-bold">{item.name}</p>
+                        <Flex className={'flex-1 gap-[.25rem] flex-col'}>
+                            <p className="font-bold m-0">{item.name}</p>
                             <p className="text-body-medium text-muted-foreground m-0">by {item.brand.name}</p>
                         </Flex>
-                        <Flex className={' flex-1  justify-center items-center py-4 md:py-2 max-w-[120px] '}>
-                            <Image src={item.image || "/placeholder.svg"} alt={item.name} width={100} height={100}
-                                   className="object-cover"/>
-                        </Flex>
+
                     </Flex>
                     <Flex className={'  pt-[16px] gap-[1rem] border-t-2 border-muted justify-between '}>
                         <Button className={'w-[120px]'} variant={'ghost'}> Add wishlist </Button>

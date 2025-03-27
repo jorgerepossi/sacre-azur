@@ -1,40 +1,59 @@
 "use client";
-import React from "react";
+import { useEffect, useState } from "react";
 import Flex from "@/components/flex";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
     Select,
-    SelectContent,
-
-    SelectTrigger,
+    SelectContent, SelectTrigger,
     SelectValue,
+    SelectGroup, SelectItem
 } from "@/components/ui/select";
-import { ImageUp } from "lucide-react";
+import {  ImageUp} from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+
+import { X } from "lucide-react";
 
 import RichTextEditor from "@/components/rich-text-editor";
 import { Controller } from "react-hook-form";
 import { useCreatePerfumeForm } from "@/hooks/useCreatePerfumeForm";
 import BrandSelectOptions from "@/components/brand-select-options";
+import MultiNoteSelector from "@/components/MultiNoteSelector";
+
+
+type Note = {
+    id: string;
+    name: string;
+};
 
 const CreateForm = () => {
     const {
+        notes,
+        error,
+        brands,
         control,
-        handleSubmit,
-        register,
         preview,
+        register,
+        isLoading,
+        handleSubmit,
+        fileInputRef,
+        createPerfume,
         handleImageChange,
         handleIconClick,
         handleOnSubmit,
-        brands,
-        isLoading,
-        error,
-        fileInputRef,
-        createPerfume,
     } = useCreatePerfumeForm();
 
+    const [selectedNotes, setSelectedNotes] = useState<Note[]>([]);
+
+    const handleRemoveNote = (id: string) => {
+        setSelectedNotes((prev) => prev.filter((note) => note.id !== id));
+    };
+
+
     if (isLoading || error || !brands) return null;
+
+
 
     return (
         <form onSubmit={handleSubmit(handleOnSubmit)} className="max-w-[700px]">
@@ -116,6 +135,37 @@ const CreateForm = () => {
                         )}
                     />
 
+                    <Flex className="flex-col gap-[1rem]">
+                        <MultiNoteSelector
+                            control={control}
+                            name="note_ids"
+                            notes={notes || []}
+                            onSelectionChange={setSelectedNotes}
+                        />
+
+                        {selectedNotes.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                                {selectedNotes.map((note) => (
+                                    <Badge
+                                        key={note.id}
+                                        variant="secondary"
+                                        className="flex items-center gap-1 pr-2"
+                                    >
+                                        {note.name}
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveNote(note.id)}
+                                            className="ml-1 text-xs text-red-500 hover:text-red-700"
+                                        >
+                                            ✕
+                                        </button>
+                                    </Badge>
+                                ))}
+                            </div>
+                        )}
+
+                    </Flex>
+
                     <Flex className="gap-[1rem]">
                         <Button type="button" variant="outline" onClick={handleIconClick} className={'flex gap-[1rem]'}>
                             <ImageUp className="w-6 h-6" /> Upload image
@@ -129,7 +179,6 @@ const CreateForm = () => {
                             onChange={handleImageChange}
                         />
                     </Flex>
-
                     {preview && <img src={preview} alt="Preview" className="w-32 h-32 object-cover mt-2" />}
                 </Flex>
 

@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { useCreatePerfume } from "@/hooks/useCreatePerfume";
 import { useFetchBrands } from "@/hooks/useFetchBrands";
+import {useFetchNotes} from "@/hooks/fetchs/useFetchNotes";
 
 export type FormValues = {
     name: string;
@@ -12,6 +13,7 @@ export type FormValues = {
     external_link: string;
     image: FileList;
     brand_id: string;
+    note_ids: string[];
 };
 
 export const useCreatePerfumeForm = () => {
@@ -19,6 +21,7 @@ export const useCreatePerfumeForm = () => {
     const [preview, setPreview] = useState<string | null>(null);
     const createPerfume = useCreatePerfume();
     const { data: brands, isLoading, error } = useFetchBrands();
+    const { data: notes  } =  useFetchNotes()
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,5 +78,6 @@ console.log('click')
         isLoading,
         error,
         fileInputRef,
+        notes,  setValue
     };
 };
