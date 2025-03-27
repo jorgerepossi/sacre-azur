@@ -1,10 +1,12 @@
 "use client";
 
-import {PerfumeGrid}from "@/components/perfum-grid";
 import Flex from "@/components/flex";
+import { PerfumeGrid } from "@/components/perfum-grid";
 
 export default function PerfumeGridClient() {
-    return <Flex className={'relative'}>
-        <PerfumeGrid />
-    </Flex>;
+  return (
+    <Flex className={"relative"}>
+      <PerfumeGrid />
+    </Flex>
+  );
 }

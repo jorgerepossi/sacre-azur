@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
 
 const config: Config = {
   darkMode: ["class"],
@@ -56,7 +56,7 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        button_black: "#000000"
+        button_black: "#000000",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -65,98 +65,97 @@ const config: Config = {
       },
       fontSize: {
         display: [
-          '2.25rem', // 36px
+          "2.25rem", // 36px
           {
-            lineHeight: '2.75rem', // 44px
-            fontWeight: '700',
-            letterSpacing: '0px',
+            lineHeight: "2.75rem", // 44px
+            fontWeight: "700",
+            letterSpacing: "0px",
           },
         ],
-        'display-medium': [
-          '2rem', // 16px
+        "display-medium": [
+          "2rem", // 16px
           {
-            lineHeight: '2.5rem', // 40px
-            fontWeight: '600',
-            letterSpacing: '0px',
+            lineHeight: "2.5rem", // 40px
+            fontWeight: "600",
+            letterSpacing: "0px",
           },
         ],
-        'title-large': [
-          '1.375rem', // 22px
+        "title-large": [
+          "1.375rem", // 22px
           {
-            lineHeight: '1.75rem', // 28px
-            fontWeight: '500',
-            letterSpacing: '0px',
+            lineHeight: "1.75rem", // 28px
+            fontWeight: "500",
+            letterSpacing: "0px",
           },
         ],
-        'title-small': [
-          '1rem',
+        "title-small": [
+          "1rem",
           {
-            lineHeight: '1.5rem', // 24px
-            fontWeight: '500',
-            letterSpacing: '0.15px',
+            lineHeight: "1.5rem", // 24px
+            fontWeight: "500",
+            letterSpacing: "0.15px",
           },
         ],
-        headline: '1.75rem', // 28px
-        'headline-small': [
-          '1.5rem', // 24px
+        headline: "1.75rem", // 28px
+        "headline-small": [
+          "1.5rem", // 24px
           {
-            lineHeight: '2rem', // 32px
-            fontWeight: '500',
+            lineHeight: "2rem", // 32px
+            fontWeight: "500",
           },
         ],
-        'headline-subtitle': [
-          '1rem',
+        "headline-subtitle": [
+          "1rem",
           {
-            lineHeight: '1.5rem', // 24px
-            fontWeight: '500',
-            letterSpacing: '0.15px',
+            lineHeight: "1.5rem", // 24px
+            fontWeight: "500",
+            letterSpacing: "0.15px",
           },
         ],
-        'body-small': [
-          '12px',
+        "body-small": [
+          "12px",
           {
-            lineHeight: '1rem',
-            letterSpacing: '0.5px',
-            fontWeight: 'normal',
+            lineHeight: "1rem",
+            letterSpacing: "0.5px",
+            fontWeight: "normal",
           },
         ],
-        'body-medium': [
-          '14px',
+        "body-medium": [
+          "14px",
           {
-            lineHeight: '1.25rem',
-            letterSpacing: '0.25px',
-            fontWeight: 'normal',
+            lineHeight: "1.25rem",
+            letterSpacing: "0.25px",
+            fontWeight: "normal",
           },
         ],
-        'body-large': [
-          '1rem',
+        "body-large": [
+          "1rem",
           {
-            lineHeight: '1.5rem', // 24px
-            fontWeight: '400',
-            letterSpacing: '0.5px',
+            lineHeight: "1.5rem", // 24px
+            fontWeight: "400",
+            letterSpacing: "0.5px",
           },
         ],
-        'body-xsmall': [
-          '11px',
+        "body-xsmall": [
+          "11px",
           {
-            lineHeight: '1.25rem',
-            fontWeight: '500',
-            letterSpacing: '0.5px',
+            lineHeight: "1.25rem",
+            fontWeight: "500",
+            letterSpacing: "0.5px",
           },
         ],
-        'label-large': [
-          '14px',
+        "label-large": [
+          "14px",
           {
-            lineHeight: '1.25rem',
-            fontWeight: '500',
-            letterSpacing: '0.1px',
+            lineHeight: "1.25rem",
+            fontWeight: "500",
+            letterSpacing: "0.1px",
           },
         ],
       },
     },
   },
   plugins: [],
-}
+};
 
-export default config
-
+export default config;

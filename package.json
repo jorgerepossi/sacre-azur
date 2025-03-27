@@ -3,7 +3,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "format": "prettier --write .",
+    "prettier": "prettier --write . --check"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.1.1",
@@ -40,10 +42,12 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/node": "22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "19.0.2",
     "postcss": "8.4.49",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwind-merge": "^2.5.2",
     "tailwindcss": "3.4.17",
     "tailwindcss-animate": "^1.0.7",

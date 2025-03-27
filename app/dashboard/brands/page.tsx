@@ -1,13 +1,11 @@
-import React from 'react';
-import ContentBlock from "@/components/content-block";
+import React from "react";
+
 import BrandPageContent from "@/features/dashboard/brands";
 
+import ContentBlock from "@/components/content-block";
+
 const BrandsPage = () => {
-    return (
-
-            <BrandPageContent />
-
-    );
+  return <BrandPageContent />;
 };
 
 export default BrandsPage;

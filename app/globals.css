@@ -16,7 +16,7 @@
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
 
-    --secondary-text-dark: #7f95bb ;
+    --secondary-text-dark: #7f95bb;
 
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 215 16% 47%;
@@ -33,7 +33,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --primary_text_dark: #59636d ;
+    --primary_text_dark: #59636d;
   }
 
   .dark {
@@ -62,8 +62,8 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --primary_text_dark: #f9f9f9 ;
-    --secondary-text-dark: #64748B;
+    --primary_text_dark: #f9f9f9;
+    --secondary-text-dark: #64748b;
   }
 }
 
@@ -74,28 +74,29 @@
   body {
     @apply bg-background text-foreground;
   }
-  h1{
-    @apply text-2xl font-bold my-4;
+  h1 {
+    @apply my-4 text-2xl font-bold;
   }
-  h2{
-    @apply text-xl font-semibold my-3;
+  h2 {
+    @apply my-3 text-xl font-semibold;
   }
-  h3{
-    @apply text-lg font-medium my-2;
+  h3 {
+    @apply my-2 text-lg font-medium;
   }
 
-  p{
-    @apply my-2 leading-relaxed text-sm;
+  p {
+    @apply my-2 text-sm leading-relaxed;
   }
   code {
-    @apply bg-muted border border-muted rounded-md p-[.5rem] text-neutral-500;
+    @apply rounded-md border border-muted bg-muted p-[.5rem] text-neutral-500;
   }
 }
 
-html, body{
+html,
+body {
   height: 100%;
 }
 [data-radix-popper-content-wrapper] {
   pointer-events: auto !important;
+  max-height: 300px;
 }
-

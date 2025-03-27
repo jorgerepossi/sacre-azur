@@ -1,17 +1,19 @@
-"use client"
-import React, {useState, createContext } from 'react';
+"use client";
+
+import React, { createContext, useState } from "react";
 
 interface AsideProps {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
 
-
-const AsideWrapper = ({children}: AsideProps) => {
-    return (
-        <aside className={'w-full md:w-[320px] shrink-0 border rounded-lg p-4 bg-card'}>
-            {children}
-        </aside>
-    );
+const AsideWrapper = ({ children }: AsideProps) => {
+  return (
+    <aside
+      className={"w-full shrink-0 rounded-lg border bg-card p-4 md:w-[320px]"}
+    >
+      {children}
+    </aside>
+  );
 };
 
 export default AsideWrapper;

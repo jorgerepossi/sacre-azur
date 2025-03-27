@@ -1,4 +1,5 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+
 import { updateSession } from "@/utils/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
@@ -6,7 +7,8 @@ export async function middleware(request: NextRequest) {
   const corsHeaders = {
     "Access-Control-Allow-Origin": "*", // ⚠️ Cambia esto en producción a un dominio específico
     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
+    "Access-Control-Allow-Headers":
+      "Content-Type, Authorization, X-Requested-With",
   };
 
   // Manejar preflight request (CORS)
