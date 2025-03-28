@@ -1,7 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
+import {getBaseUrl} from "@/lib/config";
 
 const fetchBrands = async () => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const baseUrl = getBaseUrl();
+
+
 
   if (!baseUrl) {
     throw new Error('API base URL not configured');
