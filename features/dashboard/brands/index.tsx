@@ -21,6 +21,7 @@ import {
 
 import { useFetchBrands } from "@/hooks/useFetchBrands";
 import { useToggleBrandStatus } from "@/hooks/useToggleBrandStatus";
+import {Brand} from "@/types/perfume.type";
 
 const BrandPageContent = () => {
   const { data, isLoading } = useFetchBrands();
@@ -41,7 +42,7 @@ const BrandPageContent = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.map((item) => (
+              {data.map((item: Brand) => (
                 <TableRow key={item.id}>
                   <TableCell>
                     <img
