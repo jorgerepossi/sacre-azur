@@ -1,10 +1,11 @@
 "use client";
 
-import AsideContent, { BrandFilterProvider } from "@/features/aside-content";
+import AsideContent  from "@/features/aside-content";
 import PerfumeGridClient from "@/features/perfum-grid-client";
 
 import AsideWrapper from "@/components/aside";
 import Flex from "@/components/flex";
+import {BrandFilterProvider} from "@/providers/BrandFilterProvider";
 
 export default function Home() {
   return (

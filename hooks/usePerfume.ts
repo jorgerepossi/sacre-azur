@@ -18,7 +18,7 @@ export const usePerfume = (pricePer100ml: number, profit: number) => {
   const [quantity, setQuantity] = useState(1);
   const [profitMargin, setProfitMargin] = useState(profit);
 
-  const marginMultiplier = 1 + profitMargin / 100;
+  const marginMultiplier = 1 + profitMargin / 100; //!TODO CHANGE FUNCTION
   const baseUnitPrice = (pricePer100ml * selectedSize.value) / 100;
   const rawUnitPrice = baseUnitPrice * marginMultiplier;
   const rawTotalPrice = rawUnitPrice * quantity;

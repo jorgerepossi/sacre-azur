@@ -1,45 +1,48 @@
-// app/perfume/[slug]/page.tsx
-import React, { Suspense } from "react";
+// app/perfumes/[slug]/page.tsx
+import { notFound } from 'next/navigation';
+import SmallLoader from '@/components/loaders/small';
+import PerfumeDetails from '@/components/perfume-detail';
+import { createSlug } from '@/utils/slugGenerator';
 
-import { notFound } from "next/navigation";
+import {Suspense} from "react";
+import {supabase} from "@/lib/supabaseClient";
 
-import SmallLoader from "@/components/loaders/small";
-import PerfumeDetails from "@/components/perfume-detail";
 
-import { supabase } from "@/lib/supabaseClient";
-
-import { createSlug } from "@/utils/slugGenerator";
 
 export default async function Page({ params }: {  params: Promise<{ slug: string }>; }) {
-  const resolvedParams = await params;
-  const { slug } = resolvedParams;
-  const slugParts = slug.split("_");
+    const resolvedParams = await params;
+    const { slug } = resolvedParams;
+
+  const slugParts = slug.split('_');
   const id = slugParts[slugParts.length - 1];
 
-  if (!id) return notFound();
+
+  if (!id || !/^[0-9a-f-]{36}$/.test(id)) return notFound();
+
+
   const { data: perfume, error } = await supabase
-    .from("perfume")
-    .select(
-      `
-    *,
-    brand(*),
-    perfume_note_relation:perfume_note_relation (
-      perfume_notes:note_id (id, name)
-    )
-  `,
-    )
-    .eq("id", id)
-    .single();
+      .from('perfume')
+      .select(`
+      *,
+      brand(*),
+      perfume_note_relation:perfume_note_relation (
+        perfume_notes:note_id (id, name)
+      )
+    `)
+      .eq('id', id)
+      .single();
 
   if (error || !perfume) return notFound();
 
-  const expectedSlug = `${createSlug(perfume.name)}_${perfume.id}`;
 
+  const expectedSlug = `${createSlug(perfume.name)}_${perfume.id}`;
   if (slug !== expectedSlug) return notFound();
 
   return (
-    <Suspense fallback={<SmallLoader />}>
-      <PerfumeDetails perfume={perfume} />
-    </Suspense>
+      <section>
+        <Suspense fallback={<SmallLoader />}>
+          <PerfumeDetails perfume={perfume} />
+        </Suspense>
+      </section>
   );
 }

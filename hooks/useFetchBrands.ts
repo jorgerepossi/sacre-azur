@@ -2,24 +2,21 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { createClient } from "@/utils/supabase/client";
-
 const fetchBrands = async () => {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from("brand")
-    .select("id, name, active, image");
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const response = await fetch(`${baseUrl}/api/brands`);
 
-  if (error) {
-    throw new Error(error.message);
+  if (!response.ok) {
+    throw new Error('Failed to fetch brands');
   }
 
-  return data;
+  return response.json();
 };
 
 export const useFetchBrands = () => {
   return useQuery({
     queryKey: ["brands"],
     queryFn: fetchBrands,
+    staleTime: 3600 * 1000 // 1 hora de caché
   });
 };

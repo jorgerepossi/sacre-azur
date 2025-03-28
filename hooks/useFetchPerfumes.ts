@@ -1,25 +1,28 @@
+
 import { useQuery } from "@tanstack/react-query";
 
-import { supabase } from "@/lib/supabaseClient";
 
-const fetchPerfumes = async () => {
-  const { data, error } = await supabase
-    .from("perfume")
-    .select("*, brand(name, image)")
-    .order("created_at");
+const fetchPerfumes = async (brands?: string[] | undefined) => {
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ;
+  const query = brands?.length ? `?brands=${brands.join(',')}` : '';
 
-  if (error) {
-    console.error("❌ Error obteniendo perfumes:", error.message);
-    throw new Error(error.message);
+  const response = await fetch(`${baseUrl}/api/perfumes${query}`, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error('Error fetching perfumes');
   }
 
-  console.log("✅ Perfumes obtenidos:", data);
-  return data;
+  return response.json();
 };
 
-export const useFetchPerfumes = () => {
+export const useFetchPerfumes = (brands?: string[]) => {
   return useQuery({
-    queryKey: ["perfumes"],
-    queryFn: fetchPerfumes,
+    queryKey: ["perfumes", brands],
+    queryFn: () => fetchPerfumes(brands),
+    staleTime: 3600 * 1000
   });
 };

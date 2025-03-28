@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 
 
 import { Perfume } from "@/types/perfume.type";
+import {SkeletonBox} from "@/components/skeletons";
 
 interface ItemPerfumeProps {
   item: Perfume;
@@ -26,6 +27,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
       <Flex className="w-full p-0">
         <Flex className={"w-full  p-[1rem] flex-col"}>
           <Flex className={"flex-1 items-center justify-center py-4 md:py-2"}>
+            {!item.name  && <SkeletonBox />}
             <Image
               src={item.image || "/placeholder.svg"}
               alt={item.name}

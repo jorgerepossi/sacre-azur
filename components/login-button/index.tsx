@@ -1,11 +1,13 @@
+// components/LoginButton.tsx
 "use client";
 
-import React from "react";
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import React from "react";
+import {  supabase} from "@/lib/supabaseClient";
+
 
 const LoginButton = () => {
-  const supabase = createClientComponentClient();
+
 
   const login = async () => {
     const { error } = await supabase.auth.signInWithPassword({
@@ -17,16 +19,17 @@ const LoginButton = () => {
       console.error("Error logging in:", error.message);
     } else {
       console.log("Login successful");
+      window.location.reload();
     }
   };
 
   return (
-    <button
-      className="rounded-md bg-primary px-4 py-2 text-primary-foreground"
-      onClick={login}
-    >
-      Login
-    </button>
+      <button
+          className="rounded-md bg-primary px-4 py-2 text-primary-foreground"
+          onClick={login}
+      >
+        Login
+      </button>
   );
 };
 

@@ -2,9 +2,10 @@
 
 import { ThemeProvider } from "next-themes";
 
-import { BrandFilterProvider } from "@/features/aside-content";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
+import {BrandFilterProvider} from "@/providers/BrandFilterProvider";
 
 const queryClient = new QueryClient();
 

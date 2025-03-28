@@ -175,6 +175,7 @@ export default function PerfumeDetails({ perfume }: Props) {
             <Flex className="items-center gap-[2rem]">
               <Button
                   variant="outline"
+                  type={'button'}
                   className="flex items-center gap-2"
                   onClick={() => {
                     const link = `${baseUrl}/perfume/${createSlug(perfume.name)}_${perfume.id}`;
