@@ -1,10 +1,12 @@
 
 import { useQuery } from "@tanstack/react-query";
+import { getBaseUrl } from '@/lib/config';
 
 
 const fetchPerfumes = async (brands?: string[] | undefined) => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ;
+  const baseUrl = getBaseUrl();
   const query = brands?.length ? `?brands=${brands.join(',')}` : '';
+
 
   const response = await fetch(`${baseUrl}/api/perfumes${query}`, {
     headers: {

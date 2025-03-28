@@ -1,16 +1,16 @@
-"use client";
+// app/not-found.tsx
+'use client';
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function NotFound() {
     const router = useRouter();
 
     useEffect(() => {
-
-        router.refresh();
+        router.prefetch('/'); // Prefetch para mejor performance
     }, [router]);
 
     return (
@@ -21,8 +21,10 @@ export default function NotFound() {
                 The perfume you're looking for doesn't exist or the URL might be
                 incorrect.
             </p>
-            <Link href="/">
-                <Button size="lg">Return to Home</Button>
+            <Link href="/" legacyBehavior passHref>
+                <Button size="lg" asChild>
+                    <a>Return to Home</a>
+                </Button>
             </Link>
         </div>
     );
