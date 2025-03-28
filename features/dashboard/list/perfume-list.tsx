@@ -1,7 +1,6 @@
 import React from "react";
 
 import PerfumeListItem from "@/features/dashboard/list/perfume-list-item";
-
 import { Card } from "@/components/ui/card";
 import {
   Table,
@@ -10,7 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import { Perfume } from "@/types/perfume.type";
 
 interface PerfumeListProps {

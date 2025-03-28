@@ -3,14 +3,13 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
-
 import { supabase } from "@/lib/supabaseClient";
 
 export default function DeletePoliciesButton() {
   const deletePolicies = useMutation({
     mutationFn: async () => {
       // 1️⃣ Desactivar Row Level Security (RLS)
-      let { error } = await supabase.rpc("set_rls", {
+      const { error } = await supabase.rpc("set_rls", {
         table_name: "perfume",
         enabled: false,
       });

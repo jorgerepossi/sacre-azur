@@ -1,9 +1,9 @@
-import { Perfume } from "@/types/perfume.type";
+
 
 export interface CartItem {
   id: string;
   name: string;
-  price: number; // precio unitario calculado con margen
+  price: number;
   quantity: number;
   size: number;
   image: string;

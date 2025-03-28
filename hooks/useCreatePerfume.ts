@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { CreatePerfumeInputType } from "@/types/create-perfume-input.type";
-
 import { supabase } from "@/lib/supabaseClient";
 
 export const useCreatePerfume = () => {

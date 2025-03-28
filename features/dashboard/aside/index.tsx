@@ -1,7 +1,5 @@
 import React from "react";
-
 import Link from "next/link";
-
 import { Power } from "lucide-react";
 
 // @Components

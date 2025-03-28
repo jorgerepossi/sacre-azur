@@ -1,7 +1,7 @@
 import React from "react";
 
-import PerfumeList from "@/components/perfume-list";
 import Flex from "@/components/flex";
+import PerfumeList from "@/components/perfume-list";
 
 const DashboardContent = () => {
   return (

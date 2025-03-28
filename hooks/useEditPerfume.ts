@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
-
 import { useRouter, useSearchParams } from "next/navigation";
-
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
 import { useFetchBrands } from "@/hooks/useFetchBrands";
-
 import { supabase } from "@/lib/supabaseClient";
 
 type Note = {

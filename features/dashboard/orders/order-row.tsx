@@ -1,12 +1,10 @@
 "use client";
 
 import React from "react";
-
 import { CheckCircle2, ChevronDown, ChevronUp, XCircle } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { TableCell, TableRow } from "@/components/ui/table";
-
 import {
   calculateOrderTotal,
   formatDate,

@@ -3,18 +3,15 @@
 import { useState } from "react";
 
 import PerfumeListContent from "@/features/dashboard/list/perfume-list";
-
+import SalesOverview from "@/components/analytics";
 import ContentBlock from "@/components/content-block";
+import Flex from "@/components/flex";
 import PerfumeSearchList from "@/components/perfume-search-filter";
-
 import { Perfume } from "@/types/perfume.type";
-
 import { useFetchPerfumes } from "@/hooks/useFetchPerfumes";
 import { usePerfumeBrandFilter } from "@/hooks/usePerfumeBrandFilter";
 import { usePerfumeNameFilter } from "@/hooks/usePerfumeNameFilter";
 import { useStockFilter } from "@/hooks/useStockFilter";
-import Flex from "@/components/flex";
-import SalesOverview from "@/components/analytics";
 
 export default function PerfumeList() {
   const { data: perfumes, isLoading, error } = useFetchPerfumes();
@@ -32,9 +29,9 @@ export default function PerfumeList() {
 
   return (
     <ContentBlock title="Perfumes">
-        <Flex className={'w-full'}>
-            <SalesOverview />
-        </Flex>
+      <Flex className={"w-full"}>
+        <SalesOverview />
+      </Flex>
       <PerfumeSearchList
         nameFilter={nameFilter}
         setNameFilter={setNameFilter}

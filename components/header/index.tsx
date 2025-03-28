@@ -1,12 +1,10 @@
 "use client";
 
 import React from "react";
-
 import Link from "next/link";
-
-import { useCartStore } from "@/stores/cartStore";
 import { ShoppingCart } from "lucide-react";
 
+import { useCartStore } from "@/stores/cartStore";
 import LoginButton from "@/components/login-button";
 import { ThemeToggle } from "@/components/theme-toggle";
 

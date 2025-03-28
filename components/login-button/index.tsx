@@ -1,14 +1,17 @@
 // components/LoginButton.tsx
 "use client";
 
-
 import React from "react";
-import {  supabase} from "@/lib/supabaseClient";
 
+import { supabase } from "@/lib/supabaseClient";
+
+// components/LoginButton.tsx
+
+// components/LoginButton.tsx
+
+// components/LoginButton.tsx
 
 const LoginButton = () => {
-
-
   const login = async () => {
     const { error } = await supabase.auth.signInWithPassword({
       email: "sudacadev@gmail.com",
@@ -24,12 +27,12 @@ const LoginButton = () => {
   };
 
   return (
-      <button
-          className="rounded-md bg-primary px-4 py-2 text-primary-foreground"
-          onClick={login}
-      >
-        Login
-      </button>
+    <button
+      className="rounded-md bg-primary px-4 py-2 text-primary-foreground"
+      onClick={login}
+    >
+      Login
+    </button>
   );
 };
 

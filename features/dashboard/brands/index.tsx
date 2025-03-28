@@ -3,7 +3,6 @@
 import React from "react";
 
 import CreateBrandForm from "@/features/dashboard/create/create-brand-form";
-
 import Box from "@/components/box";
 import ContentBlock from "@/components/content-block";
 import Flex from "@/components/flex";
@@ -18,10 +17,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
+import { Brand } from "@/types/perfume.type";
 import { useFetchBrands } from "@/hooks/useFetchBrands";
 import { useToggleBrandStatus } from "@/hooks/useToggleBrandStatus";
-import {Brand} from "@/types/perfume.type";
 
 const BrandPageContent = () => {
   const { data, isLoading } = useFetchBrands();

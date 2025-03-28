@@ -2,22 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-
-import { useCartStore } from "@/stores/cartStore";
 import { ArrowLeft, Copy } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
+import { useCartStore } from "@/stores/cartStore";
 import Flex from "@/components/flex";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-
 import { Perfume } from "@/types/perfume.type";
-
 import { usePerfume } from "@/hooks/usePerfume";
-
 import { cn } from "@/lib/utils";
-
 import { createSlug } from "@/utils/slugGenerator";
 
 type Props = {
@@ -100,7 +95,7 @@ export default function PerfumeDetails({ perfume }: Props) {
               )}
             </Flex>
 
-            <Flex className="flex-col  md:space-y-4 space-y-1 py-[2rem] border-t-2">
+            <Flex className="flex-col space-y-1 border-t-2 py-[2rem] md:space-y-4">
               <h2 className="m-0 text-xl font-semibold">Acordes principales</h2>
 
               {perfume?.perfume_note_relation?.length ? (
@@ -125,8 +120,12 @@ export default function PerfumeDetails({ perfume }: Props) {
                 </p>
               )}
             </Flex>
-            <Flex className={" flex-col md:flex-row gap-[1rem] md:gap-[3rem] py-[1rem] md:py-[3rem] border-t-2"}>
-              <Flex className="items-start gap-4 flex-col">
+            <Flex
+              className={
+                "flex-col gap-[1rem] border-t-2 py-[1rem] md:flex-row md:gap-[3rem] md:py-[3rem]"
+              }
+            >
+              <Flex className="flex-col items-start gap-4">
                 <label className="font-semibold">Size:</label>
                 <select
                   className="rounded-lg border p-2"
@@ -146,21 +145,21 @@ export default function PerfumeDetails({ perfume }: Props) {
                 </select>
               </Flex>
 
-              <Flex className="  items-start gap-4 flex-col justify-between">
+              <Flex className="flex-col items-start justify-between gap-4">
                 <label className="font-semibold"> Quantity:</label>
-                <Flex className={' gap-1 items-center h-[40px] '}>
+                <Flex className={"h-[40px] items-center gap-1"}>
                   <button
-                      type="button"
-                      className="rounded-lg border px-3 py-1"
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    type="button"
+                    className="rounded-lg border px-3 py-1"
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   >
                     -
                   </button>
                   <span className="px-4">{quantity}</span>
                   <button
-                      type="button"
-                      className="rounded-lg border px-3 py-1"
-                      onClick={() => setQuantity(quantity + 1)}
+                    type="button"
+                    className="rounded-lg border px-3 py-1"
+                    onClick={() => setQuantity(quantity + 1)}
                   >
                     +
                   </button>
@@ -174,13 +173,13 @@ export default function PerfumeDetails({ perfume }: Props) {
 
             <Flex className="items-center gap-[2rem]">
               <Button
-                  variant="outline"
-                  type={'button'}
-                  className="flex items-center gap-2"
-                  onClick={() => {
-                    const link = `${baseUrl}/perfume/${createSlug(perfume.name)}_${perfume.id}`;
-                    navigator.clipboard.writeText(link);
-                    toast.success("Link copied to clipboard!");
+                variant="outline"
+                type={"button"}
+                className="flex items-center gap-2"
+                onClick={() => {
+                  const link = `${baseUrl}/perfume/${createSlug(perfume.name)}_${perfume.id}`;
+                  navigator.clipboard.writeText(link);
+                  toast.success("Link copied to clipboard!");
                 }}
               >
                 <Copy className="h-4 w-4" />

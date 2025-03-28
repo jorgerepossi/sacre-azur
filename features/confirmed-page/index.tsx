@@ -1,13 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import { useSearchParams } from "next/navigation";
 
 import Flex from "@/components/flex";
 import SmallLoader from "@/components/loaders/small";
 import { Button } from "@/components/ui/button";
-
 import { formatNumberWithDots } from "@/lib/formatNumberWithDots";
 import { supabase } from "@/lib/supabaseClient";
 

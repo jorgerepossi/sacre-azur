@@ -4,7 +4,6 @@ import { ArrowUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
-
 import type { Order } from "@/utils/order-utils";
 
 interface OrdersTableHeaderProps {

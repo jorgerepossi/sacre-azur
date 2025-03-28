@@ -1,1 +1,1 @@
-export { default as SkeletonBox} from './skeleton-box'
+export { default as SkeletonBox } from "./skeleton-box";

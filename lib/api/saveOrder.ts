@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabaseClient";
 
 export const saveOrder = async (
   items: any[],
-  email: string = "no-reply@sacreazur.com",
+  email = "no-reply@sacreazur.com",
 ) => {
   const order_code = uuidv4();
 

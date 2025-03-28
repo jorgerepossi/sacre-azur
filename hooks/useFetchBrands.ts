@@ -1,17 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import {getBaseUrl} from "@/lib/config";
+
+import { getBaseUrl } from "@/lib/config";
 
 const fetchBrands = async () => {
   const baseUrl = getBaseUrl();
 
-
-
   if (!baseUrl) {
-    throw new Error('API base URL not configured');
+    throw new Error("API base URL not configured");
   }
 
   const response = await fetch(`${baseUrl}/api/brands`, {
-    next: { revalidate: 3600 }
+    next: { revalidate: 3600 },
   });
 
   if (!response.ok) {
@@ -26,6 +25,6 @@ export const useFetchBrands = () => {
     queryKey: ["brands"],
     queryFn: fetchBrands,
     retry: 2,
-    staleTime: 300000
+    staleTime: 300000,
   });
 };

@@ -1,8 +1,6 @@
 import React from "react";
-
 import Image from "next/image";
 import Link from "next/link";
-
 import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 
 import Flex from "@/components/flex";
@@ -13,9 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TableCell, TableRow } from "@/components/ui/table";
-
 import { Perfume } from "@/types/perfume.type";
-
 import { formatNumberWithDots } from "@/lib/formatNumberWithDots";
 
 interface PerfumeListItemProps {
