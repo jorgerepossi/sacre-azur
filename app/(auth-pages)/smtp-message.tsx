@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { ArrowUpRight, InfoIcon } from "lucide-react";
 
 export function SmtpMessage() {

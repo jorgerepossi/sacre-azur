@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import AsideDashboard from "@/features/dashboard/aside";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import Box from "@/components/box";
 import Section from "@/components/section";
 

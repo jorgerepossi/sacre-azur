@@ -1,10 +1,13 @@
 // app/perfumes/[slug]/page.tsx
 import { Suspense } from "react";
+
 import { notFound } from "next/navigation";
 
 import SmallLoader from "@/components/loaders/small";
 import PerfumeDetails from "@/components/perfume-detail";
+
 import { supabase } from "@/lib/supabaseClient";
+
 import { createSlug } from "@/utils/slugGenerator";
 
 export default async function Page({

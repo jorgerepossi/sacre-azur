@@ -3,6 +3,7 @@
 import AsideContent from "@/features/aside-content";
 import PerfumeGridClient from "@/features/perfum-grid-client";
 import { BrandFilterProvider } from "@/providers/BrandFilterProvider";
+
 import AsideWrapper from "@/components/aside";
 import Box from "@/components/box";
 import Flex from "@/components/flex";

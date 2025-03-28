@@ -1,10 +1,12 @@
 import React from "react";
+
 import Image from "next/image";
 import Link from "next/link";
 
 import Flex from "@/components/flex";
 import { SkeletonBox } from "@/components/skeletons";
 import { Button } from "@/components/ui/button";
+
 import { Perfume } from "@/types/perfume.type";
 
 interface ItemPerfumeProps {

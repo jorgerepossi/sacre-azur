@@ -1,12 +1,17 @@
 "use client";
 
 import { createContext, useContext, useMemo, useState } from "react";
+
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { BrandFilterContext } from "@/providers/BrandFilterProvider";
+
 import BrandItem from "@/components/aside/brand-item";
+
 import { Brand } from "@/types/perfume.type";
+
 import { useFetchBrands } from "@/hooks/useFetchBrands";
+
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {

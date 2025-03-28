@@ -3,13 +3,16 @@
 import { useContext } from "react";
 
 import { BrandFilterContext } from "@/providers/BrandFilterProvider";
+
 import Grid from "@/components/grid";
 import ItemPerfume from "@/components/item-perfum";
 import SmallLoader from "@/components/loaders/small";
 import { SkeletonBox } from "@/components/skeletons";
 import SkeletonPerfumeList from "@/components/skeletons/skeleton-perfume-list";
 import SkeletonPerfumeListItem from "@/components/skeletons/skeleton-perfume-list-item";
+
 import { Perfume } from "@/types/perfume.type";
+
 import { useFetchPerfumes } from "@/hooks/useFetchPerfumes";
 
 export function PerfumeGrid() {

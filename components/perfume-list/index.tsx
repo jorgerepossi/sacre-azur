@@ -3,11 +3,14 @@
 import { useState } from "react";
 
 import PerfumeListContent from "@/features/dashboard/list/perfume-list";
+
 import SalesOverview from "@/components/analytics";
 import ContentBlock from "@/components/content-block";
 import Flex from "@/components/flex";
 import PerfumeSearchList from "@/components/perfume-search-filter";
+
 import { Perfume } from "@/types/perfume.type";
+
 import { useFetchPerfumes } from "@/hooks/useFetchPerfumes";
 import { usePerfumeBrandFilter } from "@/hooks/usePerfumeBrandFilter";
 import { usePerfumeNameFilter } from "@/hooks/usePerfumeNameFilter";

@@ -2,17 +2,22 @@
 
 import Image from "next/image";
 import Link from "next/link";
+
+import { useCartStore } from "@/stores/cartStore";
 import { ArrowLeft, Copy } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
-import { useCartStore } from "@/stores/cartStore";
 import Flex from "@/components/flex";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+
 import { Perfume } from "@/types/perfume.type";
+
 import { usePerfume } from "@/hooks/usePerfume";
+
 import { cn } from "@/lib/utils";
+
 import { createSlug } from "@/utils/slugGenerator";
 
 type Props = {

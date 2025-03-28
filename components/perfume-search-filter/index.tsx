@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+
 import { Search } from "lucide-react";
 
 import BrandSelectOptions from "@/components/brand-select-options";
@@ -12,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import { useFetchBrands } from "@/hooks/useFetchBrands";
 
 import { Button } from "../ui/button";
