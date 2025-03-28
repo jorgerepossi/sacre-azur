@@ -1,7 +1,5 @@
-
-import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
-
+ import { NextResponse } from 'next/server';
+ import { supabase } from '@/lib/supabaseClient';
 
 
 export async function GET() {
@@ -9,9 +7,14 @@ export async function GET() {
         const { data, error } = await supabase
             .from('brand')
             .select('id, name, active, image')
-            .order('name');
+            .order('name', { ascending: true });
 
-        if (error) throw error;
+        if (error) {
+            return NextResponse.json(
+                { error: 'Error fetching brands' },
+                { status: 500 }
+            );
+        }
 
         return NextResponse.json(data, {
             headers: {
@@ -22,7 +25,7 @@ export async function GET() {
 
     } catch (error) {
         return NextResponse.json(
-            { error: 'Error fetching brands' },
+            { error: 'Internal server error' },
             { status: 500 }
         );
     }
