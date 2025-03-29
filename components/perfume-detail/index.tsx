@@ -43,7 +43,7 @@ export default function PerfumeDetails({ perfume }: Props) {
       id: String(perfume.id),
       name: perfume.name,
       price: rawUnitPrice,
-      size: String(selectedSize.value),
+      size: selectedSize.value,
       quantity: quantity,
     });
     toast.success("Added to cart");
