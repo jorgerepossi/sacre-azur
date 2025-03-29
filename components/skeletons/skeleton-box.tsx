@@ -1,9 +1,21 @@
 import React from "react";
 
-import { Skeleton } from "@/components/ui/skeleton";
 
-const SkeletonBox = ({ className }: { className: string }) => {
-  return <Skeleton className={`${className} rounded-[16px]`} />;
+import { ComponentPropsWithoutRef } from "react";
+
+type SkeletonBoxProps = ComponentPropsWithoutRef<"div"> & {
+
 };
+
+const SkeletonBox = ({ className, style, ...props }: SkeletonBoxProps) => {
+  return (
+    <div
+      {...props}
+      className={`animate-pulse bg-gray-200 rounded-md ${className || ""}`}
+      style={style}
+    />
+  );
+};
+
 
 export default SkeletonBox;

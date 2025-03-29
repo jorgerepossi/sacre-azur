@@ -13,6 +13,7 @@ import { Brand } from "@/types/perfume.type";
 import { useFetchBrands } from "@/hooks/useFetchBrands";
 
 import { cn } from "@/lib/utils";
+import SkeletonAsideList from "@/components/skeletons/skeleton-aside-list";
 
 interface SidebarProps {
   className?: string;
@@ -29,12 +30,13 @@ const AsideContent = ({ className }: SidebarProps) => {
     );
   }, [brands]);
 
-  if (isLoading) return <div className="p-2 text-sm">Loading brands...</div>;
+  if (isLoading) return <SkeletonAsideList />;
   if (error)
     return <div className="p-2 text-sm text-red-500">Error loading brands</div>;
 
   return (
     <div className={cn("space-y-4", className)}>
+      <p> Filtrar</p>
       <div className="space-y-2">
         {sortedBrands.map((brand: Brand) => (
           <BrandItem

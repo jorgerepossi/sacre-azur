@@ -1,20 +1,14 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { CartItem } from "@/types/cartItem";
 
-// Importa los middlewares
-import { Perfume } from "@/types/perfume.type";
 
-type CartItem = {
-  id: string;
-  name: string;
-  quantity: number;
-  price: number;
-  size: string;
-};
+type CartItemType = Pick< CartItem,  'id'|  'name' | 'size' | 'price' | 'quantity'> ;
+
 
 type CartStore = {
-  items: CartItem[];
-  addItem: (item: CartItem) => void;
+  items: CartItemType[];
+  addItem: (item: CartItemType) => void; // or using CartItem
   removeItem: (id: string) => void;
   clearCart: () => void;
 };
@@ -45,8 +39,8 @@ export const useCartStore = create<CartStore>()(
       clearCart: () => set({ items: [] }),
     }),
     {
-      name: "cart-storage", // Clave única para localStorage
-      storage: createJSONStorage(() => localStorage), // Usa localStorage
+      name: "cart-storage",
+      storage: createJSONStorage(() => localStorage),
     },
   ),
 );
