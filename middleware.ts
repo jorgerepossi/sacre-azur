@@ -9,8 +9,8 @@ export async function middleware(request: NextRequest) {
 
   const isDevelopment = process.env.NODE_ENV === 'development';
   const allowedOrigin = isDevelopment
-    ? String(process.env.NEXT_PUBLIC_API_BASE_LOCAL_URL)
-    : String(process.env.NEXT_PUBLIC_SITE_URL);
+    ? String(process.env.NEXT_PUBLIC_SITE_URL)
+    : String(process.env.NEXT_PUBLIC_API_BASE_LOCAL_URL);
 
 
   const corsHeaders = {
