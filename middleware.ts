@@ -5,9 +5,9 @@ export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
   const isApiRoute = url.pathname.startsWith('/api');
 
-  // 1. Configuración de orígenes permitidos con Type Safety
+
   const allowedOrigins = [
-    process.env.NEXT_PUBLIC_SITE_URL,
+    'https://sacre-azur.vercel.com',
     'http://localhost:3000',
     'https://localhost:3000'
   ].filter((origin): origin is string => Boolean(origin)); // Type Predicate
