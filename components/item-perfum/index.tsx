@@ -22,7 +22,7 @@ const createSlug = (name: string) => {
 
 const ItemPerfume = ({ item }: ItemPerfumeProps) => {
   return (
-    <Flex className="!hover:shadow-md w-full overflow-hidden rounded-lg border bg-background_white !shadow-sm transition-all duration-300 hover:-translate-y-1">
+    <Flex className="!hover:shadow-md w-full overflow-hidden rounded-lg border bg-background  !shadow-sm transition-all duration-300 hover:-translate-y-1">
       <Flex className="w-full p-0">
         <Flex className={"w-full flex-col p-[1rem]"}>
           <Flex className={"flex-1 items-center justify-center py-4 md:py-2"}>

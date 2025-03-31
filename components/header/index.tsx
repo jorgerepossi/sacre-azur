@@ -13,9 +13,12 @@ import { ThemeToggle } from "@/components/theme-toggle";
 const Header = () => {
   const items = useCartStore((state) => state.items);
   return (
-    <header className="sticky top-0 z-10 border-b bg-background_white">
+    <header className="sticky top-0 z-10 border-b bg-background">
       <div className="flex h-16 items-center justify-between px-4 py-4">
+        <Link href="/">
+
         <h1 className="text-2xl font-bold">Perfume Store</h1>
+        </Link>
         <div className="flex items-center gap-4">
           <ThemeToggle />
           <Link href="/cart" className="relative">

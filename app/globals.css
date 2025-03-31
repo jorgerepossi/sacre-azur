@@ -84,9 +84,7 @@
     @apply my-2 text-lg font-medium;
   }
 
-  p {
-    @apply my-2 text-sm leading-relaxed;
-  }
+
   code {
     @apply rounded-md border border-muted bg-muted p-[.5rem] text-neutral-500;
   }

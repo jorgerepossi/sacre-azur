@@ -5,7 +5,7 @@ import { PerfumeGrid } from "@/components/perfum-grid";
 
 export default function PerfumeGridClient() {
   return (
-    <Flex className={"relative"}>
+    <Flex className={"relative w-full"}>
       <PerfumeGrid />
     </Flex>
   );

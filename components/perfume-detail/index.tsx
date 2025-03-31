@@ -45,6 +45,7 @@ export default function PerfumeDetails({ perfume }: Props) {
       price: rawUnitPrice,
       size: selectedSize.value,
       quantity: quantity,
+      image: perfume.image,
     });
     toast.success("Added to cart");
   };
@@ -74,7 +75,7 @@ export default function PerfumeDetails({ perfume }: Props) {
 
           <div className="space-y-2">
             <Flex className="items-center justify-between">
-              <h1 className="text-3xl font-bold">
+              <h1 className="md:text-3xl text-xl font-bold">
                 {perfume.name} - {perfume.brand.name}
               </h1>
               <Image
@@ -87,7 +88,7 @@ export default function PerfumeDetails({ perfume }: Props) {
             </Flex>
 
             <Flex className="flex-col space-y-4">
-              <h2 className="m-0 text-xl font-semibold">Description</h2>
+              <h2 className="m-0 text-base md:text-xl font-semibold">Description</h2>
               {perfume.description.length ? (
                 <div
                   className="prose max-w-none text-muted-foreground"
@@ -100,8 +101,8 @@ export default function PerfumeDetails({ perfume }: Props) {
               )}
             </Flex>
 
-            <Flex className="flex-col space-y-1 border-t-2 py-[2rem] md:space-y-4">
-              <h2 className="m-0 text-xl font-semibold">Acordes principales</h2>
+            <Flex className="flex-col space-y-4 border-t-2 py-[2rem] md:space-y-4">
+              <h2 className="m-0 text-base md:text-xl  font-semibold">Acordes principales</h2>
 
               {perfume?.perfume_note_relation?.length ? (
                 <Flex className={"flex-wrap gap-[16px]"}>

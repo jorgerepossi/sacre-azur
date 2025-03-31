@@ -3,12 +3,12 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { CartItem } from "@/types/cartItem";
 
 
-type CartItemType = Pick< CartItem,  'id'|  'name' | 'size' | 'price' | 'quantity'> ;
+type CartItemType = Pick< CartItem,  'id'|  'name' | 'size' | 'price' | 'quantity' | 'image'> ;
 
 
 type CartStore = {
   items: CartItemType[];
-  addItem: (item: CartItemType) => void; // or using CartItem
+  addItem: (item: CartItemType) => void;
   removeItem: (id: string) => void;
   clearCart: () => void;
 };

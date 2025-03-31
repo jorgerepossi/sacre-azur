@@ -12,10 +12,10 @@ export default function Home() {
   return (
     <BrandFilterProvider>
       <main className="container flex min-h-screen flex-1 flex-col gap-6 p-5">
-        <Box className="container mx-auto">
+        <Box className="  ">
           <Flex className={"flex-col"}>
-            <p className={"text-title-large"}>Find Your Next Adventure</p>
-            <p className={"text-headline-subtitle text-muted-foreground"}>
+            <p className={"text-title-large m-0"}>Encuentra tu siguiente fragancia</p>
+            <p className={"text-headline-subtitle text-muted-foreground "}>
               Discover trips planned by fellow travelers...
             </p>
           </Flex>

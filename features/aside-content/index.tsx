@@ -14,6 +14,8 @@ import { useFetchBrands } from "@/hooks/useFetchBrands";
 
 import { cn } from "@/lib/utils";
 import SkeletonAsideList from "@/components/skeletons/skeleton-aside-list";
+import Flex from "@/components/flex";
+import Box from "@/components/box";
 
 interface SidebarProps {
   className?: string;
@@ -35,8 +37,10 @@ const AsideContent = ({ className }: SidebarProps) => {
     return <div className="p-2 text-sm text-red-500">Error loading brands</div>;
 
   return (
-    <div className={cn("space-y-4", className)}>
-      <p> Filtrar</p>
+    <Box className={cn("space-y-4", className)}>
+      <Flex className={'py-4 border-b-2'}>
+        <p> Filtrar</p>
+      </Flex>
       <div className="space-y-2">
         {sortedBrands.map((brand: Brand) => (
           <BrandItem
@@ -47,7 +51,7 @@ const AsideContent = ({ className }: SidebarProps) => {
           />
         ))}
       </div>
-    </div>
+    </Box>
   );
 };
 
