@@ -7,11 +7,14 @@ import Link from "next/link";
 import { useCartStore } from "@/stores/cartStore";
 import { ShoppingCart } from "lucide-react";
 
-import LoginButton from "@/components/login-button";
+//import LoginButton from "@/components/login-button";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const Header = () => {
   const items = useCartStore((state) => state.items);
+  {/*
+    <LoginButton />
+  */}
   return (
     <header className="sticky top-0 z-10 border-b bg-background">
       <div className="flex h-16 items-center justify-between px-4 py-4">
@@ -29,7 +32,7 @@ const Header = () => {
               </span>
             )}
           </Link>
-          <LoginButton />
+
         </div>
       </div>
     </header>
