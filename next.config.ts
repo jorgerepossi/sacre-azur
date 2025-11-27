@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "wscjryexgtlhtiqwfeck.supabase.co",
+        hostname: "eidnomajsrpyibegxvpw.supabase.co",
         pathname: "/storage/v1/object/public/**",
       },
     ],
