@@ -1,12 +1,34 @@
 import { NextResponse } from "next/server";
 
 import { supabase } from "@/lib/supabaseClient";
+import { getTenantIdFromSlug } from "@/utils/tenantUtils";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    // Get tenant slug from headers (set by middleware)
+    const tenantSlug = request.headers.get('x-tenant-slug');
+
+    if (!tenantSlug) {
+      return NextResponse.json(
+        { error: 'Tenant not specified' },
+        { status: 400 }
+      );
+    }
+
+    // Get tenant ID
+    const tenantId = await getTenantIdFromSlug(tenantSlug);
+
+    if (!tenantId) {
+      return NextResponse.json(
+        { error: 'Tenant not found' },
+        { status: 404 }
+      );
+    }
+
     const { data, error } = await supabase
       .from("brand")
       .select("id, name, active, image")
+      .eq("tenant_id", tenantId)
       .order("name", { ascending: true });
 
     if (error) {

@@ -5,7 +5,10 @@ import Footer from "@/components/footer";
 import Header from "@/components/header";
 
 import "./globals.css";
+
 import { Providers } from "./providers";
+import { getTenantSlug } from "@/hooks/useTenantSlug";
+import { TenantProvider } from "@/providers/TenantProvider";
 
 const nunitoSans = NunitoSansFont({
   display: "swap",
@@ -22,26 +25,31 @@ export const metadata = {
   description: "Find your signature scent",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const tenantSlug = await getTenantSlug();
+
   return (
     <html lang="en" className={nunitoSans.className} suppressHydrationWarning>
       <body className="h-full bg-background text-foreground">
-        <Providers>
-          <div className="grid h-full">
-            <div className="grid h-full grid-rows-[auto_1fr_auto]">
-              <Header />
-              <main className="flex h-full flex-col gap-20 overflow-auto bg-background">
-                {children}
-              </main>
-              <Footer />
+        <TenantProvider tenantSlug={tenantSlug}>
+          <Providers>
+            <div className="grid h-full">
+              <div className="grid h-full grid-rows-[auto_1fr_auto]">
+                <Header />
+                <main className="flex h-full flex-col gap-20 overflow-auto bg-background">
+                  {children}
+                </main>
+                <Footer />
+              </div>
             </div>
-          </div>
-        </Providers>
+          </Providers>
+        </TenantProvider>
       </body>
     </html>
   );
 }
+

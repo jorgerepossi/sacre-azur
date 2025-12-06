@@ -21,4 +21,5 @@ export type Order = {
   is_sent: boolean;
   order_email: string;
   order_products: Product[];
+  tenant_id: string;
 };

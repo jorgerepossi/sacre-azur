@@ -10,10 +10,12 @@ import { Button } from "@/components/ui/button";
 
 import { formatNumberWithDots } from "@/lib/formatNumberWithDots";
 import { supabase } from "@/lib/supabaseClient";
+import { useTenant } from "@/providers/TenantProvider";
 
 export default function OrderConfirmedPage() {
   const params = useSearchParams();
   const orderCode = params.get("code");
+  const { tenant } = useTenant();
 
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState<any>(null);
@@ -47,14 +49,13 @@ export default function OrderConfirmedPage() {
   }, [orderCode]);
 
   const handleSend = async () => {
-    if (!order) return;
+    if (!order || !tenant) return;
 
     const msg = encodeURIComponent(
       `✅  ¡Nuevo pedido recibido!\n\n🔐 Código de pedido: ${order.order_code}\n\n🔗Detalles:\n${window.location.origin}/order-confirmed?code=${order.order_code}`,
     );
 
-    const phone = process.env.NEXT_PUBLIC_SITE_PHONE;
-    const waUrl = `https://wa.me/${phone}?text=${msg}`;
+    const waUrl = `https://wa.me/${tenant.whatsapp_number}?text=${msg}`;
 
     window.open(waUrl, "_blank");
 

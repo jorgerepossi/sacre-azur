@@ -3,6 +3,7 @@ export interface Brand {
   name: string;
   active: boolean;
   image?: string;
+  tenant_id: string;
 }
 
 export interface PerfumeNote {
@@ -27,6 +28,7 @@ export interface Perfume {
   in_stock: boolean;
   profit_margin: number;
   perfume_note_relation?: PerfumeNoteRelation[];
+  tenant_id: string;
 }
 
 export interface PerfumeWithDetails extends Perfume {

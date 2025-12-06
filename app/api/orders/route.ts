@@ -3,27 +3,57 @@ import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
 import { supabase } from "@/lib/supabaseClient";
+import { getTenantIdFromSlug } from "@/utils/tenantUtils";
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { email, products } = body;
+  try {
+    const body = await req.json();
+    const { email, products } = body;
 
-  const order_code = uuidv4();
+    // Get tenant slug from headers (set by middleware)
+    const tenantSlug = req.headers.get('x-tenant-slug');
 
-  const { data, error } = await supabase.from("orders").insert([
-    {
-      order_code,
-      order_email: email,
-      order_products: products,
-    },
-  ]);
+    if (!tenantSlug) {
+      return NextResponse.json(
+        { error: 'Tenant not specified' },
+        { status: 400 }
+      );
+    }
 
-  if (error) {
+    // Get tenant ID
+    const tenantId = await getTenantIdFromSlug(tenantSlug);
+
+    if (!tenantId) {
+      return NextResponse.json(
+        { error: 'Tenant not found' },
+        { status: 404 }
+      );
+    }
+
+    const order_code = uuidv4();
+
+    const { data, error } = await supabase.from("orders").insert([
+      {
+        order_code,
+        order_email: email,
+        order_products: products,
+        tenant_id: tenantId,
+      },
+    ]);
+
+    if (error) {
+      return NextResponse.json(
+        { error: "Failed to save order" },
+        { status: 500 },
+      );
+    }
+
+    return NextResponse.json({ order_code });
+  } catch (error) {
+    console.error("Error creating order:", error);
     return NextResponse.json(
-      { error: "Failed to save order" },
+      { error: "Error interno del servidor" },
       { status: 500 },
     );
   }
-
-  return NextResponse.json({ order_code });
 }
