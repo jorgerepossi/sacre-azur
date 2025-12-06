@@ -2,9 +2,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabaseClient";
 import { uploadBrandImage } from "@/lib/uploadImage";
+import { useTenant } from "@/providers/TenantProvider";
 
 export const useCreateBrand = () => {
   const queryClient = useQueryClient();
+  const { tenant } = useTenant();
 
   return useMutation({
     mutationFn: async ({
@@ -14,6 +16,10 @@ export const useCreateBrand = () => {
       name: string;
       imageFile: File;
     }) => {
+      if (!tenant?.id) {
+        throw new Error("No hay tenant seleccionado");
+      }
+
       try {
         const imageUrl = await uploadBrandImage(imageFile);
 
@@ -22,6 +28,7 @@ export const useCreateBrand = () => {
             name,
             image: imageUrl,
             active: true,
+            tenant_id: tenant.id,  // <-- AGREGADO
           },
         ]);
 

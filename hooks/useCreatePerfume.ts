@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
 import { CreatePerfumeInputType } from "@/types/create-perfume-input.type";
-
 import { supabase } from "@/lib/supabaseClient";
+import { useTenant } from "@/providers/TenantProvider";
 
 export const useCreatePerfume = () => {
   const queryClient = useQueryClient();
+  const { tenant } = useTenant();
 
   return useMutation({
     mutationFn: async ({
@@ -16,8 +16,12 @@ export const useCreatePerfume = () => {
       external_link,
       imageFile,
       brand_id,
-      note_ids, // Nuevo parámetro
+      note_ids,
     }: CreatePerfumeInputType) => {
+      if (!tenant?.id) {
+        throw new Error("No hay tenant seleccionado");
+      }
+
       const { data: imageData, error: imageError } = await supabase.storage
         .from("perfume-images")
         .upload(`perfumes/${Date.now()}-${imageFile.name}`, imageFile, {
@@ -31,6 +35,7 @@ export const useCreatePerfume = () => {
       const { data } = supabase.storage
         .from("perfume-images")
         .getPublicUrl(imageData.path);
+
       const imageUrl = data.publicUrl;
 
       const { data: perfumeData, error } = await supabase
@@ -44,6 +49,7 @@ export const useCreatePerfume = () => {
             external_link,
             image: imageUrl,
             brand_id,
+            tenant_id: tenant.id,  // <-- AGREGADO
           },
         ])
         .select("id");
