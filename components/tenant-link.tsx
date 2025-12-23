@@ -2,12 +2,11 @@
 
 import NextLink, { LinkProps } from "next/link";
 import { useParams } from "next/navigation";
-import { ReactNode } from "react";
+import { ReactNode, AnchorHTMLAttributes } from "react";
 
-interface TenantLinkProps extends Omit<LinkProps, 'href'> {
+interface TenantLinkProps extends Omit<LinkProps, 'href'>, Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> {
   href: string;
   children: ReactNode;
-  className?: string;
 }
 
 export function Link({ href, children, ...props }: TenantLinkProps) {
