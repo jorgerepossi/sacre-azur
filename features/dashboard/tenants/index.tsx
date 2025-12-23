@@ -5,7 +5,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import { Tenant } from "@/types/tenant";
 import { Button } from "@/components/ui/button";
-import { Plus, ExternalLink, Copy, Check } from "lucide-react";
+import { Plus, ExternalLink, Copy, Check, Edit } from "lucide-react";
 import Flex from "@/components/flex";
 
 export default function TenantsListContent() {
@@ -119,6 +119,12 @@ export default function TenantsListContent() {
                 >
                   {tenant.is_active ? "Desactivar" : "Activar"}
                 </Button>
+                <Link href={`/dashboard/tenants/edit/${tenant.id}`}>
+  <Button variant="outline" size="sm">
+    <Edit className="w-4 h-4 mr-2" />
+    Editar
+  </Button>
+</Link>
               </div>
             </div>
           ))

@@ -4,14 +4,16 @@ import { supabase } from "@/lib/supabaseClient";
 
 export const saveOrder = async (
   items: any[],
-  email = "no-reply@sacreazur.com",
+  customerName?: string,
+  customerPhone?: string,
 ) => {
   const order_code = uuidv4();
 
   const { error } = await supabase.from("orders").insert([
     {
       order_code,
-      order_email: email,
+      customer_name: customerName || null,
+      customer_phone: customerPhone || null,
       order_products: items,
     },
   ]);

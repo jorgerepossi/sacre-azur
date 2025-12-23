@@ -1,7 +1,7 @@
 import React from "react";
 
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/components/link";
 
 import Flex from "@/components/flex";
 import { SkeletonBox } from "@/components/skeletons";

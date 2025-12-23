@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import Link from "next/link";
+import { Link } from "@/components/link";
 
 import { useCartStore } from "@/stores/cartStore";
 import { ShoppingCart } from "lucide-react";
