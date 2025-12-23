@@ -9,7 +9,8 @@ type CartItemType = Pick< CartItem,  'id'|  'name' | 'size' | 'price' | 'quantit
 type CartStore = {
   items: CartItemType[];
   addItem: (item: CartItemType) => void;
-  removeItem: (id: string) => void;
+  removeItem: (id: string, size: number) => void;
+  updateQuantity: (id: string, size: number, quantity: number) => void;
   clearCart: () => void;
 };
 
@@ -33,8 +34,15 @@ export const useCartStore = create<CartStore>()(
           set({ items: [...get().items, item] });
         }
       },
-      removeItem: (id) => {
-        set({ items: get().items.filter((i) => i.id !== id) });
+      removeItem: (id, size) => {
+        set({ items: get().items.filter((i) => !(i.id === id && i.size === size)) });
+      },
+      updateQuantity: (id, size, quantity) => {
+        set({
+          items: get().items.map((i) =>
+            i.id === id && i.size === size ? { ...i, quantity } : i,
+          ),
+        });
       },
       clearCart: () => set({ items: [] }),
     }),
