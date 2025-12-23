@@ -1,11 +1,12 @@
 import EditTenantContent from "@/features/dashboard/tenants/edit/[id]";
 
 interface EditTenantPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export default function EditTenantPage({ params }: EditTenantPageProps) {
-  return <EditTenantContent tenantId={params.id} />;
+export default async function EditTenantPage({ params }: EditTenantPageProps) {
+  const { id } = await params;
+  return <EditTenantContent tenantId={id} />;
 }

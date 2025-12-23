@@ -1,22 +1,18 @@
-// app/perfumes/[slug]/page.tsx
 import { Suspense } from "react";
-
 import { notFound } from "next/navigation";
 
 import SmallLoader from "@/components/loaders/small";
 import PerfumeDetails from "@/components/perfume-detail";
 
 import { supabase } from "@/lib/supabaseClient";
-
 import { createSlug } from "@/utils/slugGenerator";
 
 export default async function Page({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ tenant: string; slug: string }>;
 }) {
-  const resolvedParams = await params;
-  const { slug } = resolvedParams;
+  const { tenant, slug } = await params;
 
   const slugParts = slug.split("_");
   const id = slugParts[slugParts.length - 1];
