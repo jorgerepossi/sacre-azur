@@ -30,6 +30,8 @@ const BrandPageContent = () => {
 
   if (isLoading || !data) return <SmallLoader />;
 
+  console.log(data)
+
   return (
     <Flex className={"w-full gap-[2rem]"}>
       <ContentBlock title={" List brands"}>

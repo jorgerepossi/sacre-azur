@@ -1,5 +1,6 @@
-import DashboardContent from "@/features/dashboard";
+import AdminDashboardContent from "@/app/features/dashboard/admin";
 
-export default function Dashboard() {
-  return <DashboardContent />;
+
+export default function AdminDashboard() {
+  return <AdminDashboardContent />;
 }

@@ -38,7 +38,8 @@ export default function OrdersTableHeader({
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         </TableHead>
-        <TableHead>Email</TableHead>
+        <TableHead>Name</TableHead>
+        <TableHead>Phone</TableHead>
         <TableHead>Products</TableHead>
         <TableHead className="text-right">Total</TableHead>
         <TableHead className="flex items-center justify-end text-right">

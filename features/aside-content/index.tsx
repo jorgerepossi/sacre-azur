@@ -25,12 +25,14 @@ const AsideContent = ({ className }: SidebarProps) => {
   const { data: brands, isLoading, error } = useFetchBrands();
 
   const sortedBrands = useMemo(() => {
-    return (
-      brands
-        ?.slice()
-        .sort((a: Brand, b: Brand) => a.name.localeCompare(b.name)) || []
-    );
-  }, [brands]);
+  return (
+    brands
+      ?.filter((brand: Brand) => brand.active === true)
+      .sort((a: Brand, b: Brand) => a.name.localeCompare(b.name)) || []
+  );
+}, [brands]);
+
+console.log("sortedBrands", sortedBrands);
 
   if (isLoading) return <SkeletonAsideList />;
   if (error)

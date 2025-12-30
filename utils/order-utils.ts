@@ -12,8 +12,11 @@ export interface Order {
   order_code: string;
   created_at: string;
   order_email: string;
+  customer_name?:string;
+  customer_phone?: string;
   order_products: Product[];
   is_sent: boolean;
+  is_confirmed: boolean;
 }
 
 export interface SortConfig {
@@ -77,7 +80,7 @@ export const filterOrders = (orders: Order[], searchTerm: string) => {
   return orders.filter(
     (order) =>
       order.order_code.toLowerCase().includes(searchLower) ||
-      order.order_email.toLowerCase().includes(searchLower) ||
+      order.order_email?.toLowerCase().includes(searchLower) ||
       order.order_products.some((product) =>
         product.name.toLowerCase().includes(searchLower),
       ),
