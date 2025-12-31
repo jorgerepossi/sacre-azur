@@ -75,9 +75,13 @@ const CartPageContent = () => {
           `💰 Total: $${formatNumberWithDots(Number(total))}\n\n` +
           `🔗 Ver y confirmar: ${window.location.origin}/${tenant.slug}/order-confirmed?code=${order_code}&view=admin`
         );
+console.log('Tenant WhatsApp:', tenant.whatsapp_number);
+console.log('Mensaje:', msg);
 
-        // Abrir WhatsApp
-        window.open(`https://wa.me/${tenant.whatsapp_number}?text=${msg}`, '_blank');
+const cleanNumber = tenant.whatsapp_number.replace(/[^0-9]/g, '');
+// Abrir WhatsApp
+window.open(`https://wa.me/${cleanNumber}?text=${msg}`, '_blank');
+
       }
 
       clearCart();
