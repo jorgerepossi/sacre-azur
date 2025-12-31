@@ -60,7 +60,10 @@ const CartPageContent = () => {
 
       const order_code = await saveOrder(order, customerName, customerPhone);
 
-      // Enviar WhatsApp automáticamente al dueño
+      // Limpiar carrito
+      clearCart();
+
+      // Construir mensaje de WhatsApp
       if (tenant?.whatsapp_number) {
         const orderDetails = items
           .map(item => `• ${item.name} - ${item.size}ml x${item.quantity} = $${formatNumberWithDots(Number(getItemTotal(item)))}`)
@@ -75,19 +78,18 @@ const CartPageContent = () => {
           `💰 Total: $${formatNumberWithDots(Number(total))}\n\n` +
           `🔗 Ver y confirmar: ${window.location.origin}/${tenant.slug}/order-confirmed?code=${order_code}&view=admin`
         );
-console.log('Tenant WhatsApp:', tenant.whatsapp_number);
-console.log('Mensaje:', msg);
 
-const cleanNumber = tenant.whatsapp_number.replace(/[^0-9]/g, '');
-// Abrir WhatsApp
-window.open(`https://wa.me/${cleanNumber}?text=${msg}`, '_blank');
-
+        // Limpiar número (quitar +, espacios, guiones)
+        const cleanNumber = tenant.whatsapp_number.replace(/[^0-9]/g, '');
+        
+        // Guardar URL de WhatsApp en localStorage
+        const whatsappUrl = `https://wa.me/${cleanNumber}?text=${msg}`;
+        localStorage.setItem('whatsapp_pending', whatsappUrl);
       }
 
-      clearCart();
-
-      // Llevar al cliente a su vista
+      // Redirigir a página de confirmación
       router.push(`/order-confirmed?code=${order_code}&view=client`);
+      
     } catch (err) {
       toast.error("Error al guardar el pedido");
       console.error("SaveOrder failed", err);
@@ -238,7 +240,7 @@ window.open(`https://wa.me/${cleanNumber}?text=${msg}`, '_blank');
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Enviando..." : "Finalizar y enviar pedido"}
+              {loading ? "Enviando..." : "Finalizar pedido"}
             </Button>
           </form>
         </div>
