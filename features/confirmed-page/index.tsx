@@ -13,12 +13,27 @@ export default function OrderConfirmedPage() {
   const params = useSearchParams();
   const orderCode = params.get("code");
   const view = params.get("view");
-  const { tenant } = useTenant();
+ 
 
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
+
+  // Auto-abrir WhatsApp cuando el cliente llega a esta página
+  useEffect(() => {
+    if (view === 'client') {
+      const pendingWhatsapp = localStorage.getItem('whatsapp_pending');
+      if (pendingWhatsapp) {
+        setWhatsappUrl(pendingWhatsapp);
+        // Abrir WhatsApp automáticamente
+        window.location.href = pendingWhatsapp;
+        // Limpiar localStorage
+        localStorage.removeItem('whatsapp_pending');
+      }
+    }
+  }, [view]);
 
   useEffect(() => {
     if (!orderCode) {
@@ -58,7 +73,7 @@ export default function OrderConfirmedPage() {
 
     // Enviar WhatsApp al cliente
     if (order.customer_phone) {
-      const customerPhone = order.customer_phone.replace(/[^0-9]/g, ''); // Limpiar formato
+      const customerPhone = order.customer_phone.replace(/[^0-9]/g, '');
       
       const msg = encodeURIComponent(
         `✅ ¡Hola ${order.customer_name}!\n\n` +
@@ -68,7 +83,13 @@ export default function OrderConfirmedPage() {
         `¡Gracias por tu compra! 🎉`
       );
 
-      window.open(`https://wa.me/${customerPhone}?text=${msg}`, '_blank');
+      window.location.href = `https://wa.me/${customerPhone}?text=${msg}`;
+    }
+  };
+
+  const handleResendWhatsapp = () => {
+    if (whatsappUrl) {
+      window.location.href = whatsappUrl;
     }
   };
 
@@ -93,11 +114,27 @@ export default function OrderConfirmedPage() {
     return (
       <div className="container py-10">
         <div className="max-w-md mx-auto text-center">
-          <div className="text-6xl mb-4">✅</div>
-          <h1 className="text-3xl font-bold mb-4">¡Pedido Enviado!</h1>
-          <p className="text-muted-foreground mb-2">
-            Tu pedido ha sido enviado exitosamente al vendedor.
-          </p>
+          <div className="text-6xl mb-4">📱</div>
+          <h1 className="text-3xl font-bold mb-4">¡Último paso!</h1>
+          
+          <div className="bg-green-50 border-2 border-green-500 p-6 rounded-lg mb-6">
+            <p className="text-lg font-semibold text-green-900 mb-4">
+              ⚠️ Importante: Debes enviar el mensaje de WhatsApp
+            </p>
+            <p className="text-sm text-green-800 mb-4">
+              Se abrió WhatsApp automáticamente con tu pedido. Si no se abrió o lo cerraste, hacé clic en el botón de abajo:
+            </p>
+            {whatsappUrl && (
+              <Button 
+                onClick={handleResendWhatsapp}
+                size="lg"
+                className="w-full bg-green-600 hover:bg-green-700 text-white text-lg py-6"
+              >
+                📱 Enviar pedido por WhatsApp
+              </Button>
+            )}
+          </div>
+
           <p className="text-muted-foreground mb-6">
             Código de pedido: <strong>{order.order_code}</strong>
           </p>
@@ -118,10 +155,13 @@ export default function OrderConfirmedPage() {
             </div>
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
-            <p className="text-sm text-blue-800">
-              📱 Recibirás una confirmación por WhatsApp en breve
-            </p>
+          <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg text-sm text-blue-800">
+            <p className="font-semibold mb-2">¿Qué pasa después?</p>
+            <ol className="text-left space-y-1">
+              <li>1. Enviás el mensaje de WhatsApp</li>
+              <li>2. El vendedor confirma tu pedido</li>
+              <li>3. Coordinan el pago y envío</li>
+            </ol>
           </div>
         </div>
       </div>
