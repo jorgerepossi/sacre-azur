@@ -14,46 +14,41 @@ interface ItemPerfumeProps {
 }
 
 const createSlug = (name: string) => {
-  return name?.toLowerCase()
+  if (!name) return ""; // <-- PROTECCIÓN
+  return name
+    .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 };
 
 const ItemPerfume = ({ item }: ItemPerfumeProps) => {
+  // Validación temprana
+  if (!item?.id || !item?.name) {
+    return null; // <-- NO RENDERIZAR SI FALTAN DATOS
+  }
+
   return (
-    <Flex className="!hover:shadow-md w-full overflow-hidden rounded-lg border bg-background  !shadow-sm transition-all duration-300 hover:-translate-y-1">
+    <Flex className="!hover:shadow-md w-full overflow-hidden rounded-lg border bg-background !shadow-sm transition-all duration-300 hover:-translate-y-1">
       <Flex className="w-full p-0">
         <Flex className={"w-full flex-col p-[1rem]"}>
           <Flex className={"flex-1 items-center justify-center py-4 md:py-2"}>
-            {!item.name ? (
-              <SkeletonBox className={"h-[200px] w-full"} />
-            ) : (
-              <Image
-                src={item.image || "/placeholder.svg"}
-                alt={item.name}
-                width={200}
-                height={200}
-                className="object-cover"
-              />
-            )}
+            <Image
+              src={item.image || "/placeholder.svg"}
+              alt={item.name}
+              width={200}
+              height={200}
+              className="object-cover"
+            />
           </Flex>
-          <Flex
-            className={
-              "flex-col justify-between pb-[1rem] pt-[2rem] md:flex-row"
-            }
-          >
+          <Flex className={"flex-col justify-between pb-[1rem] pt-[2rem] md:flex-row"}>
             <Flex className={"flex-1 flex-col gap-[.25rem]"}>
               <p className="m-0 font-bold">{item.name}</p>
               <p className="m-0 text-body-medium text-muted-foreground">
-                by {item?.brand?.name}
+                by {item?.brand?.name || "Unknown"}
               </p>
             </Flex>
           </Flex>
-          <Flex
-            className={
-              "justify-between gap-[1rem] border-t-2 border-muted pt-[16px]"
-            }
-          >
+          <Flex className={"justify-between gap-[1rem] border-t-2 border-muted pt-[16px]"}>
             <Button className={"w-[120px]"} variant={"ghost"}>
               Add wishlist
             </Button>
@@ -62,10 +57,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
               href={`/perfume/${createSlug(item.name)}_${item.id}`}
               className="w-[120px]"
             >
-              <Button
-                className={"!bg-button-black w-full"}
-                color={"bg-button-black"}
-              >
+              <Button className={"!bg-button-black w-full"} color={"bg-button-black"}>
                 View Detail
               </Button>
             </Link>

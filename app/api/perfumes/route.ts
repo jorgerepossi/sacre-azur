@@ -55,25 +55,32 @@ export async function GET(request: Request) {
  if (error) throw error;
 
     // Transformar respuesta
-    const transformedData = data?.map(item => {
-      const perfume = Array.isArray(item.perfume) ? item.perfume[0] : item.perfume;
-      const brand = Array.isArray(perfume?.brand) ? perfume.brand[0] : perfume?.brand;
-      
-      return {
-        id: perfume?.id,
-        name: perfume?.name,
-        description: perfume?.description,
-        image: perfume?.image,
-        external_link: perfume?.external_link,
-        created_at: perfume?.created_at,
-        brand: brand,
-        price: item.price,
-        profit_margin: item.profit_margin,
-        sizes_available: item.sizes_available,
-        stock: item.stock,
-        tenant_product_id: item.id,
-      };
-    });
+   const transformedData = data
+  ?.map(item => {
+    const perfume = Array.isArray(item.perfume) ? item.perfume[0] : item.perfume;
+    const brand = Array.isArray(perfume?.brand) ? perfume.brand[0] : perfume?.brand;
+    
+    // Si no hay perfume o datos críticos, devolver null
+    if (!perfume?.id || !perfume?.name) {
+      return null;
+    }
+    
+    return {
+      id: perfume.id,
+      name: perfume.name,
+      description: perfume.description,
+      image: perfume.image,
+      external_link: perfume.external_link,
+      created_at: perfume.created_at,
+      brand: brand,
+      price: item.price,
+      profit_margin: item.profit_margin,
+      sizes_available: item.sizes_available,
+      stock: item.stock,
+      tenant_product_id: item.id,
+    };
+  })
+  .filter((item): item is NonNullable<typeof item> => item !== null); // Filtrar nulls
 
     return NextResponse.json(transformedData, {
       headers: {

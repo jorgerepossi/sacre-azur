@@ -23,14 +23,17 @@ export function PerfumeGrid() {
   if (error) return <p>Error al cargar perfumes</p>;
   if (!perfumes?.length) return <p>No se encontraron perfumes</p>;
 
-  const sortedPerfumes = perfumes.sort((a: any, b: any) =>
-    a?.brand?.name.localeCompare(b?.brand?.name),
-  );
+  // Filtrar productos válidos y ordenar
+  const validPerfumes = perfumes
+    .filter((p: Perfume) => p?.id && p?.name) // <-- FILTRO CRÍTICO
+    .sort((a: any, b: any) => a?.brand?.name.localeCompare(b?.brand?.name));
+
+  if (!validPerfumes.length) return <p>No se encontraron perfumes</p>;
 
   return (
     <Grid className="grid w-full grid-cols-1 gap-8 md:grid-cols-3">
-      {sortedPerfumes.map((perfume: Perfume) => (
-       <ItemPerfume item={perfume} key={perfume?.id || perfume?.tenant_product_id} />
+      {validPerfumes.map((perfume: Perfume) => (
+        <ItemPerfume item={perfume} key={perfume.id} />
       ))}
     </Grid>
   );
