@@ -24,7 +24,6 @@ const fetchPerfumes = async (brands?: string[], tenantSlug?: string | null) => {
   }
   return response.json();
 };
-
 export const useFetchPerfumes = (brands?: string[]) => {
   const { tenant } = useTenant();
   

@@ -22,6 +22,7 @@ export const useCreatePerfume = () => {
         throw new Error("No hay tenant seleccionado");
       }
 
+      // 1. Subir imagen
       const { data: imageData, error: imageError } = await supabase.storage
         .from("perfume-images")
         .upload(`perfumes/${Date.now()}-${imageFile.name}`, imageFile, {
@@ -38,26 +39,44 @@ export const useCreatePerfume = () => {
 
       const imageUrl = data.publicUrl;
 
-      const { data: perfumeData, error } = await supabase
+      // 2. Crear perfume en catálogo general (SIN tenant_id, price, profit_margin)
+      const { data: perfumeData, error: perfumeError } = await supabase
         .from("perfume")
         .insert([
           {
             name,
             description,
-            price,
-            profit_margin,
             external_link,
             image: imageUrl,
             brand_id,
-            tenant_id: tenant.id,  // <-- AGREGADO
           },
         ])
         .select("id");
 
-      if (error) throw new Error("Error creando perfume: " + error.message);
+      if (perfumeError) 
+        throw new Error("Error creando perfume: " + perfumeError.message);
 
       const createdPerfumeId = perfumeData[0].id;
 
+      // 3. Crear relación en tenant_products (inventario del tenant)
+      const { error: tenantProductError } = await supabase
+        .from("tenant_products")
+        .insert([
+          {
+            tenant_id: tenant.id,
+            perfume_id: createdPerfumeId,
+            price: price.toString(),
+            profit_margin: profit_margin.toString(),
+            sizes_available: ["2.5", "5", "10"], // Default sizes
+            stock: 100, // Default stock
+            active: true,
+          },
+        ]);
+
+      if (tenantProductError)
+        throw new Error("Error agregando producto al inventario: " + tenantProductError.message);
+
+      // 4. Guardar notas olfativas
       if (note_ids && note_ids.length > 0) {
         const { error: relationError } = await supabase
           .from("perfume_note_relation")
@@ -76,6 +95,7 @@ export const useCreatePerfume = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["perfumes"] });
+      queryClient.invalidateQueries({ queryKey: ["tenant-products"] });
     },
   });
 };

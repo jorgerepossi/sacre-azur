@@ -29,6 +29,7 @@ export interface Perfume {
   profit_margin: number;
   perfume_note_relation?: PerfumeNoteRelation[];
   tenant_id: string;
+  tenant_product_id?: string;
 }
 
 export interface PerfumeWithDetails extends Perfume {

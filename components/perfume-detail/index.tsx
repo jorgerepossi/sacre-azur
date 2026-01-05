@@ -50,7 +50,7 @@ export default function PerfumeDetails({ perfume }: Props) {
     toast.success("Added to cart");
   };
 
-  console.log(perfume);
+  console.log('datos ', perfume);
 
   return (
     <div className="container py-10">

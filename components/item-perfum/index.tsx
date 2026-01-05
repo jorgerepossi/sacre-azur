@@ -14,8 +14,7 @@ interface ItemPerfumeProps {
 }
 
 const createSlug = (name: string) => {
-  return name
-    .toLowerCase()
+  return name?.toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 };
@@ -46,7 +45,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
             <Flex className={"flex-1 flex-col gap-[.25rem]"}>
               <p className="m-0 font-bold">{item.name}</p>
               <p className="m-0 text-body-medium text-muted-foreground">
-                by {item.brand.name}
+                by {item?.brand?.name}
               </p>
             </Flex>
           </Flex>

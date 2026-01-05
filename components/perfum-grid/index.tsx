@@ -24,13 +24,13 @@ export function PerfumeGrid() {
   if (!perfumes?.length) return <p>No se encontraron perfumes</p>;
 
   const sortedPerfumes = perfumes.sort((a: any, b: any) =>
-    a.brand.name.localeCompare(b.brand.name),
+    a?.brand?.name.localeCompare(b?.brand?.name),
   );
 
   return (
     <Grid className="grid w-full grid-cols-1 gap-8 md:grid-cols-3">
       {sortedPerfumes.map((perfume: Perfume) => (
-        <ItemPerfume item={perfume} key={perfume.id} />
+       <ItemPerfume item={perfume} key={perfume?.id || perfume?.tenant_product_id} />
       ))}
     </Grid>
   );
