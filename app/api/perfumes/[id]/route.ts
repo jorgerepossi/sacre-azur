@@ -2,8 +2,12 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
 import { getTenantIdFromSlug } from "@/utils/tenantUtils";
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(
+  request: Request, 
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
+    const { id } = await params; // <-- AWAIT params
     const tenantSlug = request.headers.get('x-tenant-slug');
     
     if (!tenantSlug) {
@@ -44,7 +48,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
           )
         )
       `)
-      .eq("perfume_id", params.id)
+      .eq("perfume_id", id)
       .eq("tenant_id", tenantId)
       .single();
 
