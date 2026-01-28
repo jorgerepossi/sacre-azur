@@ -13,7 +13,6 @@ export default function OrderConfirmedPage() {
   const params = useSearchParams();
   const orderCode = params.get("code");
   const view = params.get("view");
- 
 
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState<any>(null);
@@ -21,14 +20,14 @@ export default function OrderConfirmedPage() {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
 
-  // Auto-abrir WhatsApp cuando el cliente llega a esta página
+  // Auto-abrir WhatsApp en NUEVA PESTAÑA cuando el cliente llega
   useEffect(() => {
     if (view === 'client') {
       const pendingWhatsapp = localStorage.getItem('whatsapp_pending');
       if (pendingWhatsapp) {
         setWhatsappUrl(pendingWhatsapp);
-        // Abrir WhatsApp automáticamente
-        window.location.href = pendingWhatsapp;
+        // Abrir en NUEVA PESTAÑA
+        window.open(pendingWhatsapp, '_blank');
         // Limpiar localStorage
         localStorage.removeItem('whatsapp_pending');
       }
@@ -66,12 +65,15 @@ export default function OrderConfirmedPage() {
 
     await supabase
       .from("orders")
-      .update({ is_confirmed: true })
+      .update({ 
+        is_confirmed: true,
+        status: 'CONFIRMADO' // <-- ACTUALIZAR ESTADO TAMBIÉN
+      })
       .eq("order_code", order.order_code);
 
     setIsConfirmed(true);
 
-    // Enviar WhatsApp al cliente
+    // Enviar WhatsApp al cliente en NUEVA PESTAÑA
     if (order.customer_phone) {
       const customerPhone = order.customer_phone.replace(/[^0-9]/g, '');
       
@@ -83,13 +85,13 @@ export default function OrderConfirmedPage() {
         `¡Gracias por tu compra! 🎉`
       );
 
-      window.location.href = `https://wa.me/${customerPhone}?text=${msg}`;
+      window.open(`https://wa.me/${customerPhone}?text=${msg}`, '_blank');
     }
   };
 
   const handleResendWhatsapp = () => {
     if (whatsappUrl) {
-      window.location.href = whatsappUrl;
+      window.open(whatsappUrl, '_blank'); // <-- NUEVA PESTAÑA
     }
   };
 
@@ -114,15 +116,15 @@ export default function OrderConfirmedPage() {
     return (
       <div className="container py-10">
         <div className="max-w-md mx-auto text-center">
-          <div className="text-6xl mb-4">📱</div>
-          <h1 className="text-3xl font-bold mb-4">¡Último paso!</h1>
+          <div className="text-6xl mb-4">✅</div>
+          <h1 className="text-3xl font-bold mb-4">¡Pedido recibido!</h1>
           
           <div className="bg-green-50 border-2 border-green-500 p-6 rounded-lg mb-6">
             <p className="text-lg font-semibold text-green-900 mb-4">
-              ⚠️ Importante: Debes enviar el mensaje de WhatsApp
+              📱 Último paso importante
             </p>
             <p className="text-sm text-green-800 mb-4">
-              Se abrió WhatsApp automáticamente con tu pedido. Si no se abrió o lo cerraste, hacé clic en el botón de abajo:
+              Se abrió WhatsApp en una nueva pestaña con tu pedido. Si no se abrió, hacé clic aquí:
             </p>
             {whatsappUrl && (
               <Button 
@@ -130,7 +132,7 @@ export default function OrderConfirmedPage() {
                 size="lg"
                 className="w-full bg-green-600 hover:bg-green-700 text-white text-lg py-6"
               >
-                📱 Enviar pedido por WhatsApp
+                📱 Abrir WhatsApp y enviar pedido
               </Button>
             )}
           </div>

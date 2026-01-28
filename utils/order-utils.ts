@@ -7,18 +7,21 @@ export interface Product {
   quantity: number;
 }
 
+export type Status = 'PENDIENTE' | 'CONFIRMADO' | 'ENVIADO' | 'COMPLETADO' | 'CANCELADO';
+
 export interface Order {
   id: string;
   order_code: string;
   created_at: string;
   order_email: string;
-  customer_name?:string;
+  customer_name?: string;
   customer_phone?: string;
   order_products: Product[];
   is_sent: boolean;
-  is_confirmed: boolean;
+  is_confirmed?: boolean;  
+  status: Status  
+  updated_at?: string; 
 }
-
 export interface SortConfig {
   key: keyof Order | null;
   direction: "ascending" | "descending";

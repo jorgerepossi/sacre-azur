@@ -18,9 +18,9 @@ export default async function TenantDashboardLayout({
   // TODO: Aquí verificaremos autenticación después
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <div className="border-b bg-white">
+      <div className="border-b bg-background text-foreground">
         <div className="container py-4 flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold">Dashboard</h1>
@@ -37,7 +37,7 @@ export default async function TenantDashboardLayout({
       </div>
 
       {/* Navigation */}
-      <div className="border-b bg-white">
+      <div className="border-b bg-background text-foreground">
         <div className="container py-2">
           <nav className="flex gap-4">
             <Link href={`/${tenant}/dashboard`}>

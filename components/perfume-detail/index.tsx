@@ -128,7 +128,7 @@ export default function PerfumeDetails({ perfume }: Props) {
             </Flex>
             <Flex
               className={
-                "flex-col gap-[1rem] border-t-2 py-[1rem] md:flex-row md:gap-[3rem] md:py-[3rem]"
+                "flex-row   gap-[1rem] border-t-2 py-[1rem] xs:flex-col md:gap-[3rem] md:py-[3rem]"
               }
             >
               <Flex className="flex-col items-start gap-4">
@@ -153,7 +153,7 @@ export default function PerfumeDetails({ perfume }: Props) {
 
               <Flex className="flex-col items-start justify-between gap-4">
                 <label className="font-semibold"> Quantity:</label>
-                <Flex className={"h-[40px] items-center gap-1"}>
+                <Flex className={"h-[40px]  items-center gap-1"}>
                   <button
                     type="button"
                     className="rounded-lg border px-3 py-1"

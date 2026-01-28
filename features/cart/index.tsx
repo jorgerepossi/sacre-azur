@@ -42,7 +42,7 @@ const CartPageContent = () => {
 
   const handleFinish = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!customerName.trim() || !customerPhone.trim()) {
       toast.error("Por favor completá todos los datos");
       return;
@@ -58,7 +58,8 @@ const CartPageContent = () => {
         price: item.price,
       }));
 
-      const order_code = await saveOrder(order, customerName, customerPhone);
+      const order_code = await saveOrder(order, tenant!.id, customerName, customerPhone);
+
 
       // Limpiar carrito
       clearCart();
@@ -68,20 +69,19 @@ const CartPageContent = () => {
         const orderDetails = items
           .map(item => `• ${item.name} - ${item.size}ml x${item.quantity} = $${formatNumberWithDots(Number(getItemTotal(item)))}`)
           .join('\n');
-        
+
         const msg = encodeURIComponent(
-          `🛍️ ¡Nuevo pedido recibido!\n\n` +
-          `👤 Cliente: ${customerName}\n` +
-          `📱 Teléfono: ${customerPhone}\n\n` +
-          `🔐 Código: ${order_code}\n\n` +
+          `Hola! Quiero hacer un pedido:\n\n` +
+          `👤 ${customerName}\n` +
+          `📱 ${customerPhone}\n\n` +
           `📦 Productos:\n${orderDetails}\n\n` +
           `💰 Total: $${formatNumberWithDots(Number(total))}\n\n` +
-          `🔗 Ver y confirmar: ${window.location.origin}/${tenant.slug}/order-confirmed?code=${order_code}&view=admin`
+          `Código de pedido: ${order_code}`
         );
 
         // Limpiar número (quitar +, espacios, guiones)
         const cleanNumber = tenant.whatsapp_number.replace(/[^0-9]/g, '');
-        
+
         // Guardar URL de WhatsApp en localStorage
         const whatsappUrl = `https://wa.me/${cleanNumber}?text=${msg}`;
         localStorage.setItem('whatsapp_pending', whatsappUrl);
@@ -89,7 +89,7 @@ const CartPageContent = () => {
 
       // Redirigir a página de confirmación
       router.push(`/order-confirmed?code=${order_code}&view=client`);
-      
+
     } catch (err) {
       toast.error("Error al guardar el pedido");
       console.error("SaveOrder failed", err);
@@ -112,11 +112,11 @@ const CartPageContent = () => {
 
   return (
     <div className="container py-10">
-      <Flex className={'items-center py-[2rem] gap-3'}>  
+      <Flex className={'items-center py-[2rem] gap-3'}>
         <ShoppingCart />
         <h1 className="m-0 text-3xl font-bold">Carrito</h1>
       </Flex>
-      
+
       {items.length === 0 ? (
         <Flex className={'flex-col space-y-4'}>
           <p className="text-muted-foreground">No hay productos en el carrito</p>
@@ -186,8 +186,8 @@ const CartPageContent = () => {
         </div>
       ) : (
         <div className="max-w-md mx-auto">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={() => setShowCheckout(false)}
             className="mb-4"
           >
@@ -212,7 +212,7 @@ const CartPageContent = () => {
 
           <form onSubmit={handleFinish} className="space-y-4">
             <h2 className="text-xl font-bold">Datos de contacto</h2>
-            
+
             <div className="space-y-2">
               <Label htmlFor="name">Nombre completo *</Label>
               <Input

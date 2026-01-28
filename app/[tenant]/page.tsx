@@ -20,7 +20,7 @@ export default function Home() {
             </p>
           </Flex>
         </Box>
-        <Flex className="w-full flex-col gap-6 md:flex-row">
+        <Flex className="w-full flex-col gap-6 lg:flex-row">
           <Flex className={"flex-col"}>
             <AsideWrapper>
               <AsideContent />

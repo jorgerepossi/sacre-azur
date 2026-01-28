@@ -8,7 +8,7 @@ export default function AdminDashboardContent() {
       
       <div className="grid gap-4 md:grid-cols-2">
         <Link href="/admin/dashboard/tenants">
-          <div className="border rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer bg-white">
+          <div className="border rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer bg-background text-foreground">
             <h3 className="text-xl font-semibold mb-2">🏪 Gestión de Tiendas</h3>
             <p className="text-muted-foreground">Crear y administrar tenants</p>
           </div>

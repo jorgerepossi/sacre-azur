@@ -34,6 +34,18 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --primary_text_dark: #59636d;
+
+    /* Estados de pedidos */
+    --status-pending: 45 93% 47%;
+    --status-pending-bg: 48 100% 96%;
+    --status-confirmed: 217 91% 60%;
+    --status-confirmed-bg: 214 100% 97%;
+    --status-shipped: 262 83% 58%;
+    --status-shipped-bg: 270 100% 98%;
+    --status-completed: 142 76% 36%;
+    --status-completed-bg: 138 76% 97%;
+    --status-cancelled: 0 84% 60%;
+    --status-cancelled-bg: 0 100% 97%;
   }
 
   .dark {
@@ -64,6 +76,18 @@
     --chart-5: 340 75% 55%;
     --primary_text_dark: #f9f9f9;
     --secondary-text-dark: #64748b;
+
+    /* Estados de pedidos - Dark mode */
+    --status-pending: 48 96% 89%;
+    --status-pending-bg: 45 93% 15%;
+    --status-confirmed: 217 91% 80%;
+    --status-confirmed-bg: 217 91% 20%;
+    --status-shipped: 262 83% 78%;
+    --status-shipped-bg: 262 83% 18%;
+    --status-completed: 142 76% 56%;
+    --status-completed-bg: 142 76% 16%;
+    --status-cancelled: 0 84% 80%;
+    --status-cancelled-bg: 0 84% 20%;
   }
 }
 

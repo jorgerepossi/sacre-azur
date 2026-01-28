@@ -14,7 +14,7 @@ interface ItemPerfumeProps {
 }
 
 const createSlug = (name: string) => {
-  if (!name) return ""; // <-- PROTECCIÓN
+  if (!name) return "";  
   return name
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
@@ -22,9 +22,9 @@ const createSlug = (name: string) => {
 };
 
 const ItemPerfume = ({ item }: ItemPerfumeProps) => {
-  // Validación temprana
+ 
   if (!item?.id || !item?.name) {
-    return null; // <-- NO RENDERIZAR SI FALTAN DATOS
+    return null; 
   }
 
   return (
@@ -48,7 +48,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
               </p>
             </Flex>
           </Flex>
-          <Flex className={"justify-between gap-[1rem] border-t-2 border-muted pt-[16px]"}>
+          <Flex className={"lg:justify-center justify-between items-center flex-col xl:flex-row gap-[1rem] border-t-2 border-muted pt-[16px]"}>
             <Button className={"w-[120px]"} variant={"ghost"}>
               Add wishlist
             </Button>
