@@ -1,3 +1,4 @@
+import { OrderShipping } from "@/types/order-shipping.type";
 import { format } from "date-fns";
 
 export interface Product {
@@ -21,6 +22,7 @@ export interface Order {
   is_confirmed?: boolean;  
   status: Status  
   updated_at?: string; 
+  order_shipping?: OrderShipping;
 }
 export interface SortConfig {
   key: keyof Order | null;

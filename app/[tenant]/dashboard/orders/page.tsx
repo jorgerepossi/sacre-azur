@@ -1,6 +1,6 @@
 import React from "react";
 
-import OrdersContent from "@/features/dashboard/orders";
+import OrdersContent from "@/features/dashboard/tenants/orders";
 
 const Orders = () => {
   return (

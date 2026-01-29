@@ -28,6 +28,8 @@ import { supabase } from "@/lib/supabaseClient";
 import { toast } from "react-hot-toast";
 import { getNotificationMessage, openWhatsApp } from "@/lib/whatsapp-notifications";
 import { useTenant } from "@/providers/TenantProvider";
+import { useQueryClient } from "@tanstack/react-query";
+import ShippingDialog from "./components/shipping-dialog";
 
 interface OrderRowProps {
   order: Order;
@@ -71,6 +73,7 @@ export default function OrderRow({
   onToggleExpand,
 }: OrderRowProps) {
   const { tenant } = useTenant();
+  const queryClient = useQueryClient();
   const [status, setStatus] = useState(order.status || "PENDIENTE");
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -115,6 +118,11 @@ export default function OrderRow({
 
     openWhatsApp(order.customer_phone, message);
     toast.success("WhatsApp abierto - Enviá el mensaje al cliente");
+  };
+
+  const handleShippingSuccess = () => {
+    // Refrescar la lista de órdenes para mostrar los datos actualizados
+    queryClient.invalidateQueries({ queryKey: ["orders"] });
   };
 
   const StatusIcon = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.icon || Clock;
@@ -185,9 +193,11 @@ export default function OrderRow({
             <div className="space-y-4">
               <ProductsTable products={order.order_products} />
               
-              {/* Botón de notificación */}
-              {canNotify && (
-                <div className="flex justify-end pt-2 border-t">
+              {/* Botones de acciones */}
+              <div className="flex justify-end gap-2 pt-2 border-t">
+                <ShippingDialog order={order} onSuccess={handleShippingSuccess} />
+                
+                {canNotify && (
                   <Button
                     onClick={handleNotifyCustomer}
                     variant="outline"
@@ -195,10 +205,10 @@ export default function OrderRow({
                     className="gap-2"
                   >
                     <MessageCircle className="h-4 w-4" />
-                    Notificar cliente por WhatsApp
+                    Notificar cliente
                   </Button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </TableCell>
         </TableRow>
