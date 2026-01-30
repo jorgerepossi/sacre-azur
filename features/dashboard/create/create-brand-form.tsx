@@ -119,7 +119,7 @@ export default function CreateBrandForm() {
         </Flex>
 
         <Button type="submit" disabled={createBrand.isPending}>
-          {createBrand.isPending ? "Saving..." : "Create new Brand"}
+          {createBrand.isPending ? "Guardando..." : "Crear nueva marca"}
         </Button>
       </Flex>
     </form>

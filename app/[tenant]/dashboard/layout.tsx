@@ -40,7 +40,7 @@ export default async function TenantDashboardLayout({
       <div className="border-b bg-background text-foreground">
         <div className="container py-2">
           <nav className="flex gap-4">
-            <Link href={`/${tenant}/dashboard`}>
+            <Link href={`/${tenant}/dashboard/perfumes`}>
               <Button variant="ghost" size="sm">
                 Perfumes
               </Button>

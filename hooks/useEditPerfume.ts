@@ -28,7 +28,7 @@ export function useEditPerfume() {
   const { control, handleSubmit, setValue, register, reset } =
     useForm<FormValues>();
   const queryClient = useQueryClient();
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState(true);
   const [preview, setPreview] = useState<string | null>(null);
   const [originalPath, setOriginalPath] = useState<string | null>(null);
@@ -49,6 +49,9 @@ export function useEditPerfume() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const perfumeId = searchParams.get("id");
+
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [tempImageSrc, setTempImageSrc] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -138,10 +141,29 @@ export function useEditPerfume() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
-      setPreview(URL.createObjectURL(file));
-      setValue("image", e.target.files);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setTempImageSrc(reader.result as string);
+        setShowCropModal(true);
+      };
+      reader.readAsDataURL(file);
     }
   };
+
+  const handleCropComplete = (croppedBlob: Blob) => {
+    const croppedFile = new File([croppedBlob], "cropped-image.jpg", {
+      type: "image/jpeg",
+    });
+
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(croppedFile);
+
+    setValue("image", dataTransfer.files);
+    setPreview(URL.createObjectURL(croppedBlob));
+    setShowCropModal(false);
+    setTempImageSrc(null);
+  };
+
 
   const updateNotesRelations = async (noteIds: string[]) => {
     if (!perfumeId) return;
@@ -243,7 +265,7 @@ export function useEditPerfume() {
       await queryClient.invalidateQueries({ queryKey: ["perfumes"] });
       await queryClient.invalidateQueries({ queryKey: ["tenant-products"] });
 
-      //router.push(`/${tenant.slug}/dashboard`);
+      router.push(`/${tenant.slug}/dashboard/perfumes`);
     } catch (error) {
       console.error("Error updating perfume:", error);
       toast.error("Failed to update perfume");
@@ -267,6 +289,10 @@ export function useEditPerfume() {
     orderNotes,
     brandsError,
     fileInputRef,
+    showCropModal,
+    tempImageSrc,
+    handleCropComplete,
+    setShowCropModal,
     handleSubmit,
     selectedNotes,
     brandsLoading,

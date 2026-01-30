@@ -40,7 +40,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
     return null; 
   }
 
- 
+  // Calcular precio con size factors
   const calculatePrice = (sizeInMl: number) => {
     const basePrice = Number(item.price);
     const profitMargin = Number(item.profit_margin);
@@ -77,10 +77,11 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
   };
 
   return (
-    <Flex className="!hover:shadow-md w-full overflow-hidden rounded-lg  bg-background !shadow-sm transition-all duration-300 hover:-translate-y-1 max-h-[540px]">
+    <Flex className="!hover:shadow-md w-full overflow-hidden rounded-lg bg-background !shadow-sm transition-all duration-300 hover:-translate-y-1">
       <Flex className="w-full p-4">
-        <Flex className={"w-full flex-col max-h-[540px]"}>
-          <Flex className={"flex-1 items-center justify-center py-4 md:py-2"}>
+        <Flex className={"w-full flex-col"}>
+          {/* Imagen - HEIGHT FIJO */}
+          <Flex className={"items-center justify-center py-4 md:py-2 h-full"}>
             <Image
               src={item.image || "/placeholder.svg"}
               alt={item.name}
@@ -89,6 +90,8 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
               className="object-cover"
             />
           </Flex>
+
+          {/* Info */}
           <Flex className={"flex-col justify-between py-[1rem] md:flex-row"}>
             <Flex className={"flex-1 flex-col gap-[.25rem]"}>
               <p className="m-0 font-bold">{item.name}</p>
@@ -109,7 +112,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
                   setSelectedSize(size.value);
                 }}
                 className={`
-                  flex-1 px-3 py-2 text-sm font-medium rounded-md border-2 transition-all
+                  flex-1 px-2 py-1 text-xs font-medium rounded-full border-2 transition-all
                   ${selectedSize === size.value
                     ? "border-black bg-black text-white"
                     : "border-gray-300 bg-white text-gray-700 hover:border-black"
@@ -121,11 +124,12 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
             ))}
           </Flex>
 
-     
+      
           <Flex className="mb-3">
             <p className="text-md font-bold m-0">${formatPrice(currentPrice)}</p>
           </Flex>
 
+    
           <Flex className={"lg:justify-center justify-between items-center flex-col xl:flex-row gap-[1rem] border-t-2 border-muted pt-[16px]"}>
             <Button 
               className={"w-[120px]"} 

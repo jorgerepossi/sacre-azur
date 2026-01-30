@@ -54,7 +54,7 @@ export default function MultiNoteSelector({
               <SelectTrigger>
                 <SelectValue placeholder="Seleccionar ..." />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="max-h-[300px]">
                 <SelectGroup>
                   {notes.map((note) => (
                     <SelectItem

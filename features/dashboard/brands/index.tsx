@@ -34,14 +34,14 @@ const BrandPageContent = () => {
 
   return (
     <Flex className={"w-full gap-[2rem]"}>
-      <ContentBlock title={" List brands"}>
+      <ContentBlock title={"Listado de marcas"}>
         <Card className={"flex w-full"}>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className={"w-[90px]"}>Image</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead className="text-right">Active</TableHead>
+                <TableHead className={"w-[90px]"}>Imagen</TableHead>
+                <TableHead>Nombre</TableHead>
+                <TableHead className="text-right">Activo</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -69,7 +69,7 @@ const BrandPageContent = () => {
           </Table>
         </Card>
       </ContentBlock>
-      <ContentBlock title={"Create new brand"} className={"max-w-[500px]"}>
+      <ContentBlock title={"Crear nueva marca"} className={"max-w-[500px]"}>
         <Card className={"w-full p-[2rem]"}>
           <CreateBrandForm />
         </Card>

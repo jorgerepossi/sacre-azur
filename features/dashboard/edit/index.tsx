@@ -24,8 +24,10 @@ import { useEditPerfume } from "@/hooks/useEditPerfume";
 import PricePreview from "./components/price-preview";
 
 import { useTenantUrl } from "@/hooks/useTenantUrl";
-import { ImageUp } from "lucide-react";
+import {  ImageUp } from "lucide-react";
 import EditPerfumeSkeleton from "./components/edit-form-skeleton";
+import Box from "@/components/box";
+import ImageCropModal from "./components/image-crop-modal";
 
 export default function EditPerfumeContent() {
   const router = useRouter();
@@ -41,6 +43,10 @@ export default function EditPerfumeContent() {
     handleSubmit,
     handleIconClick,
     handleImageChange,
+    tempImageSrc,
+    showCropModal,
+    setShowCropModal,
+    handleCropComplete,
   } = useEditPerfume();
   const { tenant } = useTenantUrl()
 
@@ -75,8 +81,8 @@ export default function EditPerfumeContent() {
             )}
           />
         </Flex>
-        <Flex className="flex-col md:flex-row gap-[2rem]">
-          <Flex className="flex-col gap-[2rem]">
+        <Box className="grid grid-cols-1  md:grid-cols-2 gap-[2rem] ">
+          <Flex className="flex-col gap-[2rem] flex-2">
 
             <Controller
               name="name"
@@ -172,7 +178,7 @@ export default function EditPerfumeContent() {
             <PricePreview control={control} />
           </Flex>
           {/* end block one */}
-          <Flex className="flex-col gap-[2rem]">
+          <Flex className="flex-col gap-[2rem] flex-2">
             <Controller
               name="note_ids"
               control={control}
@@ -189,6 +195,15 @@ export default function EditPerfumeContent() {
                 </Flex>
               )}
             />
+
+{showCropModal && tempImageSrc && (
+  <ImageCropModal
+    open={showCropModal}
+    imageSrc={tempImageSrc}
+    onClose={() => setShowCropModal(false)}
+    onCropComplete={handleCropComplete}
+  />
+)}
 
             <Flex className="gap-[1rem] flex-col">
               <Button
@@ -221,7 +236,7 @@ export default function EditPerfumeContent() {
 
           </Flex>
           {/* end block two*/}
-        </Flex>
+        </Box>
         <Controller
           name="external_link"
           control={control}
