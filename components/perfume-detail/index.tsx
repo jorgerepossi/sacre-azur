@@ -59,7 +59,7 @@ export default function PerfumeDetails({ perfume }: Props) {
         className={`${cn(buttonVariants({ variant: "ghost" }))} mb-6 inline-flex items-center text-primary`}
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to all perfumes
+        Volver al listado
       </Link>
 
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -189,7 +189,7 @@ export default function PerfumeDetails({ perfume }: Props) {
                 }}
               >
                 <Copy className="h-4 w-4" />
-                Share
+               Compartir
               </Button>
               { perfume.external_link !== null ? (
                 <Link
@@ -206,11 +206,14 @@ export default function PerfumeDetails({ perfume }: Props) {
 
             <div className="space-y-4 pt-6">
               <Button type="submit" size="lg" className="w-full">
-                Add to Cart
+                Agregar al carrito
               </Button>
+              {/**
+               * 
               <Button variant="outline" size="lg" className="w-full">
                 Add to Wishlist
               </Button>
+               */}
             </div>
           </div>
         </div>

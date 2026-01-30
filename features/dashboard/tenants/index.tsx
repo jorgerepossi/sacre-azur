@@ -7,6 +7,7 @@ import { Tenant } from "@/types/tenant";
 import { Button } from "@/components/ui/button";
 import { Plus, ExternalLink, Copy, Check, Edit } from "lucide-react";
 import Flex from "@/components/flex";
+import { TENANT_URL } from "./constants";
 
 export default function TenantsListContent() {
   const [tenants, setTenants] = useState<Tenant[]>([]);
@@ -61,7 +62,7 @@ export default function TenantsListContent() {
     <div className="container py-10">
       <Flex className="items-center justify-between mb-8">
         <h1 className="text-3xl font-bold">Gestión de Tiendas</h1>
-        <Link href="/dashboard/tenants/create">
+        <Link href={`/${TENANT_URL.AMIN}/${TENANT_URL.DASHBOARD}/tenants/create`}>
           <Button>
             <Plus className="w-4 h-4 mr-2" />
             Nueva Tienda
@@ -119,12 +120,12 @@ export default function TenantsListContent() {
                 >
                   {tenant.is_active ? "Desactivar" : "Activar"}
                 </Button>
-                <Link href={`/dashboard/tenants/edit/${tenant.id}`}>
-  <Button variant="outline" size="sm">
-    <Edit className="w-4 h-4 mr-2" />
-    Editar
-  </Button>
-</Link>
+                <Link href={`/${TENANT_URL.AMIN}/${TENANT_URL.DASHBOARD}//tenants/edit/${tenant.id}`}>
+                  <Button variant="outline" size="sm">
+                    <Edit className="w-4 h-4 mr-2" />
+                    Editar
+                  </Button>
+                </Link>
               </div>
             </div>
           ))

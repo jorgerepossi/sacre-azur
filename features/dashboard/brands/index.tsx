@@ -4,7 +4,7 @@ import React from "react";
 
 import CreateBrandForm from "@/features/dashboard/create/create-brand-form";
 
-import Box from "@/components/box";
+
 import ContentBlock from "@/components/content-block";
 import Flex from "@/components/flex";
 import SmallLoader from "@/components/loaders/small";

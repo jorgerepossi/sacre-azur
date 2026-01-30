@@ -44,7 +44,7 @@ export default function PerfumeList() {
         onlyInStock={onlyInStock}
         setOnlyInStock={setOnlyInStock}
       />
-      <PerfumeListContent data={finalPerfumes || []} />
+      
     </ContentBlock>
   );
 }

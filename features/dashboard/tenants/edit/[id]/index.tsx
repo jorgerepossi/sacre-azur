@@ -10,6 +10,7 @@ import { toast } from "react-hot-toast";
 import Flex from "@/components/flex";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { TENANT_URL } from "../../constants";
 
 interface EditTenantContentProps {
   tenantId: string;
@@ -74,7 +75,7 @@ export default function EditTenantContent({ tenantId }: EditTenantContentProps) 
     e.preventDefault();
     setLoading(true);
 
-    // Validar slug único (excepto el actual)
+    
     const { data: existing } = await supabase
       .from("tenants")
       .select("id")
@@ -111,7 +112,7 @@ export default function EditTenantContent({ tenantId }: EditTenantContentProps) 
       toast.error("Error al actualizar la tienda");
     } else {
       toast.success("Tienda actualizada exitosamente");
-      router.push("/dashboard/tenants");
+      router.push("/admin/dashboard/tenants");
     }
 
     setLoading(false);
@@ -127,7 +128,7 @@ export default function EditTenantContent({ tenantId }: EditTenantContentProps) 
 
   return (
     <div className="container py-10 max-w-xl">
-      <Link href="/dashboard/tenants" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6">
+      <Link href={`/${TENANT_URL.AMIN}/${TENANT_URL.DASHBOARD}/tenants`} className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6">
         <ArrowLeft className="w-4 h-4 mr-1" />
         Volver a tiendas
       </Link>

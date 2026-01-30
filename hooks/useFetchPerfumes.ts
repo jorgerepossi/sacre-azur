@@ -2,9 +2,18 @@ import { useQuery } from "@tanstack/react-query";
 import { getBaseUrl } from "@/lib/config";
 import { useTenant } from "@/providers/TenantProvider";
 
-const fetchPerfumes = async (brands?: string[], tenantSlug?: string | null) => {
+const fetchPerfumes = async (
+  brands?: string[], 
+  notes?: string[],
+  tenantSlug?: string | null
+) => {
   const baseUrl = getBaseUrl();
-  const query = brands?.length ? `?brands=${brands.join(",")}` : "";
+  
+  const params = new URLSearchParams();
+  if (brands?.length) params.append("brands", brands.join(","));
+  if (notes?.length) params.append("notes", notes.join(","));
+  
+  const query = params.toString() ? `?${params.toString()}` : "";
   
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -24,12 +33,13 @@ const fetchPerfumes = async (brands?: string[], tenantSlug?: string | null) => {
   }
   return response.json();
 };
-export const useFetchPerfumes = (brands?: string[]) => {
+
+export const useFetchPerfumes = (brands?: string[], notes?: string[]) => {
   const { tenant } = useTenant();
   
   return useQuery({
-    queryKey: ["perfumes", brands, tenant?.slug],
-    queryFn: () => fetchPerfumes(brands, tenant?.slug),
+    queryKey: ["perfumes", brands, notes, tenant?.slug],
+    queryFn: () => fetchPerfumes(brands, notes, tenant?.slug),
     enabled: !!tenant?.slug,
   });
 };

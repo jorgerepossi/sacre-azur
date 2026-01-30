@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
@@ -27,7 +27,8 @@ type FormValues = {
 export function useEditPerfume() {
   const { control, handleSubmit, setValue, register, reset } =
     useForm<FormValues>();
-      const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState(true);
   const [preview, setPreview] = useState<string | null>(null);
   const [originalPath, setOriginalPath] = useState<string | null>(null);
@@ -41,8 +42,9 @@ export function useEditPerfume() {
     data: brands,
     isLoading: brandsLoading,
     error: brandsError,
+    isPending,
   } = useFetchBrands();
-  
+
   const { tenant } = useTenant();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -64,7 +66,7 @@ export function useEditPerfume() {
     if (!perfumeId || !tenant?.id) return;
 
     const fetchPerfumeData = async () => {
- 
+
       const { data: tenantProduct, error: tenantProductError } = await supabase
         .from("tenant_products")
         .select(`
@@ -91,8 +93,8 @@ export function useEditPerfume() {
         return;
       }
 
-      const perfumeData = Array.isArray(tenantProduct.perfume) 
-        ? tenantProduct.perfume[0] 
+      const perfumeData = Array.isArray(tenantProduct.perfume)
+        ? tenantProduct.perfume[0]
         : tenantProduct.perfume;
 
       setTenantProductId(tenantProduct.id);
@@ -165,104 +167,111 @@ export function useEditPerfume() {
     }
   };
 
-const onSubmit = async (data: FormValues) => {
-  if (!tenant?.id) {
-    toast.error("No tenant found");
-    return;
-  }
-
-  setLoading(true);
- 
-  try {
-    let imageUrl = preview;
-
-     
-    if (data.image && data.image[0]) {
-      const newFile = data.image[0];
-      
-     
-      if (originalPath) {
-        const { error: deleteError } = await supabase.storage
-          .from("perfume-images")
-          .remove([originalPath]);
-        
-        if (deleteError) {
-          console.warn("Error deleting old image:", deleteError);
-          
-        }
-      }
- 
-      const newPath = `perfumes/${Date.now()}-${newFile.name}`;
-      const { error: uploadError } = await supabase.storage
-        .from("perfume-images")
-        .upload(newPath, newFile, { 
-          cacheControl: '3600',
-          upsert: false 
-        });
-
-      if (uploadError) throw uploadError;
-
-      imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/perfume-images/${newPath}`;
+  const onSubmit = async (data: FormValues) => {
+    if (!tenant?.id) {
+      toast.error("No tenant found");
+      return;
     }
- 
-    const { data: perfumeResult, error: perfumeError } = await supabase
-      .from("perfume")
-      .update({
-        name: data.name,
-        description: data.description,
-        external_link: data.external_link,
-        brand_id: data.brand_id,
-        image: imageUrl,
-      })
-      .eq("id", perfumeId)
-      .select();
 
-    if (perfumeError) throw perfumeError;
+    setLoading(true);
 
- 
-    const { data: updateResult, error: tenantProductError } = await supabase
-      .from("tenant_products")
-      .update({
-        price: data.price.toString(),
-        profit_margin: data.profit_margin.toString(),
-        stock: data.in_stock ? 100 : 0,
-      })
-      .eq("id", tenantProductId)
-      .select();
+    try {
+      let imageUrl = preview;
 
-    if (tenantProductError) throw tenantProductError;
 
- 
-    await updateNotesRelations(data.note_ids);
+      if (data.image && data.image[0]) {
+        const newFile = data.image[0];
 
-    toast.success("Perfume updated successfully!");
-    
 
-    await queryClient.invalidateQueries({ queryKey: ["perfumes"] });
-    await queryClient.invalidateQueries({ queryKey: ["tenant-products"] });
-    
-    //router.push(`/${tenant.slug}/dashboard`);
-  } catch (error) {
-    console.error("Error updating perfume:", error);
-    toast.error("Failed to update perfume");
-  } finally {
-    setLoading(false);
-  }
-};
+        if (originalPath) {
+          const { error: deleteError } = await supabase.storage
+            .from("perfume-images")
+            .remove([originalPath]);
+
+          if (deleteError) {
+            console.warn("Error deleting old image:", deleteError);
+
+          }
+        }
+
+        const newPath = `perfumes/${Date.now()}-${newFile.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from("perfume-images")
+          .upload(newPath, newFile, {
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (uploadError) throw uploadError;
+
+        imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/perfume-images/${newPath}`;
+      }
+
+      const { data: perfumeResult, error: perfumeError } = await supabase
+        .from("perfume")
+        .update({
+          name: data.name,
+          description: data.description,
+          external_link: data.external_link,
+          brand_id: data.brand_id,
+          image: imageUrl,
+        })
+        .eq("id", perfumeId)
+        .select();
+
+      if (perfumeError) throw perfumeError;
+
+
+      const { data: updateResult, error: tenantProductError } = await supabase
+        .from("tenant_products")
+        .update({
+          price: data.price.toString(),
+          profit_margin: data.profit_margin.toString(),
+          stock: data.in_stock ? 100 : 0,
+        })
+        .eq("id", tenantProductId)
+        .select();
+
+      if (tenantProductError) throw tenantProductError;
+
+
+      await updateNotesRelations(data.note_ids);
+
+      toast.success("Perfume updated successfully!");
+
+
+      await queryClient.invalidateQueries({ queryKey: ["perfumes"] });
+      await queryClient.invalidateQueries({ queryKey: ["tenant-products"] });
+
+      //router.push(`/${tenant.slug}/dashboard`);
+    } catch (error) {
+      console.error("Error updating perfume:", error);
+      toast.error("Failed to update perfume");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleIconClick = () => {
+    fileInputRef.current?.click();
+  };
   return {
     control,
-    handleSubmit,
     register,
     loading,
     preview,
     brands,
-    brandsLoading,
-    brandsError,
-    handleImageChange,
     onSubmit,
     allNotes,
+    isPending,
     orderNotes,
+    brandsError,
+    fileInputRef,
+    handleSubmit,
     selectedNotes,
+    brandsLoading,
+    handleIconClick,
     setSelectedNotes,
+    handleImageChange,
   };
 }
