@@ -1,6 +1,7 @@
 import { TenantProvider } from "@/providers/TenantProvider";
-import Header from "@/components/header";
+
 import Footer from "@/components/footer";
+import Header from "@/components/header";
 
 interface TenantLayoutProps {
   children: React.ReactNode;

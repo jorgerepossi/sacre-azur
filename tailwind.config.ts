@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-    darkMode: ["class"],
+  darkMode: ["class"],
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -11,7 +11,6 @@ const config: Config = {
   ],
   theme: {
     container: {
-      
       center: true,
       padding: "2rem",
       screens: {
@@ -153,6 +152,12 @@ const config: Config = {
             letterSpacing: "0.1px",
           },
         ],
+      },
+      screens: {
+        xs: "360px",
+        phablet: "560px",
+        "desktop-sm": "980px",
+        "2xl": "1480px",
       },
     },
   },

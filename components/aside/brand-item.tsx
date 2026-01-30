@@ -9,9 +9,9 @@ const BrandItem = ({
   selected: boolean;
   onToggle: (id: string) => void;
 }) => (
-  <div className="flex items-center pb-[1rem] ">
+  <div className="flex items-center pb-[1rem]">
     <button
-      className="flex w-full items-center gap-2 text-sm  hover:text-primary text-neutral-500 transition-all"
+      className="flex w-full items-center gap-2 text-sm text-neutral-500 transition-all hover:text-primary"
       onClick={() => onToggle(brand.id)}
     >
       <div className="flex h-4 w-4 items-center justify-center rounded border border-primary">

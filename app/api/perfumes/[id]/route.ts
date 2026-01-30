@@ -1,28 +1,34 @@
 import { NextResponse } from "next/server";
+
 import { supabase } from "@/lib/supabaseClient";
+
 import { getTenantIdFromSlug } from "@/utils/tenantUtils";
 
 export async function GET(
-  request: Request, 
-  { params }: { params: Promise<{ id: string }> }
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params; // <-- AWAIT params
-    const tenantSlug = request.headers.get('x-tenant-slug');
-    
+    const tenantSlug = request.headers.get("x-tenant-slug");
+
     if (!tenantSlug) {
-      return NextResponse.json({ error: 'Tenant not specified' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Tenant not specified" },
+        { status: 400 },
+      );
     }
 
     const tenantId = await getTenantIdFromSlug(tenantSlug);
-    
+
     if (!tenantId) {
-      return NextResponse.json({ error: 'Tenant not found' }, { status: 404 });
+      return NextResponse.json({ error: "Tenant not found" }, { status: 404 });
     }
 
     const { data: tenantProduct, error } = await supabase
       .from("tenant_products")
-      .select(`
+      .select(
+        `
         price,
         profit_margin,
         perfume:perfume_id (
@@ -47,17 +53,21 @@ export async function GET(
             )
           )
         )
-      `)
+      `,
+      )
       .eq("perfume_id", id)
       .eq("tenant_id", tenantId)
       .single();
 
     if (error || !tenantProduct) {
-      return NextResponse.json({ error: "Perfume no encontrado" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Perfume no encontrado" },
+        { status: 404 },
+      );
     }
 
-    const perfume = Array.isArray(tenantProduct.perfume) 
-      ? tenantProduct.perfume[0] 
+    const perfume = Array.isArray(tenantProduct.perfume)
+      ? tenantProduct.perfume[0]
       : tenantProduct.perfume;
 
     const response = {
@@ -69,6 +79,9 @@ export async function GET(
     return NextResponse.json(response);
   } catch (error) {
     console.error("Error fetching perfume:", error);
-    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Error interno del servidor" },
+      { status: 500 },
+    );
   }
 }

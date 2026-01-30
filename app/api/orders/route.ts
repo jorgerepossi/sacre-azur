@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
 import { supabase } from "@/lib/supabaseClient";
+
 import { getTenantIdFromSlug } from "@/utils/tenantUtils";
 
 export async function POST(req: NextRequest) {
@@ -11,12 +12,12 @@ export async function POST(req: NextRequest) {
     const { email, products } = body;
 
     // Get tenant slug from headers (set by middleware)
-    const tenantSlug = req.headers.get('x-tenant-slug');
+    const tenantSlug = req.headers.get("x-tenant-slug");
 
     if (!tenantSlug) {
       return NextResponse.json(
-        { error: 'Tenant not specified' },
-        { status: 400 }
+        { error: "Tenant not specified" },
+        { status: 400 },
       );
     }
 
@@ -24,10 +25,7 @@ export async function POST(req: NextRequest) {
     const tenantId = await getTenantIdFromSlug(tenantSlug);
 
     if (!tenantId) {
-      return NextResponse.json(
-        { error: 'Tenant not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Tenant not found" }, { status: 404 });
     }
 
     const order_code = uuidv4();

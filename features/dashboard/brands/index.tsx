@@ -4,7 +4,6 @@ import React from "react";
 
 import CreateBrandForm from "@/features/dashboard/create/create-brand-form";
 
-
 import ContentBlock from "@/components/content-block";
 import Flex from "@/components/flex";
 import SmallLoader from "@/components/loaders/small";
@@ -30,7 +29,7 @@ const BrandPageContent = () => {
 
   if (isLoading || !data) return <SmallLoader />;
 
-  console.log(data)
+  console.log(data);
 
   return (
     <Flex className={"w-full gap-[2rem]"}>

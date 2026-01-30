@@ -108,7 +108,6 @@
     @apply my-2 text-lg font-medium;
   }
 
-
   code {
     @apply rounded-md border border-muted bg-muted p-[.5rem] text-neutral-500;
   }

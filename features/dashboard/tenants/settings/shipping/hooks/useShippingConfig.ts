@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
-import { toast } from "react-hot-toast";
+import { useEffect, useState } from "react";
+
 import { useTenant } from "@/providers/TenantProvider";
+import { toast } from "react-hot-toast";
+
+import { supabase } from "@/lib/supabaseClient";
 
 export const useShippingConfig = () => {
   const { tenant } = useTenant();
@@ -39,7 +41,8 @@ export const useShippingConfig = () => {
           correo_argentino_enabled: data.correo_argentino_enabled || false,
           correo_argentino_username: data.correo_argentino_username || "",
           correo_argentino_password: data.correo_argentino_password || "",
-          correo_argentino_account_number: data.correo_argentino_account_number || "",
+          correo_argentino_account_number:
+            data.correo_argentino_account_number || "",
           origin_province: data.origin_province || "",
           origin_city: data.origin_city || "",
           origin_postal_code: data.origin_postal_code || "",
@@ -59,12 +62,10 @@ export const useShippingConfig = () => {
 
     setSaving(true);
     try {
-      const { error } = await supabase
-        .from("tenant_shipping_config")
-        .upsert({
-          tenant_id: tenant.id,
-          ...config,
-        });
+      const { error } = await supabase.from("tenant_shipping_config").upsert({
+        tenant_id: tenant.id,
+        ...config,
+      });
 
       if (error) throw error;
 

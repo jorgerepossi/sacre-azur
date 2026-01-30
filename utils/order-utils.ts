@@ -1,5 +1,6 @@
-import { OrderShipping } from "@/types/order-shipping.type";
 import { format } from "date-fns";
+
+import { OrderShipping } from "@/types/order-shipping.type";
 
 export interface Product {
   name: string;
@@ -8,7 +9,12 @@ export interface Product {
   quantity: number;
 }
 
-export type Status = 'PENDIENTE' | 'CONFIRMADO' | 'ENVIADO' | 'COMPLETADO' | 'CANCELADO';
+export type Status =
+  | "PENDIENTE"
+  | "CONFIRMADO"
+  | "ENVIADO"
+  | "COMPLETADO"
+  | "CANCELADO";
 
 export interface Order {
   id: string;
@@ -19,9 +25,9 @@ export interface Order {
   customer_phone?: string;
   order_products: Product[];
   is_sent: boolean;
-  is_confirmed?: boolean;  
-  status: Status  
-  updated_at?: string; 
+  is_confirmed?: boolean;
+  status: Status;
+  updated_at?: string;
   order_shipping?: OrderShipping;
 }
 export interface SortConfig {

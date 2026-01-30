@@ -1,31 +1,31 @@
 import { NextResponse } from "next/server";
+
 import { supabase } from "@/lib/supabaseClient";
+
 import { getTenantIdFromSlug } from "@/utils/tenantUtils";
 
 export async function GET(request: Request) {
   try {
-    const tenantSlug = request.headers.get('x-tenant-slug');
+    const tenantSlug = request.headers.get("x-tenant-slug");
 
     if (!tenantSlug) {
       return NextResponse.json(
-        { error: 'Tenant not specified' },
-        { status: 400 }
+        { error: "Tenant not specified" },
+        { status: 400 },
       );
     }
 
     const tenantId = await getTenantIdFromSlug(tenantSlug);
 
     if (!tenantId) {
-      return NextResponse.json(
-        { error: 'Tenant not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Tenant not found" }, { status: 404 });
     }
 
     // Traer brands que tienen productos activos
     const { data: tenantProducts, error } = await supabase
       .from("tenant_products")
-      .select(`
+      .select(
+        `
         perfume:perfume_id(
           brand:brand_id(
             id,
@@ -34,7 +34,8 @@ export async function GET(request: Request) {
             image
           )
         )
-      `)
+      `,
+      )
       .eq("tenant_id", tenantId)
       .eq("active", true);
 
@@ -42,17 +43,19 @@ export async function GET(request: Request) {
       console.error("Error fetching brands:", error);
       return NextResponse.json(
         { error: "Error fetching brands" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     // Extraer brands únicas
     const brandsMap = new Map();
-    
+
     tenantProducts?.forEach((tp: any) => {
       const perfume = Array.isArray(tp.perfume) ? tp.perfume[0] : tp.perfume;
-      const brand = Array.isArray(perfume?.brand) ? perfume.brand[0] : perfume?.brand;
-      
+      const brand = Array.isArray(perfume?.brand)
+        ? perfume.brand[0]
+        : perfume?.brand;
+
       if (brand && brand.active && !brandsMap.has(brand.id)) {
         brandsMap.set(brand.id, {
           id: brand.id,
@@ -63,8 +66,8 @@ export async function GET(request: Request) {
       }
     });
 
-    const brands = Array.from(brandsMap.values()).sort((a, b) => 
-      a.name.localeCompare(b.name)
+    const brands = Array.from(brandsMap.values()).sort((a, b) =>
+      a.name.localeCompare(b.name),
     );
 
     return NextResponse.json(brands, {
@@ -77,7 +80,7 @@ export async function GET(request: Request) {
     console.error("Internal server error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

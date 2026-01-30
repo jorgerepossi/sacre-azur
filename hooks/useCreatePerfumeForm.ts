@@ -27,17 +27,38 @@ export const useCreatePerfumeForm = () => {
   const { data: notes } = useFetchNotes();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  const [showCropModal, setShowCropModal] = useState(false);
+const [tempImageSrc, setTempImageSrc] = useState<string | null>(null);
+
   const orderNotes = notes
     ? [...notes].sort((a, b) => a.name.localeCompare(b.name))
     : [];
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      setPreview(URL.createObjectURL(file));
-      setValue("image", e.target.files);
-    }
-  };
+ const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  if (e.target.files && e.target.files.length > 0) {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      setTempImageSrc(reader.result as string);
+      setShowCropModal(true);
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+const handleCropComplete = (croppedBlob: Blob) => {
+  const croppedFile = new File([croppedBlob], "cropped-image.jpg", {
+    type: "image/jpeg",
+  });
+  
+  const dataTransfer = new DataTransfer();
+  dataTransfer.items.add(croppedFile);
+  
+  setValue("image", dataTransfer.files);
+  setPreview(URL.createObjectURL(croppedBlob));
+  setShowCropModal(false);
+  setTempImageSrc(null);
+};
 
   const handleIconClick = () => {
     fileInputRef.current?.click();
@@ -89,5 +110,9 @@ export const useCreatePerfumeForm = () => {
     notes,
     orderNotes,
     setValue,
+     showCropModal,
+  tempImageSrc,
+  handleCropComplete,
+  setShowCropModal,
   };
 };

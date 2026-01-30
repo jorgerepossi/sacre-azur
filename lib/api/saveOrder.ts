@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+
 import { supabase } from "@/lib/supabaseClient";
 
 export const saveOrder = async (
@@ -16,7 +17,7 @@ export const saveOrder = async (
       customer_name: customerName || null,
       customer_phone: customerPhone || null,
       order_products: items,
-      status: 'PENDIENTE',  
+      status: "PENDIENTE",
     },
   ]);
 

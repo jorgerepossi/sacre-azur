@@ -2,11 +2,22 @@
 
 import React, { useState } from "react";
 
-import { CheckCircle2, ChevronDown, ChevronUp, Clock, MessageCircle, Package, Truck, XCircle } from "lucide-react";
+import { useTenant } from "@/providers/TenantProvider";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  MessageCircle,
+  Package,
+  Truck,
+  XCircle,
+} from "lucide-react";
+import { toast } from "react-hot-toast";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { TableCell, TableRow } from "@/components/ui/table";
 import {
   Select,
   SelectContent,
@@ -14,22 +25,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TableCell, TableRow } from "@/components/ui/table";
+
+import { supabase } from "@/lib/supabaseClient";
+import {
+  getNotificationMessage,
+  openWhatsApp,
+} from "@/lib/whatsapp-notifications";
 
 import {
   calculateOrderTotal,
   formatDate,
   formatPrice,
-  Status,
   type Order,
+  Status,
 } from "@/utils/order-utils";
 
-import ProductsTable from "./products-table";
-import { supabase } from "@/lib/supabaseClient";
-import { toast } from "react-hot-toast";
-import { getNotificationMessage, openWhatsApp } from "@/lib/whatsapp-notifications";
-import { useTenant } from "@/providers/TenantProvider";
-import { useQueryClient } from "@tanstack/react-query";
 import ShippingDialog from "./components/shipping-dialog";
+import ProductsTable from "./products-table";
 
 interface OrderRowProps {
   order: Order;
@@ -64,8 +77,13 @@ const STATUS_CONFIG = {
     icon: XCircle,
   },
 };
- 
-const NOTIFIABLE_STATUSES = ['CONFIRMADO', 'ENVIADO', 'COMPLETADO', 'CANCELADO'];
+
+const NOTIFIABLE_STATUSES = [
+  "CONFIRMADO",
+  "ENVIADO",
+  "COMPLETADO",
+  "CANCELADO",
+];
 
 export default function OrderRow({
   order,
@@ -88,7 +106,9 @@ export default function OrderRow({
       if (error) throw error;
 
       setStatus(newStatus);
-      toast.success(`Estado actualizado a ${STATUS_CONFIG[newStatus as keyof typeof STATUS_CONFIG].label}`);
+      toast.success(
+        `Estado actualizado a ${STATUS_CONFIG[newStatus as keyof typeof STATUS_CONFIG].label}`,
+      );
     } catch (error) {
       console.error("Error updating status:", error);
       toast.error("Error al actualizar el estado");
@@ -113,7 +133,7 @@ export default function OrderRow({
       status as any,
       order.customer_name || "Cliente",
       order.order_code,
-      trackingUrl
+      trackingUrl,
     );
 
     openWhatsApp(order.customer_phone, message);
@@ -125,10 +145,14 @@ export default function OrderRow({
     queryClient.invalidateQueries({ queryKey: ["orders"] });
   };
 
-  const StatusIcon = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.icon || Clock;
-  const statusConfig = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.PENDIENTE;
+  const StatusIcon =
+    STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.icon || Clock;
+  const statusConfig =
+    STATUS_CONFIG[status as keyof typeof STATUS_CONFIG] ||
+    STATUS_CONFIG.PENDIENTE;
 
-  const canNotify = NOTIFIABLE_STATUSES.includes(status) && order.customer_phone;
+  const canNotify =
+    NOTIFIABLE_STATUSES.includes(status) && order.customer_phone;
 
   return (
     <React.Fragment>
@@ -146,9 +170,7 @@ export default function OrderRow({
         <TableCell onClick={onToggleExpand}>
           {formatDate(order.created_at)}
         </TableCell>
-        <TableCell onClick={onToggleExpand}>
-          {order.customer_name}
-        </TableCell>
+        <TableCell onClick={onToggleExpand}>{order.customer_name}</TableCell>
         <TableCell onClick={onToggleExpand}>{order.customer_phone}</TableCell>
         <TableCell onClick={onToggleExpand}>
           {order.order_products.length}{" "}
@@ -163,7 +185,9 @@ export default function OrderRow({
             onValueChange={handleStatusChange}
             disabled={isUpdating}
           >
-            <SelectTrigger className={`w-[140px] ${statusConfig.color} border-none`}>
+            <SelectTrigger
+              className={`w-[140px] ${statusConfig.color} border-none`}
+            >
               <SelectValue>
                 <div className="flex items-center gap-2">
                   <StatusIcon className="h-3 w-3" />
@@ -192,11 +216,14 @@ export default function OrderRow({
           <TableCell colSpan={8} className="p-4">
             <div className="space-y-4">
               <ProductsTable products={order.order_products} />
-              
+
               {/* Botones de acciones */}
-              <div className="flex justify-end gap-2 pt-2 border-t">
-                <ShippingDialog order={order} onSuccess={handleShippingSuccess} />
-                
+              <div className="flex justify-end gap-2 border-t pt-2">
+                <ShippingDialog
+                  order={order}
+                  onSuccess={handleShippingSuccess}
+                />
+
                 {canNotify && (
                   <Button
                     onClick={handleNotifyCustomer}

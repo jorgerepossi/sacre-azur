@@ -24,8 +24,8 @@ export default function CorreoArgentinoSection({
   onAccountNumberChange,
 }: CorreoArgentinoSectionProps) {
   return (
-    <div className="border rounded-lg p-6">
-      <div className="flex items-center justify-between mb-4">
+    <div className="rounded-lg border p-6">
+      <div className="mb-4 flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold">Correo Argentino</h3>
           <p className="text-sm text-muted-foreground">
@@ -67,13 +67,13 @@ export default function CorreoArgentinoSection({
             </div>
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg text-sm text-blue-800">
-            <p className="font-semibold mb-1">¿Cómo obtener credenciales?</p>
-            <ol className="list-decimal list-inside space-y-1">
+          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
+            <p className="mb-1 font-semibold">¿Cómo obtener credenciales?</p>
+            <ol className="list-inside list-decimal space-y-1">
               <li>
-                Registrate en 
-                
-                 <a href="https://epaq.correoargentino.com.ar/"
+                Registrate en
+                <a
+                  href="https://epaq.correoargentino.com.ar/"
                   target="_blank"
                   className="underline"
                 >

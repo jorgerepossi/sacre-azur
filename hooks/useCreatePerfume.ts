@@ -1,7 +1,9 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CreatePerfumeInputType } from "@/types/create-perfume-input.type";
-import { supabase } from "@/lib/supabaseClient";
 import { useTenant } from "@/providers/TenantProvider";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { CreatePerfumeInputType } from "@/types/create-perfume-input.type";
+
+import { supabase } from "@/lib/supabaseClient";
 
 export const useCreatePerfume = () => {
   const queryClient = useQueryClient();
@@ -22,7 +24,7 @@ export const useCreatePerfume = () => {
         throw new Error("No hay tenant seleccionado");
       }
 
-      // 1. Subir imagen
+ 
       const { data: imageData, error: imageError } = await supabase.storage
         .from("perfume-images")
         .upload(`perfumes/${Date.now()}-${imageFile.name}`, imageFile, {
@@ -39,8 +41,7 @@ export const useCreatePerfume = () => {
 
       const imageUrl = data.publicUrl;
 
-      // 2. Crear perfume en catálogo general (SIN tenant_id, price, profit_margin)
-      const { data: perfumeData, error: perfumeError } = await supabase
+       const { data: perfumeData, error: perfumeError } = await supabase
         .from("perfume")
         .insert([
           {
@@ -53,7 +54,7 @@ export const useCreatePerfume = () => {
         ])
         .select("id");
 
-      if (perfumeError) 
+      if (perfumeError)
         throw new Error("Error creando perfume: " + perfumeError.message);
 
       const createdPerfumeId = perfumeData[0].id;
@@ -74,7 +75,10 @@ export const useCreatePerfume = () => {
         ]);
 
       if (tenantProductError)
-        throw new Error("Error agregando producto al inventario: " + tenantProductError.message);
+        throw new Error(
+          "Error agregando producto al inventario: " +
+            tenantProductError.message,
+        );
 
       // 4. Guardar notas olfativas
       if (note_ids && note_ids.length > 0) {

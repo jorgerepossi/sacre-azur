@@ -3,9 +3,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
 export const updateSession = async (request: NextRequest) => {
-
   try {
-
     let response = NextResponse.next({
       request: {
         headers: request.headers,
@@ -40,7 +38,6 @@ export const updateSession = async (request: NextRequest) => {
 
     const user = await supabase.auth.getUser();
 
-
     if (request.nextUrl.pathname.startsWith("/protected") && user.error) {
       return NextResponse.redirect(new URL("/sign-in", request.url));
     }
@@ -51,7 +48,6 @@ export const updateSession = async (request: NextRequest) => {
 
     return response;
   } catch (e) {
-
     return NextResponse.next({
       request: {
         headers: request.headers,

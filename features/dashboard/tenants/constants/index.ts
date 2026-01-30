@@ -1,4 +1,4 @@
-export  const TENANT_URL = {
-    'AMIN': "admin",
-    "DASHBOARD": "dashboard"
-}
+export const TENANT_URL = {
+  AMIN: "admin",
+  DASHBOARD: "dashboard",
+};

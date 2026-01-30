@@ -43,6 +43,11 @@ export const STATUS_INFO = {
   },
 } as const;
 
-export const STATUS_ORDER = ['PENDIENTE', 'CONFIRMADO', 'ENVIADO', 'COMPLETADO'] as const;
+export const STATUS_ORDER = [
+  "PENDIENTE",
+  "CONFIRMADO",
+  "ENVIADO",
+  "COMPLETADO",
+] as const;
 
 export type OrderStatus = keyof typeof STATUS_INFO;

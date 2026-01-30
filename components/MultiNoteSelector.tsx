@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import Flex from "./flex";
 
 type Note = {
@@ -75,7 +76,7 @@ export default function MultiNoteSelector({
                 return (
                   <Flex
                     key={noteId}
-                    className=" items-center gap-2 rounded-full text-card-foreground  p-4 bg-muted/30 px-3 py-1 text-sm"
+                    className="items-center gap-2 rounded-full bg-muted/30 p-4 px-3 py-1 text-sm text-card-foreground"
                   >
                     <span>{note?.name}</span>
                     <button

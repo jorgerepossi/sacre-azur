@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from "react";
+
 import { useRouter, useSearchParams } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
-import { useFetchBrands } from "@/hooks/useFetchBrands";
-import { supabase } from "@/lib/supabaseClient";
+
 import { useTenant } from "@/providers/TenantProvider";
 import { useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+
+import { useFetchBrands } from "@/hooks/useFetchBrands";
+
+import { supabase } from "@/lib/supabaseClient";
 
 type Note = {
   id: number;
@@ -69,10 +73,10 @@ export function useEditPerfume() {
     if (!perfumeId || !tenant?.id) return;
 
     const fetchPerfumeData = async () => {
-
       const { data: tenantProduct, error: tenantProductError } = await supabase
         .from("tenant_products")
-        .select(`
+        .select(
+          `
           id,
           price,
           profit_margin,
@@ -85,7 +89,8 @@ export function useEditPerfume() {
             external_link,
             brand_id
           )
-        `)
+        `,
+        )
         .eq("perfume_id", perfumeId)
         .eq("tenant_id", tenant.id)
         .single();
@@ -164,7 +169,6 @@ export function useEditPerfume() {
     setTempImageSrc(null);
   };
 
-
   const updateNotesRelations = async (noteIds: string[]) => {
     if (!perfumeId) return;
 
@@ -200,10 +204,8 @@ export function useEditPerfume() {
     try {
       let imageUrl = preview;
 
-
       if (data.image && data.image[0]) {
         const newFile = data.image[0];
-
 
         if (originalPath) {
           const { error: deleteError } = await supabase.storage
@@ -212,7 +214,6 @@ export function useEditPerfume() {
 
           if (deleteError) {
             console.warn("Error deleting old image:", deleteError);
-
           }
         }
 
@@ -220,8 +221,8 @@ export function useEditPerfume() {
         const { error: uploadError } = await supabase.storage
           .from("perfume-images")
           .upload(newPath, newFile, {
-            cacheControl: '3600',
-            upsert: false
+            cacheControl: "3600",
+            upsert: false,
           });
 
         if (uploadError) throw uploadError;
@@ -243,7 +244,6 @@ export function useEditPerfume() {
 
       if (perfumeError) throw perfumeError;
 
-
       const { data: updateResult, error: tenantProductError } = await supabase
         .from("tenant_products")
         .update({
@@ -256,11 +256,9 @@ export function useEditPerfume() {
 
       if (tenantProductError) throw tenantProductError;
 
-
       await updateNotesRelations(data.note_ids);
 
       toast.success("Perfume updated successfully!");
-
 
       await queryClient.invalidateQueries({ queryKey: ["perfumes"] });
       await queryClient.invalidateQueries({ queryKey: ["tenant-products"] });

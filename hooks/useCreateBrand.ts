@@ -1,8 +1,8 @@
+import { useTenant } from "@/providers/TenantProvider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabaseClient";
 import { uploadBrandImage } from "@/lib/uploadImage";
-import { useTenant } from "@/providers/TenantProvider";
 
 export const useCreateBrand = () => {
   const queryClient = useQueryClient();
@@ -28,7 +28,7 @@ export const useCreateBrand = () => {
             name,
             image: imageUrl,
             active: true,
-            tenant_id: tenant.id,  // <-- AGREGADO
+            tenant_id: tenant.id, // <-- AGREGADO
           },
         ]);
 

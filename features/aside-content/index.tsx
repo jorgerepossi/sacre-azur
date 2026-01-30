@@ -7,16 +7,16 @@ import { NoteFilterContext } from "@/providers/NoteFilterProvider";
 
 import BrandItem from "@/components/aside/brand-item";
 import NoteItem from "@/components/aside/note-item";
+import Box from "@/components/box";
+import Flex from "@/components/flex";
+import SkeletonAsideList from "@/components/skeletons/skeleton-aside-list";
 
 import { Brand } from "@/types/perfume.type";
 
-import { useFetchBrandsWithProducts } from "@/hooks/useFetchBrandsWithProducts";
 import { useFetchNotes } from "@/hooks/fetchs/useFetchNotes";
+import { useFetchBrandsWithProducts } from "@/hooks/useFetchBrandsWithProducts";
 
 import { cn } from "@/lib/utils";
-import SkeletonAsideList from "@/components/skeletons/skeleton-aside-list";
-import Flex from "@/components/flex";
-import Box from "@/components/box";
 
 interface SidebarProps {
   className?: string;
@@ -25,9 +25,17 @@ interface SidebarProps {
 const AsideContent = ({ className }: SidebarProps) => {
   const { selectedBrands, toggleBrand } = useContext(BrandFilterContext);
   const { selectedNotes, toggleNote } = useContext(NoteFilterContext);
-  
-  const { data: brands, isLoading: brandsLoading, error: brandsError } = useFetchBrandsWithProducts();
-  const { data: notes, isLoading: notesLoading, error: notesError } = useFetchNotes();
+
+  const {
+    data: brands,
+    isLoading: brandsLoading,
+    error: brandsError,
+  } = useFetchBrandsWithProducts();
+  const {
+    data: notes,
+    isLoading: notesLoading,
+    error: notesError,
+  } = useFetchNotes();
 
   const sortedBrands = useMemo(() => {
     return (
@@ -43,18 +51,20 @@ const AsideContent = ({ className }: SidebarProps) => {
 
   if (brandsLoading || notesLoading) return <SkeletonAsideList />;
   if (brandsError || notesError)
-    return <div className="p-2 text-sm text-red-500">Error loading filters</div>;
+    return (
+      <div className="p-2 text-sm text-red-500">Error loading filters</div>
+    );
 
   return (
     <Box className={cn("space-y-4", className)}>
-      <Flex className={'py-4 border-b-2'}>
+      <Flex className={"border-b-2 py-4"}>
         <p className="font-semibold">Filtrar</p>
       </Flex>
 
       {/* Brands Section con scroll */}
       <div className="space-y-2">
-        <p className="text-sm font-semibold mb-2">Marcas</p>
-        <div className="max-h-[250px] overflow-y-auto pr-2 space-y-2">
+        <p className="mb-2 text-sm font-semibold">Marcas</p>
+        <div className="max-h-[250px] space-y-2 overflow-y-auto pr-2">
           {sortedBrands.map((brand: Brand) => (
             <BrandItem
               key={brand.id}
@@ -68,8 +78,8 @@ const AsideContent = ({ className }: SidebarProps) => {
 
       {/* Notes Section con scroll */}
       <div className="space-y-2 border-t-2 pt-4">
-        <p className="text-sm font-semibold mb-2">Notas Olfativas</p>
-        <div className="max-h-[400px] overflow-y-auto pr-2 space-y-2">
+        <p className="mb-2 text-sm font-semibold">Notas Olfativas</p>
+        <div className="max-h-[400px] space-y-2 overflow-y-auto pr-2">
           {sortedNotes.map((note: any) => (
             <NoteItem
               key={note.id}

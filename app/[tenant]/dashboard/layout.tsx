@@ -1,5 +1,6 @@
-import { redirect } from "next/navigation";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 
 interface TenantDashboardLayoutProps {
@@ -9,9 +10,9 @@ interface TenantDashboardLayoutProps {
   }>;
 }
 
-export default async function TenantDashboardLayout({ 
-  children, 
-  params 
+export default async function TenantDashboardLayout({
+  children,
+  params,
 }: TenantDashboardLayoutProps) {
   const { tenant } = await params;
 
@@ -21,7 +22,7 @@ export default async function TenantDashboardLayout({
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <div className="border-b bg-background text-foreground">
-        <div className="container py-4 flex justify-between items-center">
+        <div className="container flex items-center justify-between py-4">
           <div>
             <h1 className="text-2xl font-bold">Dashboard</h1>
             <p className="text-sm text-muted-foreground">Tienda: {tenant}</p>
@@ -65,9 +66,7 @@ export default async function TenantDashboardLayout({
       </div>
 
       {/* Content */}
-      <div className="container py-8">
-        {children}
-      </div>
+      <div className="container py-8">{children}</div>
     </div>
   );
 }

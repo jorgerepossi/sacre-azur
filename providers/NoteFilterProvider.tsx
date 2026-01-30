@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useState, ReactNode } from "react";
+import React, { createContext, ReactNode, useState } from "react";
 
 interface NoteFilterContextType {
   selectedNotes: string[];
@@ -21,7 +21,7 @@ export const NoteFilterProvider = ({ children }: { children: ReactNode }) => {
     setSelectedNotes((prev) =>
       prev.includes(noteId)
         ? prev.filter((id) => id !== noteId)
-        : [...prev, noteId]
+        : [...prev, noteId],
     );
   };
 
@@ -30,7 +30,9 @@ export const NoteFilterProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <NoteFilterContext.Provider value={{ selectedNotes, toggleNote, clearNotes }}>
+    <NoteFilterContext.Provider
+      value={{ selectedNotes, toggleNote, clearNotes }}
+    >
       {children}
     </NoteFilterContext.Provider>
   );

@@ -1,22 +1,29 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+
+import { ArrowLeft } from "lucide-react";
+import { toast } from "react-hot-toast";
+
+import Flex from "@/components/flex";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "react-hot-toast";
-import Flex from "@/components/flex";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+
+import { supabase } from "@/lib/supabaseClient";
+
 import { TENANT_URL } from "../../constants";
 
 interface EditTenantContentProps {
   tenantId: string;
 }
 
-export default function EditTenantContent({ tenantId }: EditTenantContentProps) {
+export default function EditTenantContent({
+  tenantId,
+}: EditTenantContentProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
@@ -75,7 +82,6 @@ export default function EditTenantContent({ tenantId }: EditTenantContentProps) 
     e.preventDefault();
     setLoading(true);
 
-    
     const { data: existing } = await supabase
       .from("tenants")
       .select("id")
@@ -91,7 +97,9 @@ export default function EditTenantContent({ tenantId }: EditTenantContentProps) 
 
     // Validar formato de WhatsApp
     if (!formData.whatsapp_number.startsWith("+")) {
-      toast.error("El número de WhatsApp debe empezar con + (ej: +5491112345678)");
+      toast.error(
+        "El número de WhatsApp debe empezar con + (ej: +5491112345678)",
+      );
       setLoading(false);
       return;
     }
@@ -127,13 +135,16 @@ export default function EditTenantContent({ tenantId }: EditTenantContentProps) 
   }
 
   return (
-    <div className="container py-10 max-w-xl">
-      <Link href={`/${TENANT_URL.AMIN}/${TENANT_URL.DASHBOARD}/tenants`} className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6">
-        <ArrowLeft className="w-4 h-4 mr-1" />
+    <div className="container max-w-xl py-10">
+      <Link
+        href={`/${TENANT_URL.AMIN}/${TENANT_URL.DASHBOARD}/tenants`}
+        className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeft className="mr-1 h-4 w-4" />
         Volver a tiendas
       </Link>
 
-      <h1 className="text-3xl font-bold mb-8">Editar Tienda</h1>
+      <h1 className="mb-8 text-3xl font-bold">Editar Tienda</h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
@@ -159,7 +170,7 @@ export default function EditTenantContent({ tenantId }: EditTenantContentProps) 
               placeholder="mi-perfumeria"
               required
             />
-            <span className="text-sm text-muted-foreground whitespace-nowrap">
+            <span className="whitespace-nowrap text-sm text-muted-foreground">
               .sacreazur.vercel.app
             </span>
           </div>
@@ -195,7 +206,7 @@ export default function EditTenantContent({ tenantId }: EditTenantContentProps) 
                 onChange={(e) =>
                   setFormData({ ...formData, primary_color: e.target.value })
                 }
-                className="w-10 h-10 rounded cursor-pointer"
+                className="h-10 w-10 cursor-pointer rounded"
               />
               <Input
                 value={formData.primary_color}
@@ -217,7 +228,7 @@ export default function EditTenantContent({ tenantId }: EditTenantContentProps) 
                 onChange={(e) =>
                   setFormData({ ...formData, secondary_color: e.target.value })
                 }
-                className="w-10 h-10 rounded cursor-pointer"
+                className="h-10 w-10 cursor-pointer rounded"
               />
               <Input
                 value={formData.secondary_color}
@@ -237,8 +248,8 @@ export default function EditTenantContent({ tenantId }: EditTenantContentProps) 
         </Flex>
       </form>
 
-      <div className="mt-8 p-4 bg-muted rounded-lg">
-        <h3 className="font-semibold mb-2">Preview de la URL:</h3>
+      <div className="mt-8 rounded-lg bg-muted p-4">
+        <h3 className="mb-2 font-semibold">Preview de la URL:</h3>
         <code className="text-sm">
           https://{formData.slug || "mi-tienda"}.sacreazur.vercel.app
         </code>

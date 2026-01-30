@@ -3,23 +3,25 @@
 import React, { useState } from "react";
 
 import Image from "next/image";
-import { Link } from "@/components/link";
 
-import Flex from "@/components/flex";
-import { SkeletonBox } from "@/components/skeletons";
-import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cartStore";
-import { SIZE_FACTORS } from "@/lib/pricing-constants";
 import { toast } from "react-hot-toast";
 
+import Flex from "@/components/flex";
+import { Link } from "@/components/link";
+import { SkeletonBox } from "@/components/skeletons";
+import { Button } from "@/components/ui/button";
+
 import { Perfume } from "@/types/perfume.type";
+
+import { SIZE_FACTORS } from "@/lib/pricing-constants";
 
 interface ItemPerfumeProps {
   item: Perfume;
 }
 
 const createSlug = (name: string) => {
-  if (!name) return "";  
+  if (!name) return "";
   return name
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
@@ -35,22 +37,23 @@ const SIZES = [
 const ItemPerfume = ({ item }: ItemPerfumeProps) => {
   const [selectedSize, setSelectedSize] = useState<number>(2.5);
   const addItem = useCartStore((state) => state.addItem);
- 
+
   if (!item?.id || !item?.name) {
-    return null; 
+    return null;
   }
 
   // Calcular precio con size factors
   const calculatePrice = (sizeInMl: number) => {
     const basePrice = Number(item.price);
     const profitMargin = Number(item.profit_margin);
-    
+
     if (!basePrice || !profitMargin) return 0;
-    
+
     const priceWithProfit = basePrice * (1 + profitMargin / 100);
     const pricePerMl = priceWithProfit / 100;
-    const sizeFactor = SIZE_FACTORS[sizeInMl as keyof typeof SIZE_FACTORS] || 1.0;
-    
+    const sizeFactor =
+      SIZE_FACTORS[sizeInMl as keyof typeof SIZE_FACTORS] || 1.0;
+
     return Math.floor(pricePerMl * sizeInMl * sizeFactor);
   };
 
@@ -63,7 +66,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     addItem({
       id: String(item.id),
       name: item.name,
@@ -72,8 +75,8 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
       quantity: 1,
       image: item.image,
     });
-    
-    toast.success("Added to cart");
+
+    toast.success("Agregado al carrito");
   };
 
   return (
@@ -81,7 +84,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
       <Flex className="w-full p-4">
         <Flex className={"w-full flex-col"}>
           {/* Imagen - HEIGHT FIJO */}
-          <Flex className={"items-center justify-center py-4 md:py-2 h-full"}>
+          <Flex className={"h-full items-center justify-center py-4 md:py-2"}>
             <Image
               src={item.image || "/placeholder.svg"}
               alt={item.name}
@@ -101,8 +104,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
             </Flex>
           </Flex>
 
-          {/* Pills de tamaños */}
-          <Flex className="gap-2 mb-3">
+          <Flex className="mb-3 flex-col gap-2 sm:flex-row">
             {SIZES.map((size) => (
               <button
                 key={size.value}
@@ -111,42 +113,48 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
                   e.stopPropagation();
                   setSelectedSize(size.value);
                 }}
-                className={`
-                  flex-1 px-2 py-1 text-xs font-medium rounded-full border-2 transition-all
-                  ${selectedSize === size.value
+                className={`flex-1 rounded-full border-2 px-2 py-1 text-xs font-medium transition-all ${
+                  selectedSize === size.value
                     ? "border-black bg-black text-white"
                     : "border-gray-300 bg-white text-gray-700 hover:border-black"
-                  }
-                `}
+                } `}
               >
                 {size.label}
               </button>
             ))}
           </Flex>
 
-      
           <Flex className="mb-3">
-            <p className="text-md font-bold m-0">${formatPrice(currentPrice)}</p>
+            <p className="text-md m-0 font-bold">
+              ${formatPrice(currentPrice)}
+            </p>
           </Flex>
 
-    
-          <Flex className={"lg:justify-center justify-between items-center flex-col xl:flex-row gap-[1rem] border-t-2 border-muted pt-[16px]"}>
-            <Button 
-              className={"w-[120px]"} 
-              variant={"ghost"}
-              onClick={handleAddToCart}
-            >
-              Comprar
-            </Button>
+          <Flex
+            className={
+              "flex-col items-center justify-between gap-[1rem] border-t-2 border-muted pt-[16px] lg:justify-center xl:flex-row"
+            }
+          >
+            
 
             <Link
               href={`/perfume/${createSlug(item.name)}_${item.id}`}
               className="w-[120px]"
             >
-              <Button className={"!bg-muted w-full text-muted-foreground text-xs"} color={"bg-button-black"}>
+              <Button
+                className={"w-full !bg-white text-xs text-muted-foreground"}
+                color={"bg-button-black"}
+              >
                 Ver Producto
               </Button>
             </Link>
+<Button
+              className={"w-[120px] !bg-muted text-xs text-muted-foreground "}
+              variant={"ghost"}
+              onClick={handleAddToCart}
+            >
+              Comprar
+            </Button>
           </Flex>
         </Flex>
       </Flex>

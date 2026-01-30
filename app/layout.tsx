@@ -1,4 +1,5 @@
 import { Nunito_Sans as NunitoSansFont } from "next/font/google";
+
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -25,9 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={nunitoSans.className} suppressHydrationWarning>
       <body className="h-full bg-background text-foreground">
-        <Providers>
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

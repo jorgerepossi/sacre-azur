@@ -1,4 +1,5 @@
 import { Building } from "lucide-react";
+
 import { MenuAside } from "@/types/menu-aside.type";
 
 const MENU_ASIDE_ADMIN: MenuAside[] = [

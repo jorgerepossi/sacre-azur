@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { Link } from "@/components/link";
 
 import { useCartStore } from "@/stores/cartStore";
 import { ArrowLeft, Copy } from "lucide-react";
@@ -9,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
 import Flex from "@/components/flex";
+import { Link } from "@/components/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
@@ -47,10 +47,10 @@ export default function PerfumeDetails({ perfume }: Props) {
       quantity: quantity,
       image: perfume.image,
     });
-    toast.success("Added to cart");
+    toast.success("Agregado al carrito");
   };
 
-  console.log('datos ', perfume);
+  console.log("datos ", perfume);
 
   return (
     <div className="container py-10">
@@ -75,7 +75,7 @@ export default function PerfumeDetails({ perfume }: Props) {
 
           <div className="space-y-2">
             <Flex className="items-center justify-between">
-              <h1 className="md:text-3xl text-xl font-bold">
+              <h1 className="text-xl font-bold md:text-3xl">
                 {perfume.name} - {perfume.brand.name}
               </h1>
               <Image
@@ -88,7 +88,9 @@ export default function PerfumeDetails({ perfume }: Props) {
             </Flex>
 
             <Flex className="flex-col space-y-4">
-              <h2 className="m-0 text-base md:text-xl font-semibold">Description</h2>
+              <h2 className="m-0 text-base font-semibold md:text-xl">
+                Description
+              </h2>
               {perfume.description.length ? (
                 <div
                   className="prose max-w-none text-muted-foreground"
@@ -102,7 +104,9 @@ export default function PerfumeDetails({ perfume }: Props) {
             </Flex>
 
             <Flex className="flex-col space-y-4 border-t-2 py-[2rem] md:space-y-4">
-              <h2 className="m-0 text-base md:text-xl  font-semibold">Acordes principales</h2>
+              <h2 className="m-0 text-base font-semibold md:text-xl">
+                Acordes principales
+              </h2>
 
               {perfume?.perfume_note_relation?.length ? (
                 <Flex className={"flex-wrap gap-[16px]"}>
@@ -128,7 +132,7 @@ export default function PerfumeDetails({ perfume }: Props) {
             </Flex>
             <Flex
               className={
-                "flex-row   gap-[1rem] border-t-2 py-[1rem] xs:flex-col md:gap-[3rem] md:py-[3rem]"
+                "flex-row gap-[1rem] border-t-2 py-[1rem] xs:flex-col md:gap-[3rem] md:py-[3rem]"
               }
             >
               <Flex className="flex-col items-start gap-4">
@@ -153,7 +157,7 @@ export default function PerfumeDetails({ perfume }: Props) {
 
               <Flex className="flex-col items-start justify-between gap-4">
                 <label className="font-semibold"> Quantity:</label>
-                <Flex className={"h-[40px]  items-center gap-1"}>
+                <Flex className={"h-[40px] items-center gap-1"}>
                   <button
                     type="button"
                     className="rounded-lg border px-3 py-1"
@@ -189,19 +193,20 @@ export default function PerfumeDetails({ perfume }: Props) {
                 }}
               >
                 <Copy className="h-4 w-4" />
-               Compartir
+                Compartir
               </Button>
-              { perfume.external_link !== null ? (
+              {perfume.external_link !== null ? (
                 <Link
-                href={perfume.external_link || ""}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Fragrantica
-              </Link>
-              ) : '' }
-              
+                  href={perfume.external_link || ""}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  Fragrantica
+                </Link>
+              ) : (
+                ""
+              )}
             </Flex>
 
             <div className="space-y-4 pt-6">

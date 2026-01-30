@@ -1,10 +1,15 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useEffect, useRef, useState } from "react";
+
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
- 
 
 interface ImageCropModalProps {
   open: boolean;
@@ -94,45 +99,49 @@ export default function ImageCropModal({
     setScale(value[0]);
   };
 
-const handleSave = () => {
-  if (!image || !canvasRef.current) return;
+  const handleSave = () => {
+    if (!image || !canvasRef.current) return;
 
-  const cropCanvas = document.createElement("canvas");
-  const cropSize = 800;  // ← CAMBIAR DE 300 a 800
-  cropCanvas.width = cropSize;
-  cropCanvas.height = cropSize;
-  const cropCtx = cropCanvas.getContext("2d");
-  if (!cropCtx) return;
+    const cropCanvas = document.createElement("canvas");
+    const cropSize = 800; // ← CAMBIAR DE 300 a 800
+    cropCanvas.width = cropSize;
+    cropCanvas.height = cropSize;
+    const cropCtx = cropCanvas.getContext("2d");
+    if (!cropCtx) return;
 
-  // AGREGAR FONDO BLANCO
-  cropCtx.fillStyle = "#FFFFFF";
-  cropCtx.fillRect(0, 0, cropSize, cropSize);
+    // AGREGAR FONDO BLANCO
+    cropCtx.fillStyle = "#FFFFFF";
+    cropCtx.fillRect(0, 0, cropSize, cropSize);
 
-  // Calcular área de recorte
-  const sourceX = (50 - position.x) / scale;
-  const sourceY = (50 - position.y) / scale;
-  const sourceSize = (CANVAS_SIZE - 100) / scale;
+    // Calcular área de recorte
+    const sourceX = (50 - position.x) / scale;
+    const sourceY = (50 - position.y) / scale;
+    const sourceSize = (CANVAS_SIZE - 100) / scale;
 
-  // Dibujar imagen recortada
-  cropCtx.drawImage(
-    image,
-    sourceX,
-    sourceY,
-    sourceSize,
-    sourceSize,
-    0,
-    0,
-    cropSize,
-    cropSize
-  );
+    // Dibujar imagen recortada
+    cropCtx.drawImage(
+      image,
+      sourceX,
+      sourceY,
+      sourceSize,
+      sourceSize,
+      0,
+      0,
+      cropSize,
+      cropSize,
+    );
 
-  // Convertir a blob
-  cropCanvas.toBlob((blob) => {
-    if (blob) {
-      onCropComplete(blob);
-    }
-  }, "image/jpeg", 0.9);
-};
+    // Convertir a blob
+    cropCanvas.toBlob(
+      (blob) => {
+        if (blob) {
+          onCropComplete(blob);
+        }
+      },
+      "image/jpeg",
+      0.9,
+    );
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -146,7 +155,7 @@ const handleSave = () => {
             ref={canvasRef}
             width={CANVAS_SIZE}
             height={CANVAS_SIZE}
-            className="border border-gray-300 cursor-move"
+            className="cursor-move border border-gray-300"
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
@@ -166,11 +175,12 @@ const handleSave = () => {
               className="w-full"
             />
             <p className="text-xs text-muted-foreground">
-              Arrastra la imagen para mover, usa el slider para cambiar el tamaño
+              Arrastra la imagen para mover, usa el slider para cambiar el
+              tamaño
             </p>
           </div>
 
-          <div className="flex gap-2 w-full">
+          <div className="flex w-full gap-2">
             <Button variant="outline" onClick={onClose} className="flex-1">
               Cancelar
             </Button>

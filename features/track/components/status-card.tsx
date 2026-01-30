@@ -1,5 +1,6 @@
 import Flex from "@/components/flex";
-import { STATUS_INFO, OrderStatus } from "@/lib/tracking-status";
+
+import { OrderStatus, STATUS_INFO } from "@/lib/tracking-status";
 
 interface StatusCardProps {
   status: OrderStatus;
@@ -10,8 +11,10 @@ export default function StatusCard({ status }: StatusCardProps) {
   const StatusIcon = statusInfo.icon;
 
   return (
-    <div className={`${statusInfo.bgColorClass} ${statusInfo.borderColorClass} border-2 ${statusInfo.colorClass} p-6 rounded-lg`}>
-      <Flex className="items-center gap-3 mb-2">
+    <div
+      className={`${statusInfo.bgColorClass} ${statusInfo.borderColorClass} border-2 ${statusInfo.colorClass} rounded-lg p-6`}
+    >
+      <Flex className="mb-2 items-center gap-3">
         <StatusIcon className="h-8 w-8" />
         <h2 className="text-2xl font-bold">{statusInfo.label}</h2>
       </Flex>

@@ -1,6 +1,10 @@
 "use client";
 
 import { useState } from "react";
+
+import AsideContent from "@/features/aside-content";
+import { Filter } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -9,8 +13,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Filter } from "lucide-react";
-import AsideContent from "@/features/aside-content";
 
 export default function FilterDrawer() {
   const [open, setOpen] = useState(false);

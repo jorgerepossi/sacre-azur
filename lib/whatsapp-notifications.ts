@@ -4,10 +4,10 @@ export const getNotificationMessage = (
   status: OrderStatus,
   customerName: string,
   orderCode: string,
-  trackingUrl: string
+  trackingUrl: string,
 ): string => {
   const messages = {
-    CONFIRMADO: 
+    CONFIRMADO:
       `✅ ¡Hola ${customerName}!\n\n` +
       `Tu pedido ha sido confirmado y estamos preparándolo.\n\n` +
       `📦 Código: ${orderCode}\n\n` +
@@ -39,7 +39,7 @@ export const getNotificationMessage = (
 };
 
 export const openWhatsApp = (phone: string, message: string) => {
-  const cleanNumber = phone.replace(/[^0-9]/g, '');
+  const cleanNumber = phone.replace(/[^0-9]/g, "");
   const encodedMessage = encodeURIComponent(message);
-  window.open(`https://wa.me/${cleanNumber}?text=${encodedMessage}`, '_blank');
+  window.open(`https://wa.me/${cleanNumber}?text=${encodedMessage}`, "_blank");
 };

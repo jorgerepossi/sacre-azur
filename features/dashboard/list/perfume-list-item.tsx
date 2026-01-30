@@ -3,6 +3,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { useTenant } from "@/providers/TenantProvider";
 import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 
 import Flex from "@/components/flex";
@@ -17,7 +18,6 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { Perfume } from "@/types/perfume.type";
 
 import { formatNumberWithDots } from "@/lib/formatNumberWithDots";
-import { useTenant } from "@/providers/TenantProvider";
 
 interface PerfumeListItemProps {
   item: Perfume;
@@ -26,7 +26,6 @@ interface PerfumeListItemProps {
 const PerfumeListItem = ({ item }: PerfumeListItemProps) => {
   const { tenant } = useTenant();
 
- 
   return (
     <TableRow>
       <TableCell key={item.id} className="font-medium">
@@ -45,14 +44,20 @@ const PerfumeListItem = ({ item }: PerfumeListItemProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" side="bottom">
             <DropdownMenuItem className="!w-full">
-              <Link href={`/${tenant?.slug}/dashboard/edit?id=${item.id}`} className="w-full">
+              <Link
+                href={`/${tenant?.slug}/dashboard/edit?id=${item.id}`}
+                className="w-full"
+              >
                 <Flex className="w-full gap-[1rem]">
                   <Pencil size={16} /> Edit
                 </Flex>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="!w-full">
-              <Link href={`/${tenant?.slug}/dashboard/edit?id=${item.id}`} className="w-full">
+              <Link
+                href={`/${tenant?.slug}/dashboard/edit?id=${item.id}`}
+                className="w-full"
+              >
                 <Flex className="w-full gap-[1rem]">
                   <Trash2 size={16} /> Delete
                 </Flex>

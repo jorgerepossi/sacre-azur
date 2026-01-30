@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { useSearchParams } from "next/navigation";
+
+import { useTenant } from "@/providers/TenantProvider";
+
 import Flex from "@/components/flex";
 import SmallLoader from "@/components/loaders/small";
 import { Button } from "@/components/ui/button";
+
 import { formatNumberWithDots } from "@/lib/formatNumberWithDots";
 import { supabase } from "@/lib/supabaseClient";
-import { useTenant } from "@/providers/TenantProvider";
 
 export default function OrderConfirmedPage() {
   const params = useSearchParams();
@@ -22,14 +26,14 @@ export default function OrderConfirmedPage() {
 
   // Auto-abrir WhatsApp en NUEVA PESTAÑA cuando el cliente llega
   useEffect(() => {
-    if (view === 'client') {
-      const pendingWhatsapp = localStorage.getItem('whatsapp_pending');
+    if (view === "client") {
+      const pendingWhatsapp = localStorage.getItem("whatsapp_pending");
       if (pendingWhatsapp) {
         setWhatsappUrl(pendingWhatsapp);
         // Abrir en NUEVA PESTAÑA
-        window.open(pendingWhatsapp, '_blank');
+        window.open(pendingWhatsapp, "_blank");
         // Limpiar localStorage
-        localStorage.removeItem('whatsapp_pending');
+        localStorage.removeItem("whatsapp_pending");
       }
     }
   }, [view]);
@@ -65,9 +69,9 @@ export default function OrderConfirmedPage() {
 
     await supabase
       .from("orders")
-      .update({ 
+      .update({
         is_confirmed: true,
-        status: 'CONFIRMADO' // <-- ACTUALIZAR ESTADO TAMBIÉN
+        status: "CONFIRMADO", // <-- ACTUALIZAR ESTADO TAMBIÉN
       })
       .eq("order_code", order.order_code);
 
@@ -75,23 +79,23 @@ export default function OrderConfirmedPage() {
 
     // Enviar WhatsApp al cliente en NUEVA PESTAÑA
     if (order.customer_phone) {
-      const customerPhone = order.customer_phone.replace(/[^0-9]/g, '');
-      
+      const customerPhone = order.customer_phone.replace(/[^0-9]/g, "");
+
       const msg = encodeURIComponent(
         `✅ ¡Hola ${order.customer_name}!\n\n` +
-        `Tu pedido ha sido confirmado.\n\n` +
-        `Código de pedido: ${order.order_code}\n\n` +
-        `Pronto nos pondremos en contacto contigo para coordinar la entrega.\n\n` +
-        `¡Gracias por tu compra! 🎉`
+          `Tu pedido ha sido confirmado.\n\n` +
+          `Código de pedido: ${order.order_code}\n\n` +
+          `Pronto nos pondremos en contacto contigo para coordinar la entrega.\n\n` +
+          `¡Gracias por tu compra! 🎉`,
       );
 
-      window.open(`https://wa.me/${customerPhone}?text=${msg}`, '_blank');
+      window.open(`https://wa.me/${customerPhone}?text=${msg}`, "_blank");
     }
   };
 
   const handleResendWhatsapp = () => {
     if (whatsappUrl) {
-      window.open(whatsappUrl, '_blank'); // <-- NUEVA PESTAÑA
+      window.open(whatsappUrl, "_blank"); // <-- NUEVA PESTAÑA
     }
   };
 
@@ -112,54 +116,62 @@ export default function OrderConfirmedPage() {
   );
 
   // VISTA DEL CLIENTE
-  if (view === 'client') {
+  if (view === "client") {
     return (
       <div className="container py-10">
-        <div className="max-w-md mx-auto text-center">
-          <div className="text-6xl mb-4">✅</div>
-          <h1 className="text-3xl font-bold mb-4">¡Pedido recibido!</h1>
-          
-          <div className="bg-green-50 border-2 border-green-500 p-6 rounded-lg mb-6">
-            <p className="text-lg font-semibold text-green-900 mb-4">
+        <div className="mx-auto max-w-md text-center">
+          <div className="mb-4 text-6xl">✅</div>
+          <h1 className="mb-4 text-3xl font-bold">¡Pedido recibido!</h1>
+
+          <div className="mb-6 rounded-lg border-2 border-green-500 bg-green-50 p-6">
+            <p className="mb-4 text-lg font-semibold text-green-900">
               📱 Último paso importante
             </p>
-            <p className="text-sm text-green-800 mb-4">
-              Se abrió WhatsApp en una nueva pestaña con tu pedido. Si no se abrió, hacé clic aquí:
+            <p className="mb-4 text-sm text-green-800">
+              Se abrió WhatsApp en una nueva pestaña con tu pedido. Si no se
+              abrió, hacé clic aquí:
             </p>
             {whatsappUrl && (
-              <Button 
+              <Button
                 onClick={handleResendWhatsapp}
                 size="lg"
-                className="w-full bg-green-600 hover:bg-green-700 text-white text-lg py-6"
+                className="w-full bg-green-600 py-6 text-lg text-white hover:bg-green-700"
               >
                 📱 Abrir WhatsApp y enviar pedido
               </Button>
             )}
           </div>
 
-          <p className="text-muted-foreground mb-6">
+          <p className="mb-6 text-muted-foreground">
             Código de pedido: <strong>{order.order_code}</strong>
           </p>
-          
-          <div className="bg-muted p-6 rounded-lg mb-6">
-            <h3 className="font-semibold mb-4">Resumen del pedido</h3>
-            <div className="space-y-2 text-sm text-left">
+
+          <div className="mb-6 rounded-lg bg-muted p-6">
+            <h3 className="mb-4 font-semibold">Resumen del pedido</h3>
+            <div className="space-y-2 text-left text-sm">
               {order.order_products.map((item: any, i: number) => (
                 <div key={i} className="flex justify-between">
-                  <span>{item.name} ({item.size}ml) x{item.quantity}</span>
-                  <span>${formatNumberWithDots(Number(item.price || 0) * Number(item.quantity || 0))}</span>
+                  <span>
+                    {item.name} ({item.size}ml) x{item.quantity}
+                  </span>
+                  <span>
+                    $
+                    {formatNumberWithDots(
+                      Number(item.price || 0) * Number(item.quantity || 0),
+                    )}
+                  </span>
                 </div>
               ))}
-              <div className="border-t pt-2 flex justify-between font-bold">
+              <div className="flex justify-between border-t pt-2 font-bold">
                 <span>Total:</span>
                 <span>${formatNumberWithDots(total)}</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg text-sm text-blue-800">
-            <p className="font-semibold mb-2">¿Qué pasa después?</p>
-            <ol className="text-left space-y-1">
+          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
+            <p className="mb-2 font-semibold">¿Qué pasa después?</p>
+            <ol className="space-y-1 text-left">
               <li>1. Enviás el mensaje de WhatsApp</li>
               <li>2. El vendedor confirma tu pedido</li>
               <li>3. Coordinan el pago y envío</li>
@@ -176,29 +188,29 @@ export default function OrderConfirmedPage() {
       <h1 className="mb-6 text-3xl font-bold">
         {isConfirmed ? "✅ Pedido Confirmado" : "📦 Nuevo Pedido"}
       </h1>
-      
-      <div className="grid gap-4 mb-6 md:grid-cols-2">
-        <div className="border rounded-lg p-4">
+
+      <div className="mb-6 grid gap-4 md:grid-cols-2">
+        <div className="rounded-lg border p-4">
           <p className="text-sm text-muted-foreground">Código de pedido</p>
           <p className="font-bold">{order.order_code}</p>
         </div>
-        <div className="border rounded-lg p-4">
+        <div className="rounded-lg border p-4">
           <p className="text-sm text-muted-foreground">Cliente</p>
           <p className="font-bold">{order.customer_name}</p>
         </div>
-        <div className="border rounded-lg p-4">
+        <div className="rounded-lg border p-4">
           <p className="text-sm text-muted-foreground">Teléfono</p>
           <p className="font-bold">{order.customer_phone}</p>
         </div>
         {order.order_email && (
-          <div className="border rounded-lg p-4">
+          <div className="rounded-lg border p-4">
             <p className="text-sm text-muted-foreground">Email</p>
             <p className="font-bold">{order.order_email}</p>
           </div>
         )}
       </div>
 
-      <h2 className="text-xl font-bold mb-4">Productos</h2>
+      <h2 className="mb-4 text-xl font-bold">Productos</h2>
       <div className="space-y-4">
         {order.order_products.map((item: any, i: number) => (
           <div
@@ -212,12 +224,15 @@ export default function OrderConfirmedPage() {
               </p>
             </div>
             <div className="text-right font-bold">
-              ${formatNumberWithDots(Number(item.price || 0) * Number(item.quantity || 0))}
+              $
+              {formatNumberWithDots(
+                Number(item.price || 0) * Number(item.quantity || 0),
+              )}
             </div>
           </div>
         ))}
 
-        <div className="mt-4 text-right text-xl font-bold border-t pt-4">
+        <div className="mt-4 border-t pt-4 text-right text-xl font-bold">
           Total: ${formatNumberWithDots(total)}
         </div>
 
@@ -226,16 +241,18 @@ export default function OrderConfirmedPage() {
             <Button className="mt-6" onClick={handleConfirm} size="lg">
               ✓ Confirmar recepción y notificar al cliente
             </Button>
-            <p className="text-sm text-muted-foreground mt-2">
+            <p className="mt-2 text-sm text-muted-foreground">
               Se enviará un WhatsApp automático al cliente confirmando el pedido
             </p>
           </div>
         )}
 
         {isConfirmed && (
-          <div className="mt-6 text-center p-4 bg-green-100 text-green-800 rounded-lg">
+          <div className="mt-6 rounded-lg bg-green-100 p-4 text-center text-green-800">
             <p className="font-semibold">✅ Pedido confirmado correctamente</p>
-            <p className="text-sm mt-1">El cliente fue notificado por WhatsApp</p>
+            <p className="mt-1 text-sm">
+              El cliente fue notificado por WhatsApp
+            </p>
           </div>
         )}
       </div>

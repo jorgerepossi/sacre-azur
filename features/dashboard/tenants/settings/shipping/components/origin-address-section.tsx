@@ -23,9 +23,9 @@ export default function OriginAddressSection({
   onPostalCodeChange,
 }: OriginAddressSectionProps) {
   return (
-    <div className="border rounded-lg p-6">
-      <h3 className="text-lg font-semibold mb-4">Dirección de origen</h3>
-      <p className="text-sm text-muted-foreground mb-4">
+    <div className="rounded-lg border p-6">
+      <h3 className="mb-4 text-lg font-semibold">Dirección de origen</h3>
+      <p className="mb-4 text-sm text-muted-foreground">
         Desde dónde enviás tus pedidos (para calcular costos)
       </p>
 

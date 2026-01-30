@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +12,11 @@ interface SearchFormProps {
   initialCode?: string;
 }
 
-export default function SearchForm({ onSearch, loading, initialCode = "" }: SearchFormProps) {
+export default function SearchForm({
+  onSearch,
+  loading,
+  initialCode = "",
+}: SearchFormProps) {
   const [orderCode, setOrderCode] = useState(initialCode);
 
   const handleSubmit = (e: React.FormEvent) => {

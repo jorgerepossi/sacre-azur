@@ -1,25 +1,27 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import Image from 'next/image'
-import { useRouter } from "@/hooks/useTenantRouter";
 
+import Image from "next/image";
+
+import { useTenant } from "@/providers/TenantProvider";
 import { useCartStore } from "@/stores/cartStore";
+import { Minus, Plus, ShoppingCart, TrashIcon } from "lucide-react";
 import { toast } from "react-hot-toast";
 
+import Flex from "@/components/flex";
+import { Link } from "@/components/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { useRouter } from "@/hooks/useTenantRouter";
+
 import { saveOrder } from "@/lib/api/saveOrder";
 import { formatNumberWithDots } from "@/lib/formatNumberWithDots";
+import { cn } from "@/lib/utils";
 
 import { getItemTotal } from "@/utils/cartUtils";
-import Flex from "@/components/flex";
-import { Link } from "@/components/link";
-import { cn } from "@/lib/utils";
-import { TrashIcon, ShoppingCart, Plus, Minus } from "lucide-react";
-import { useTenant } from "@/providers/TenantProvider";
 
 const CartPageContent = () => {
   const router = useRouter();
@@ -58,8 +60,12 @@ const CartPageContent = () => {
         price: item.price,
       }));
 
-      const order_code = await saveOrder(order, tenant!.id, customerName, customerPhone);
-
+      const order_code = await saveOrder(
+        order,
+        tenant!.id,
+        customerName,
+        customerPhone,
+      );
 
       // Limpiar carrito
       clearCart();
@@ -67,29 +73,31 @@ const CartPageContent = () => {
       // Construir mensaje de WhatsApp
       if (tenant?.whatsapp_number) {
         const orderDetails = items
-          .map(item => `• ${item.name} - ${item.size}ml x${item.quantity} = $${formatNumberWithDots(Number(getItemTotal(item)))}`)
-          .join('\n');
+          .map(
+            (item) =>
+              `• ${item.name} - ${item.size}ml x${item.quantity} = $${formatNumberWithDots(Number(getItemTotal(item)))}`,
+          )
+          .join("\n");
 
         const msg = encodeURIComponent(
           `Hola! Quiero hacer un pedido:\n\n` +
-          `👤 ${customerName}\n` +
-          `📱 ${customerPhone}\n\n` +
-          `📦 Productos:\n${orderDetails}\n\n` +
-          `💰 Total: $${formatNumberWithDots(Number(total))}\n\n` +
-          `Código de pedido: ${order_code}`
+            `👤 ${customerName}\n` +
+            `📱 ${customerPhone}\n\n` +
+            `📦 Productos:\n${orderDetails}\n\n` +
+            `💰 Total: $${formatNumberWithDots(Number(total))}\n\n` +
+            `Código de pedido: ${order_code}`,
         );
 
         // Limpiar número (quitar +, espacios, guiones)
-        const cleanNumber = tenant.whatsapp_number.replace(/[^0-9]/g, '');
+        const cleanNumber = tenant.whatsapp_number.replace(/[^0-9]/g, "");
 
         // Guardar URL de WhatsApp en localStorage
         const whatsappUrl = `https://wa.me/${cleanNumber}?text=${msg}`;
-        localStorage.setItem('whatsapp_pending', whatsappUrl);
+        localStorage.setItem("whatsapp_pending", whatsappUrl);
       }
 
       // Redirigir a página de confirmación
       router.push(`/order-confirmed?code=${order_code}&view=client`);
-
     } catch (err) {
       toast.error("Error al guardar el pedido");
       console.error("SaveOrder failed", err);
@@ -112,16 +120,21 @@ const CartPageContent = () => {
 
   return (
     <div className="container py-10">
-      <Flex className={'items-center py-[2rem] gap-3'}>
+      <Flex className={"items-center gap-3 py-[2rem]"}>
         <ShoppingCart />
         <h1 className="m-0 text-3xl font-bold">Carrito</h1>
       </Flex>
 
       {items.length === 0 ? (
-        <Flex className={'flex-col space-y-4'}>
-          <p className="text-muted-foreground">No hay productos en el carrito</p>
+        <Flex className={"flex-col space-y-4"}>
+          <p className="text-muted-foreground">
+            No hay productos en el carrito
+          </p>
           <Flex>
-            <Link href={'/'} className={cn(buttonVariants({ variant: 'default' }))}>
+            <Link
+              href={"/"}
+              className={cn(buttonVariants({ variant: "default" }))}
+            >
               Volver al Home
             </Link>
           </Flex>
@@ -133,16 +146,21 @@ const CartPageContent = () => {
               key={i}
               className="flex items-center justify-between rounded-md border-t pt-4"
             >
-              <Flex className={'justify-center items-center gap-4'}>
-                <Flex className={'w-[60px] h-[60px]'}>
-                  <Image src={item.image} alt={item.name} width={80} height={80} />
+              <Flex className={"items-center justify-center gap-4"}>
+                <Flex className={"h-[60px] w-[60px]"}>
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    width={80}
+                    height={80}
+                  />
                 </Flex>
                 <div>
                   <p className="font-bold">{item.name}</p>
-                  <p className="text-muted-foreground m-0">
+                  <p className="m-0 text-muted-foreground">
                     Tamaño: {item.size}ml
                   </p>
-                  <Flex className={'items-center gap-2 mt-2'}>
+                  <Flex className={"mt-2 items-center gap-2"}>
                     <Button
                       variant="outline"
                       size="icon"
@@ -171,12 +189,16 @@ const CartPageContent = () => {
             </div>
           ))}
 
-          <div className="text-right text-xl font-bold border-t pt-4">
+          <div className="border-t pt-4 text-right text-xl font-bold">
             Total: ${formatNumberWithDots(Number(total))}
           </div>
 
           <div className="mt-6 flex justify-between">
-            <Button variant="outline" onClick={clearCart} className={'flex items-center justify-center gap-2'}>
+            <Button
+              variant="outline"
+              onClick={clearCart}
+              className={"flex items-center justify-center gap-2"}
+            >
               <TrashIcon size={16} /> Vaciar Carrito
             </Button>
             <Button onClick={() => setShowCheckout(true)}>
@@ -185,7 +207,7 @@ const CartPageContent = () => {
           </div>
         </div>
       ) : (
-        <div className="max-w-md mx-auto">
+        <div className="mx-auto max-w-md">
           <Button
             variant="ghost"
             onClick={() => setShowCheckout(false)}
@@ -194,16 +216,20 @@ const CartPageContent = () => {
             ← Volver al carrito
           </Button>
 
-          <div className="border rounded-lg p-6 mb-6">
-            <h2 className="text-xl font-bold mb-4">Resumen del pedido</h2>
+          <div className="mb-6 rounded-lg border p-6">
+            <h2 className="mb-4 text-xl font-bold">Resumen del pedido</h2>
             <div className="space-y-2 text-sm">
               {items.map((item, i) => (
                 <div key={i} className="flex justify-between">
-                  <span>{item.name} ({item.size}ml) x{item.quantity}</span>
-                  <span>${formatNumberWithDots(Number(getItemTotal(item)))}</span>
+                  <span>
+                    {item.name} ({item.size}ml) x{item.quantity}
+                  </span>
+                  <span>
+                    ${formatNumberWithDots(Number(getItemTotal(item)))}
+                  </span>
                 </div>
               ))}
-              <div className="border-t pt-2 flex justify-between font-bold">
+              <div className="flex justify-between border-t pt-2 font-bold">
                 <span>Total:</span>
                 <span>${formatNumberWithDots(Number(total))}</span>
               </div>

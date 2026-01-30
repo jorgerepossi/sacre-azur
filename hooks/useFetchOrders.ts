@@ -1,14 +1,16 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+
 import { createClient } from "@/utils/supabase/client";
 
 const fetchOrders = async () => {
   const supabase = createClient();
-  
+
   const { data, error } = await supabase
     .from("orders")
-    .select(`
+    .select(
+      `
       *,
       order_shipping (
         id,
@@ -24,9 +26,10 @@ const fetchOrders = async () => {
         created_at,
         updated_at
       )
-    `)
-    .order('created_at', { ascending: false });
-  
+    `,
+    )
+    .order("created_at", { ascending: false });
+
   if (error) {
     throw new Error(error.message);
   }

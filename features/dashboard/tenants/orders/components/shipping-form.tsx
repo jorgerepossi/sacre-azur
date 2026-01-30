@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+
+import { toast } from "react-hot-toast";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -12,9 +14,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { supabase } from "@/lib/supabaseClient";
-import { toast } from "react-hot-toast";
+import { Textarea } from "@/components/ui/textarea";
+
 import { OrderShipping, SHIPPING_METHODS } from "@/types/order-shipping.type";
+
+import { supabase } from "@/lib/supabaseClient";
 
 interface ShippingFormProps {
   orderId: string;
@@ -22,7 +26,11 @@ interface ShippingFormProps {
   onSuccess?: () => void;
 }
 
-export default function ShippingForm({ orderId, existingShipping, onSuccess }: ShippingFormProps) {
+export default function ShippingForm({
+  orderId,
+  existingShipping,
+  onSuccess,
+}: ShippingFormProps) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     shipping_address: existingShipping?.shipping_address || "",
@@ -43,7 +51,10 @@ export default function ShippingForm({ orderId, existingShipping, onSuccess }: S
       // Generar tracking URL si hay número de tracking
       let tracking_url = null;
       if (formData.tracking_number && formData.shipping_method) {
-        const method = SHIPPING_METHODS[formData.shipping_method as keyof typeof SHIPPING_METHODS];
+        const method =
+          SHIPPING_METHODS[
+            formData.shipping_method as keyof typeof SHIPPING_METHODS
+          ];
         if (method.trackingUrl) {
           tracking_url = method.trackingUrl(formData.tracking_number);
         }
@@ -56,7 +67,9 @@ export default function ShippingForm({ orderId, existingShipping, onSuccess }: S
         shipping_city: formData.shipping_city || null,
         shipping_postal_code: formData.shipping_postal_code || null,
         shipping_method: formData.shipping_method || null,
-        shipping_cost: formData.shipping_cost ? parseFloat(formData.shipping_cost) : null,
+        shipping_cost: formData.shipping_cost
+          ? parseFloat(formData.shipping_cost)
+          : null,
         tracking_number: formData.tracking_number || null,
         tracking_url: tracking_url,
         internal_notes: formData.internal_notes || null,
@@ -97,7 +110,9 @@ export default function ShippingForm({ orderId, existingShipping, onSuccess }: S
           <Input
             id="address"
             value={formData.shipping_address}
-            onChange={(e) => setFormData({ ...formData, shipping_address: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, shipping_address: e.target.value })
+            }
             placeholder="Calle 123, Piso 4, Dpto B"
           />
         </div>
@@ -107,7 +122,9 @@ export default function ShippingForm({ orderId, existingShipping, onSuccess }: S
           <Input
             id="city"
             value={formData.shipping_city}
-            onChange={(e) => setFormData({ ...formData, shipping_city: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, shipping_city: e.target.value })
+            }
             placeholder="CABA"
           />
         </div>
@@ -117,7 +134,9 @@ export default function ShippingForm({ orderId, existingShipping, onSuccess }: S
           <Input
             id="province"
             value={formData.shipping_province}
-            onChange={(e) => setFormData({ ...formData, shipping_province: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, shipping_province: e.target.value })
+            }
             placeholder="Buenos Aires"
           />
         </div>
@@ -127,7 +146,9 @@ export default function ShippingForm({ orderId, existingShipping, onSuccess }: S
           <Input
             id="postal"
             value={formData.shipping_postal_code}
-            onChange={(e) => setFormData({ ...formData, shipping_postal_code: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, shipping_postal_code: e.target.value })
+            }
             placeholder="1234"
           />
         </div>
@@ -136,7 +157,9 @@ export default function ShippingForm({ orderId, existingShipping, onSuccess }: S
           <Label htmlFor="method">Método de envío</Label>
           <Select
             value={formData.shipping_method}
-            onValueChange={(value) => setFormData({ ...formData, shipping_method: value })}
+            onValueChange={(value) =>
+              setFormData({ ...formData, shipping_method: value })
+            }
           >
             <SelectTrigger>
               <SelectValue placeholder="Seleccionar método" />
@@ -158,7 +181,9 @@ export default function ShippingForm({ orderId, existingShipping, onSuccess }: S
             type="number"
             step="0.01"
             value={formData.shipping_cost}
-            onChange={(e) => setFormData({ ...formData, shipping_cost: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, shipping_cost: e.target.value })
+            }
             placeholder="0.00"
           />
         </div>
@@ -168,7 +193,9 @@ export default function ShippingForm({ orderId, existingShipping, onSuccess }: S
           <Input
             id="tracking"
             value={formData.tracking_number}
-            onChange={(e) => setFormData({ ...formData, tracking_number: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, tracking_number: e.target.value })
+            }
             placeholder="ABC123456789"
           />
           {formData.tracking_number && formData.shipping_method && (
@@ -183,16 +210,22 @@ export default function ShippingForm({ orderId, existingShipping, onSuccess }: S
           <Textarea
             id="notes"
             value={formData.internal_notes}
-            onChange={(e) => setFormData({ ...formData, internal_notes: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, internal_notes: e.target.value })
+            }
             placeholder="Notas privadas sobre el envío..."
             rows={3}
           />
         </div>
       </div>
 
-      <div className="flex justify-end gap-2 pt-4 border-t">
+      <div className="flex justify-end gap-2 border-t pt-4">
         <Button type="submit" disabled={loading}>
-          {loading ? "Guardando..." : existingShipping ? "Actualizar" : "Guardar"}
+          {loading
+            ? "Guardando..."
+            : existingShipping
+              ? "Actualizar"
+              : "Guardar"}
         </Button>
       </div>
     </form>

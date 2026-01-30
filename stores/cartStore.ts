@@ -1,10 +1,12 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+
 import { CartItem } from "@/types/cartItem";
 
-
-type CartItemType = Pick< CartItem,  'id'|  'name' | 'size' | 'price' | 'quantity' | 'image'> ;
-
+type CartItemType = Pick<
+  CartItem,
+  "id" | "name" | "size" | "price" | "quantity" | "image"
+>;
 
 type CartStore = {
   items: CartItemType[];
@@ -35,7 +37,9 @@ export const useCartStore = create<CartStore>()(
         }
       },
       removeItem: (id, size) => {
-        set({ items: get().items.filter((i) => !(i.id === id && i.size === size)) });
+        set({
+          items: get().items.filter((i) => !(i.id === id && i.size === size)),
+        });
       },
       updateQuantity: (id, size, quantity) => {
         set({

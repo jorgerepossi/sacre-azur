@@ -1,1 +1,1 @@
-export { Link } from './tenant-link';
+export { Link } from "./tenant-link";

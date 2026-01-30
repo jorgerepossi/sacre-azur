@@ -2,25 +2,25 @@
 
 import React from "react";
 
-import { Link } from "@/components/link";
-
 import { useCartStore } from "@/stores/cartStore";
 import { ShoppingCart } from "lucide-react";
 
+import { Link } from "@/components/link";
 //import LoginButton from "@/components/login-button";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const Header = () => {
   const items = useCartStore((state) => state.items);
-  {/*
+  {
+    /*
     <LoginButton />
-  */}
+  */
+  }
   return (
     <header className="sticky top-0 z-10 border-b bg-background">
       <div className="flex h-16 items-center justify-between px-4 py-4">
         <Link href="/">
-
-        <h1 className="text-2xl font-bold">Perfume Store</h1>
+          <h1 className="text-2xl font-bold">Perfume Store</h1>
         </Link>
         <div className="flex items-center gap-4">
           <ThemeToggle />
@@ -32,7 +32,6 @@ const Header = () => {
               </span>
             )}
           </Link>
-
         </div>
       </div>
     </header>

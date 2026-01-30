@@ -18,7 +18,9 @@ import {
 } from "@/components/ui/select";
 
 import { useCreatePerfumeForm } from "@/hooks/useCreatePerfumeForm";
+
 import PricePreview from "../edit/components/price-preview";
+import ImageCropModal from "../edit/components/image-crop-modal";
 
 const CreateForm = () => {
   const {
@@ -36,6 +38,10 @@ const CreateForm = () => {
     handleImageChange,
     handleIconClick,
     handleOnSubmit,
+    showCropModal,
+    tempImageSrc,
+    handleCropComplete,
+    setShowCropModal,
   } = useCreatePerfumeForm();
 
   if (isLoading || error || !brands) return null;
@@ -51,7 +57,12 @@ const CreateForm = () => {
             render={({ field }) => (
               <Flex className="flex-col gap-[1rem]">
                 <Label htmlFor="name">Nombre</Label>
-                <Input {...field} id="name" type="text" placeholder="Ej: Lune Feline" />
+                <Input
+                  {...field}
+                  id="name"
+                  type="text"
+                  placeholder="Ej: Lune Feline"
+                />
               </Flex>
             )}
           />
@@ -75,7 +86,12 @@ const CreateForm = () => {
               render={({ field }) => (
                 <Flex className="flex-col gap-[1rem]">
                   <Label htmlFor="price">Precio</Label>
-                  <Input {...field} type="number" id="price" placeholder="400000" />
+                  <Input
+                    {...field}
+                    type="number"
+                    id="price"
+                    placeholder="400000"
+                  />
                 </Flex>
               )}
             />
@@ -85,7 +101,12 @@ const CreateForm = () => {
               render={({ field }) => (
                 <Flex className="flex-col gap-[1rem]">
                   <Label htmlFor="profit">Ganancia</Label>
-                  <Input {...field} type="number" id="profit" placeholder="50" />
+                  <Input
+                    {...field}
+                    type="number"
+                    id="profit"
+                    placeholder="50"
+                  />
                 </Flex>
               )}
             />
@@ -111,7 +132,7 @@ const CreateForm = () => {
               )}
             />
           </Flex>
-<PricePreview control={control} />
+          <PricePreview control={control} />
           <Controller
             control={control}
             name="external_link"
@@ -127,15 +148,13 @@ const CreateForm = () => {
               </Flex>
             )}
           />
-           <Label htmlFor="note_ids">Acordes Principales</Label>
+          <Label htmlFor="note_ids">Acordes Principales</Label>
           <Controller
-          
             name="note_ids"
             control={control}
             render={({ field }) => (
               <Flex className="flex-col gap-[1rem]">
                 <MultiNoteSelector
-                
                   control={control}
                   name="note_ids"
                   notes={orderNotes ?? []}
@@ -177,6 +196,14 @@ const CreateForm = () => {
           {createPerfume.isPending ? "Guardando..." : "Crear Nuevo"}
         </Button>
       </Flex>
+      {showCropModal && tempImageSrc && (
+        <ImageCropModal
+          open={showCropModal}
+          imageSrc={tempImageSrc}
+          onClose={() => setShowCropModal(false)}
+          onCropComplete={handleCropComplete}
+        />
+      )}
     </form>
   );
 };

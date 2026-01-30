@@ -11,8 +11,8 @@ export default function ProductsList({ products }: ProductsListProps) {
   );
 
   return (
-    <div className="border rounded-lg p-6">
-      <h3 className="font-semibold mb-4">Productos</h3>
+    <div className="rounded-lg border p-6">
+      <h3 className="mb-4 font-semibold">Productos</h3>
       <div className="space-y-3">
         {products.map((item: any, i: number) => (
           <div key={i} className="flex justify-between text-sm">
@@ -20,11 +20,14 @@ export default function ProductsList({ products }: ProductsListProps) {
               {item.name} ({item.size}ml) x{item.quantity}
             </span>
             <span className="font-semibold">
-              ${formatNumberWithDots(Number(item.price || 0) * Number(item.quantity || 0))}
+              $
+              {formatNumberWithDots(
+                Number(item.price || 0) * Number(item.quantity || 0),
+              )}
             </span>
           </div>
         ))}
-        <div className="border-t pt-3 flex justify-between font-bold">
+        <div className="flex justify-between border-t pt-3 font-bold">
           <span>Total:</span>
           <span>${formatNumberWithDots(total)}</span>
         </div>

@@ -1,9 +1,13 @@
 "use client";
 
 import React from "react";
+
 import { useRouter } from "next/navigation";
+
+import { ImageUp } from "lucide-react";
 import { Controller } from "react-hook-form";
 
+import Box from "@/components/box";
 import BrandSelectOptions from "@/components/brand-select-options";
 import Flex from "@/components/flex";
 import MultiNoteSelector from "@/components/MultiNoteSelector";
@@ -21,13 +25,11 @@ import {
 import { Switch } from "@/components/ui/switch";
 
 import { useEditPerfume } from "@/hooks/useEditPerfume";
-import PricePreview from "./components/price-preview";
-
 import { useTenantUrl } from "@/hooks/useTenantUrl";
-import {  ImageUp } from "lucide-react";
+
 import EditPerfumeSkeleton from "./components/edit-form-skeleton";
-import Box from "@/components/box";
 import ImageCropModal from "./components/image-crop-modal";
+import PricePreview from "./components/price-preview";
 
 export default function EditPerfumeContent() {
   const router = useRouter();
@@ -48,7 +50,7 @@ export default function EditPerfumeContent() {
     setShowCropModal,
     handleCropComplete,
   } = useEditPerfume();
-  const { tenant } = useTenantUrl()
+  const { tenant } = useTenantUrl();
 
   if (isPending || !brands) {
     return <EditPerfumeSkeleton />;
@@ -59,12 +61,12 @@ export default function EditPerfumeContent() {
   };
 
   return (
-    <Card className="mx-auto  gap-[2rem] p-[1.5rem]">
+    <Card className="mx-auto gap-[2rem] p-[1.5rem]">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-[2rem]"
       >
-        <Flex className="justify-between items-center">
+        <Flex className="items-center justify-between">
           <h2 className="mb-4 text-2xl font-bold">Edit Perfume</h2>
           <Controller
             name="in_stock"
@@ -81,9 +83,8 @@ export default function EditPerfumeContent() {
             )}
           />
         </Flex>
-        <Box className="grid grid-cols-1  md:grid-cols-2 gap-[2rem] ">
-          <Flex className="flex-col gap-[2rem] flex-2">
-
+        <Box className="grid grid-cols-1 gap-[2rem] md:grid-cols-2">
+          <Flex className="flex-2 flex-col gap-[2rem]">
             <Controller
               name="name"
               control={control}
@@ -92,7 +93,12 @@ export default function EditPerfumeContent() {
                   <Label htmlFor={"name"} className={"text-muted-foreground"}>
                     Name
                   </Label>
-                  <Input {...field} id={"name"} type="text" placeholder="Name" />
+                  <Input
+                    {...field}
+                    id={"name"}
+                    type="text"
+                    placeholder="Name"
+                  />
                 </Flex>
               )}
             />
@@ -107,7 +113,10 @@ export default function EditPerfumeContent() {
                   >
                     Description
                   </Label>
-                  <RichTextEditor value={field.value} onChange={field.onChange} />
+                  <RichTextEditor
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
                 </Flex>
               )}
             />
@@ -118,7 +127,10 @@ export default function EditPerfumeContent() {
                   control={control}
                   render={({ field }) => (
                     <Flex className={"w-full flex-col gap-[1rem]"}>
-                      <Label htmlFor={"price"} className={"text-muted-foreground"}>
+                      <Label
+                        htmlFor={"price"}
+                        className={"text-muted-foreground"}
+                      >
                         Price
                       </Label>
                       <Input
@@ -137,7 +149,10 @@ export default function EditPerfumeContent() {
                   control={control}
                   render={({ field }) => (
                     <Flex className={"w-full flex-col gap-[1rem]"}>
-                      <Label htmlFor={"profit"} className={"text-muted-foreground"}>
+                      <Label
+                        htmlFor={"profit"}
+                        className={"text-muted-foreground"}
+                      >
                         Profit
                       </Label>
                       <Input
@@ -157,7 +172,10 @@ export default function EditPerfumeContent() {
                 rules={{ required: "Choose Brand" }}
                 render={({ field }) => (
                   <Flex className={"w-full flex-col gap-[1rem]"}>
-                    <Label htmlFor={"brand_id"} className={"text-muted-foreground"}>
+                    <Label
+                      htmlFor={"brand_id"}
+                      className={"text-muted-foreground"}
+                    >
                       Change Brand
                     </Label>
                     <Select
@@ -178,13 +196,15 @@ export default function EditPerfumeContent() {
             <PricePreview control={control} />
           </Flex>
           {/* end block one */}
-          <Flex className="flex-col gap-[2rem] flex-2">
+          <Flex className="flex-2 flex-col gap-[2rem]">
             <Controller
               name="note_ids"
               control={control}
               render={({ field }) => (
                 <Flex className="flex-col gap-[1rem]">
-                  <Label className="text-muted-foreground">Acordes principales</Label>
+                  <Label className="text-muted-foreground">
+                    Acordes principales
+                  </Label>
                   <MultiNoteSelector
                     control={control}
                     name="note_ids"
@@ -196,16 +216,16 @@ export default function EditPerfumeContent() {
               )}
             />
 
-{showCropModal && tempImageSrc && (
-  <ImageCropModal
-    open={showCropModal}
-    imageSrc={tempImageSrc}
-    onClose={() => setShowCropModal(false)}
-    onCropComplete={handleCropComplete}
-  />
-)}
+            {showCropModal && tempImageSrc && (
+              <ImageCropModal
+                open={showCropModal}
+                imageSrc={tempImageSrc}
+                onClose={() => setShowCropModal(false)}
+                onCropComplete={handleCropComplete}
+              />
+            )}
 
-            <Flex className="gap-[1rem] flex-col">
+            <Flex className="flex-col gap-[1rem]">
               <Button
                 type="button"
                 variant="outline"
@@ -224,7 +244,7 @@ export default function EditPerfumeContent() {
               />
 
               {preview && (
-                <Flex className="justify-center items-center">
+                <Flex className="items-center justify-center">
                   <img
                     src={preview}
                     alt="Preview"
@@ -233,7 +253,6 @@ export default function EditPerfumeContent() {
                 </Flex>
               )}
             </Flex>
-
           </Flex>
           {/* end block two*/}
         </Box>

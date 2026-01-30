@@ -1,14 +1,16 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import ContentBlock from "@/components/content-block";
 import SmallLoader from "@/components/loaders/small";
-import { useShippingConfig } from "./hooks/useShippingConfig";
+import { Button } from "@/components/ui/button";
+
 import CorreoArgentinoSection from "./components/correo-argentino-section";
 import OriginAddressSection from "./components/origin-address-section";
+import { useShippingConfig } from "./hooks/useShippingConfig";
 
 export default function ShippingSettingsPageContent() {
-  const { config, setConfig, loading, saving, saveConfig } = useShippingConfig();
+  const { config, setConfig, loading, saving, saveConfig } =
+    useShippingConfig();
 
   if (loading) return <SmallLoader />;
 
@@ -30,7 +32,10 @@ export default function ShippingSettingsPageContent() {
             setConfig({ ...config, correo_argentino_password: password })
           }
           onAccountNumberChange={(accountNumber) =>
-            setConfig({ ...config, correo_argentino_account_number: accountNumber })
+            setConfig({
+              ...config,
+              correo_argentino_account_number: accountNumber,
+            })
           }
         />
 
@@ -39,9 +44,13 @@ export default function ShippingSettingsPageContent() {
           city={config.origin_city}
           province={config.origin_province}
           postalCode={config.origin_postal_code}
-          onAddressChange={(address) => setConfig({ ...config, origin_address: address })}
+          onAddressChange={(address) =>
+            setConfig({ ...config, origin_address: address })
+          }
           onCityChange={(city) => setConfig({ ...config, origin_city: city })}
-          onProvinceChange={(province) => setConfig({ ...config, origin_province: province })}
+          onProvinceChange={(province) =>
+            setConfig({ ...config, origin_province: province })
+          }
           onPostalCodeChange={(postalCode) =>
             setConfig({ ...config, origin_postal_code: postalCode })
           }

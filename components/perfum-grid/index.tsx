@@ -7,7 +7,6 @@ import { NoteFilterContext } from "@/providers/NoteFilterProvider";
 
 import Grid from "@/components/grid";
 import ItemPerfume from "@/components/item-perfum";
-
 import SkeletonPerfumeList from "@/components/skeletons/skeleton-perfume-list";
 
 import { Perfume } from "@/types/perfume.type";
@@ -17,8 +16,12 @@ import { useFetchPerfumes } from "@/hooks/useFetchPerfumes";
 export function PerfumeGrid() {
   const { selectedBrands } = useContext(BrandFilterContext);
   const { selectedNotes } = useContext(NoteFilterContext);
- 
-  const { data: perfumes, isPending, error } = useFetchPerfumes(selectedBrands, selectedNotes);
+
+  const {
+    data: perfumes,
+    isPending,
+    error,
+  } = useFetchPerfumes(selectedBrands, selectedNotes);
 
   if (isPending) {
     return <SkeletonPerfumeList />;
@@ -31,7 +34,7 @@ export function PerfumeGrid() {
   const allPerfumes = perfumes || [];
 
   const validPerfumes = allPerfumes
-    .filter((p: Perfume) => p?.id && p?.name)  
+    .filter((p: Perfume) => p?.id && p?.name)
     .sort((a: any, b: any) => a?.brand?.name.localeCompare(b?.brand?.name));
 
   if (validPerfumes.length === 0) {
@@ -39,7 +42,7 @@ export function PerfumeGrid() {
   }
 
   return (
-    <Grid className="grid w-full grid-cols-1 gap-8 md:grid-cols-4">
+    <Grid className="w-full grid-cols-1 gap-8 xs:grid-cols-1 phablet:grid-cols-2 desktop-sm:grid-cols-4 lg:grid-cols-4">
       {validPerfumes.map((perfume: Perfume) => (
         <ItemPerfume item={perfume} key={perfume.id} />
       ))}

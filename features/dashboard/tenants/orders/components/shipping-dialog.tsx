@@ -1,5 +1,10 @@
 "use client";
 
+import { useState } from "react";
+
+import { Truck } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,18 +14,19 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { Button } from "@/components/ui/button";
-import { Truck } from "lucide-react";
-import ShippingForm from "./shipping-form";
 import { Order } from "@/utils/order-utils";
-import { useState } from "react";
+
+import ShippingForm from "./shipping-form";
 
 interface ShippingDialogProps {
   order: Order;
   onSuccess?: () => void;
 }
 
-export default function ShippingDialog({ order, onSuccess }: ShippingDialogProps) {
+export default function ShippingDialog({
+  order,
+  onSuccess,
+}: ShippingDialogProps) {
   const [open, setOpen] = useState(false);
 
   const handleSuccess = () => {
@@ -36,12 +42,10 @@ export default function ShippingDialog({ order, onSuccess }: ShippingDialogProps
           {order.order_shipping ? "Editar envío" : "Agregar envío"}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Información de envío</DialogTitle>
-          <DialogDescription>
-            Orden #{order.order_code}
-          </DialogDescription>
+          <DialogDescription>Orden #{order.order_code}</DialogDescription>
         </DialogHeader>
         <ShippingForm
           orderId={order.id}

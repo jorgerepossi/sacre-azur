@@ -18,7 +18,6 @@ interface PerfumeListProps {
 }
 
 const PerfumeListContent = ({ data }: PerfumeListProps) => {
-   
   return (
     <Card>
       <Table>
