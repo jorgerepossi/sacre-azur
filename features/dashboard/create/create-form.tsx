@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 
 import { useCreatePerfumeForm } from "@/hooks/useCreatePerfumeForm";
+import PricePreview from "../edit/components/price-preview";
 
 const CreateForm = () => {
   const {
@@ -49,8 +50,8 @@ const CreateForm = () => {
             rules={{ required: "El nombre es obligatorio" }}
             render={({ field }) => (
               <Flex className="flex-col gap-[1rem]">
-                <Label htmlFor="name">Name</Label>
-                <Input {...field} id="name" type="text" placeholder="Name" />
+                <Label htmlFor="name">Nombre</Label>
+                <Input {...field} id="name" type="text" placeholder="Ej: Lune Feline" />
               </Flex>
             )}
           />
@@ -61,7 +62,7 @@ const CreateForm = () => {
             defaultValue=""
             render={({ field }) => (
               <Flex className="flex-col gap-[1rem]">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">Descripción</Label>
                 <RichTextEditor value={field.value} onChange={field.onChange} />
               </Flex>
             )}
@@ -73,8 +74,8 @@ const CreateForm = () => {
               name="price"
               render={({ field }) => (
                 <Flex className="flex-col gap-[1rem]">
-                  <Label htmlFor="price">Price</Label>
-                  <Input {...field} type="number" id="price" />
+                  <Label htmlFor="price">Precio</Label>
+                  <Input {...field} type="number" id="price" placeholder="400000" />
                 </Flex>
               )}
             />
@@ -83,8 +84,8 @@ const CreateForm = () => {
               name="profit_margin"
               render={({ field }) => (
                 <Flex className="flex-col gap-[1rem]">
-                  <Label htmlFor="profit">Profit</Label>
-                  <Input {...field} type="number" id="profit" />
+                  <Label htmlFor="profit">Ganancia</Label>
+                  <Input {...field} type="number" id="profit" placeholder="50" />
                 </Flex>
               )}
             />
@@ -94,7 +95,7 @@ const CreateForm = () => {
               name="brand_id"
               render={({ field }) => (
                 <Flex className="w-full flex-col gap-[1rem]">
-                  <Label>Select Brand</Label>
+                  <Label>Seleccionar Marca</Label>
                   <Select
                     onValueChange={field.onChange}
                     value={field.value ?? ""}
@@ -110,28 +111,31 @@ const CreateForm = () => {
               )}
             />
           </Flex>
-
+<PricePreview control={control} />
           <Controller
             control={control}
             name="external_link"
             render={({ field }) => (
               <Flex className="w-full flex-col gap-[1rem]">
-                <Label htmlFor="external_link">External Link</Label>
+                <Label htmlFor="external_link"> Link Externo</Label>
                 <Input
                   {...field}
                   type="text"
                   id="external_link"
-                  placeholder="External Link"
+                  placeholder="https://fragrantica.com"
                 />
               </Flex>
             )}
           />
+           <Label htmlFor="note_ids">Acordes Principales</Label>
           <Controller
+          
             name="note_ids"
             control={control}
             render={({ field }) => (
               <Flex className="flex-col gap-[1rem]">
                 <MultiNoteSelector
+                
                   control={control}
                   name="note_ids"
                   notes={orderNotes ?? []}
@@ -149,7 +153,7 @@ const CreateForm = () => {
               onClick={handleIconClick}
               className={"flex gap-[1rem]"}
             >
-              <ImageUp className="h-6 w-6" /> Upload image
+              <ImageUp className="h-6 w-6" /> Subir imagen
             </Button>
             <input
               hidden
@@ -170,7 +174,7 @@ const CreateForm = () => {
         </Flex>
 
         <Button type="submit" disabled={createPerfume.isPending}>
-          {createPerfume.isPending ? "Saving..." : "Create New"}
+          {createPerfume.isPending ? "Guardando..." : "Crear Nuevo"}
         </Button>
       </Flex>
     </form>

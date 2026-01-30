@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
-
 import { supabase } from "@/lib/supabaseClient";
 import { getTenantIdFromSlug } from "@/utils/tenantUtils";
 
 export async function GET(request: Request) {
   try {
-    // Get tenant slug from headers (set by middleware)
     const tenantSlug = request.headers.get('x-tenant-slug');
 
     if (!tenantSlug) {
@@ -15,7 +13,6 @@ export async function GET(request: Request) {
       );
     }
 
-    // Get tenant ID
     const tenantId = await getTenantIdFromSlug(tenantSlug);
 
     if (!tenantId) {
@@ -25,6 +22,7 @@ export async function GET(request: Request) {
       );
     }
 
+    // TODAS las brands del tenant (para dashboard)
     const { data, error } = await supabase
       .from("brand")
       .select("id, name, active, image")
@@ -34,7 +32,7 @@ export async function GET(request: Request) {
     if (error) {
       return NextResponse.json(
         { error: "Error fetching brands" },
-        { status: 500 },
+        { status: 500 }
       );
     }
 
@@ -47,7 +45,7 @@ export async function GET(request: Request) {
   } catch (error) {
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

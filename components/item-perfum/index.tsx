@@ -28,7 +28,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
   }
 
   return (
-    <Flex className="!hover:shadow-md w-full overflow-hidden rounded-lg border bg-background !shadow-sm transition-all duration-300 hover:-translate-y-1">
+    <Flex className="!hover:shadow-md w-full overflow-hidden rounded-lg  bg-background !shadow-sm transition-all duration-300 hover:-translate-y-1">
       <Flex className="w-full p-0">
         <Flex className={"w-full flex-col p-[1rem]"}>
           <Flex className={"flex-1 items-center justify-center py-4 md:py-2"}>
@@ -57,8 +57,8 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
               href={`/perfume/${createSlug(item.name)}_${item.id}`}
               className="w-[120px]"
             >
-              <Button className={"!bg-button-black w-full"} color={"bg-button-black"}>
-                View Detail
+              <Button className={"!bg-muted w-full text-muted-foreground text-xs"} color={"bg-button-black"}>
+                Ver Producto
               </Button>
             </Link>
           </Flex>

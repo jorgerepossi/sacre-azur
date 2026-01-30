@@ -1,8 +1,8 @@
 "use client";
 
-import { createContext, useContext, useMemo, useState } from "react";
+import { useContext, useMemo } from "react";
 
-import { useRouter, useSearchParams } from "next/navigation";
+
 
 import { BrandFilterContext } from "@/providers/BrandFilterProvider";
 
@@ -16,13 +16,14 @@ import { cn } from "@/lib/utils";
 import SkeletonAsideList from "@/components/skeletons/skeleton-aside-list";
 import Flex from "@/components/flex";
 import Box from "@/components/box";
+import { useFetchBrandsWithProducts } from "@/hooks/useFetchBrandsWithProducts";
 
 interface SidebarProps {
   className?: string;
 }
 const AsideContent = ({ className }: SidebarProps) => {
   const { selectedBrands, toggleBrand } = useContext(BrandFilterContext);
-  const { data: brands, isLoading, error } = useFetchBrands();
+  const { data: brands, isLoading, isPending, error } = useFetchBrandsWithProducts();
 
   const sortedBrands = useMemo(() => {
   return (
@@ -32,9 +33,9 @@ const AsideContent = ({ className }: SidebarProps) => {
   );
 }, [brands]);
 
-console.log("sortedBrands", sortedBrands);
+ 
 
-  if (isLoading) return <SkeletonAsideList />;
+  if (isPending) return <SkeletonAsideList />;
   if (error)
     return <div className="p-2 text-sm text-red-500">Error loading brands</div>;
 

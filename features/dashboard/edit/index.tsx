@@ -23,6 +23,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 
 import { useEditPerfume } from "@/hooks/useEditPerfume";
+import PricePreview from "./components/price-preview";
 
 export default function EditPerfumeContent() {
   const router = useRouter();
@@ -119,6 +120,7 @@ export default function EditPerfumeContent() {
               )}
             />
           </Flex>
+          
           <Controller
             control={control}
             name="brand_id"
@@ -143,6 +145,7 @@ export default function EditPerfumeContent() {
             )}
           />
         </Flex>
+          <PricePreview control={control} />
 
         <Controller
           name="external_link"
@@ -170,7 +173,7 @@ export default function EditPerfumeContent() {
           control={control}
           render={({ field }) => (
             <Flex className="flex-col gap-[1rem]">
-              <Label className="text-muted-foreground">Fragrance Notes</Label>
+              <Label className="text-muted-foreground">Acordes principales</Label>
               <MultiNoteSelector
                 control={control}
                 name="note_ids"
@@ -218,7 +221,7 @@ export default function EditPerfumeContent() {
             className={"flex-1"}
             onClick={handleCancel}
           >
-            Cancel{" "}
+            Cancel
           </Button>
           <Button type="submit" disabled={loading} className={"flex-1"}>
             {loading ? "Saving..." : "Update Perfume"}

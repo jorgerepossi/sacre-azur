@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Flex from "./flex";
 
 type Note = {
   id: number;
@@ -51,7 +52,7 @@ export default function MultiNoteSelector({
           <>
             <Select onValueChange={addNote}>
               <SelectTrigger>
-                <SelectValue placeholder="Select notes..." />
+                <SelectValue placeholder="Seleccionar ..." />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -72,9 +73,9 @@ export default function MultiNoteSelector({
               {selectedNotes?.map((noteId) => {
                 const note = notes.find((n) => n.id.toString() === noteId);
                 return (
-                  <div
+                  <Flex
                     key={noteId}
-                    className="flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-sm"
+                    className=" items-center gap-2 rounded-full text-card-foreground  p-4 bg-muted/30 px-3 py-1 text-sm"
                   >
                     <span>{note?.name}</span>
                     <button
@@ -84,7 +85,7 @@ export default function MultiNoteSelector({
                     >
                       <X size={14} />
                     </button>
-                  </div>
+                  </Flex>
                 );
               })}
             </div>

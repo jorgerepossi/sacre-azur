@@ -33,8 +33,9 @@ export default function PerfumeList() {
   return (
     <ContentBlock title="Perfumes">
       <Flex className={"w-full"}>
-        <SalesOverview />
+        <SalesOverview /> 
       </Flex>
+  
       <PerfumeSearchList
         nameFilter={nameFilter}
         setNameFilter={setNameFilter}

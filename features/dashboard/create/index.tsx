@@ -10,13 +10,13 @@ import { Card } from "@/components/ui/card";
 const CreatePageContent = () => {
   return (
     <Flex className={"flex-col gap-[2rem] lg:flex-row"}>
-      <ContentBlock title={"Create new perfume"} className={"flex-1"}>
+      <ContentBlock title={"Crear nuevo perfume"} className={"flex-1"}>
         <Card className={"flex flex-col gap-[2rem] !p-[2rem]"}>
           <CreateForm />
         </Card>
       </ContentBlock>
       <ContentBlock
-        title={"Create new brand"}
+        title={"Crear nueva marca"}
         className={"max-w-[500px] flex-1"}
       >
         <Card

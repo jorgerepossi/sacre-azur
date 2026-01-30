@@ -69,12 +69,12 @@ export default function CreateBrandForm() {
         <Flex className="flex-col gap-[2rem]">
           <Flex className={"flex-col gap-[1rem]"}>
             <Label htmlFor="name_brand" className="text-secondary_text_dark">
-              Name
+              Nombre
             </Label>
             <Input
               type="text"
               id="name_brand"
-              placeholder="Brand name"
+              placeholder="Amouage"
               {...register("name", { required: "El nombre es obligatorio" })}
             />
             {errors.name && (
@@ -83,7 +83,7 @@ export default function CreateBrandForm() {
           </Flex>
           <Flex className={"flex-col gap-[1rem]"}>
             <Label htmlFor="image_brand" className="text-secondary_text_dark">
-              Select an image
+              Seleccionar imagen
             </Label>
             <div>
               <Button
@@ -93,7 +93,7 @@ export default function CreateBrandForm() {
                 onClick={handleIconClick}
                 className="flex gap-[1rem]"
               >
-                <ImageUp className="h-6 w-6" /> Upload image
+                <ImageUp className="h-6 w-6" /> Subir Imagen
               </Button>
             </div>
             <input

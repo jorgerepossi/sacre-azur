@@ -191,7 +191,8 @@ export default function PerfumeDetails({ perfume }: Props) {
                 <Copy className="h-4 w-4" />
                 Share
               </Button>
-              <Link
+              { perfume.external_link !== null ? (
+                <Link
                 href={perfume.external_link || ""}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -199,6 +200,8 @@ export default function PerfumeDetails({ perfume }: Props) {
               >
                 Fragrantica
               </Link>
+              ) : '' }
+              
             </Flex>
 
             <div className="space-y-4 pt-6">
