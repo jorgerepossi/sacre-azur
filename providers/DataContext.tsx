@@ -1,38 +1,76 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 
-
 const DataContext = createContext<any>(null);
 
 export const DataProvider = ({ children }: { children: React.ReactNode }) => {
-  const [datos, setDatos] = useState<any[]>([]);
+  // Estado organizado por tablas para que sea más fácil de usar
+  const [dbData, setDbData] = useState<{
+    brands: any[],
+    tenants_products: any[],
+    perfumes: any[],
+    orders: any[],
+    order_shipping: any[]
+  }>({
+    brands: [],
+    tenants_products: [],
+    perfumes: [],
+    orders: [],
+    order_shipping: []
+  });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    
+    const tablas = ['brands', 'tenants_products', 'perfumes', 'orders', 'order_shipping'];
+
     const fetchInicial = async () => {
-      const { data } = await supabase.from('brands').select('*');
-      if (data) setDatos(data);
+      setLoading(true);
+      
+      // Lanzamos todas las peticiones al mismo tiempo para ganar velocidad
+      const promesas = tablas.map(tabla => supabase.from(tabla).select('*'));
+      const resultados = await Promise.all(promesas);
+
+      const nuevosDatos: any = {};
+      tablas.forEach((tabla, index) => {
+        nuevosDatos[tabla] = resultados[index].data || [];
+      });
+
+      setDbData(nuevosDatos);
       setLoading(false);
     };
+
     fetchInicial();
 
-   
-    const channel = supabase
-      .channel('sistema-principal')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'brands' }, (payload) => {
-        console.log('Cambio detectado:', payload);
-        
-        
-        if (payload.eventType === 'INSERT') {
-          setDatos((prev) => [...prev, payload.new]);
-        } else if (payload.eventType === 'UPDATE') {
-          setDatos((prev) => prev.map(item => item.id === payload.new.id ? payload.new : item));
-        } else if (payload.eventType === 'DELETE') {
-          setDatos((prev) => prev.filter(item => item.id !== payload.old.id));
+    // SUSCRIPCIÓN MULTI-TABLA
+    const channel = supabase.channel('cambios-globales');
+
+    tablas.forEach((tabla) => {
+      channel.on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: tabla },
+        (payload) => {
+          console.log(`Cambio en ${tabla}:`, payload);
+          
+          setDbData((prev: any) => {
+            const listaActual = prev[tabla];
+            let nuevaLista = [...listaActual];
+
+            if (payload.eventType === 'INSERT') {
+              nuevaLista = [...nuevaLista, payload.new];
+            } else if (payload.eventType === 'UPDATE') {
+              nuevaLista = nuevaLista.map(item => item.id === payload.new.id ? payload.new : item);
+            } else if (payload.eventType === 'DELETE') {
+              nuevaLista = nuevaLista.filter(item => item.id !== payload.old.id);
+            }
+
+            return { ...prev, [tabla]: nuevaLista };
+          });
         }
-      })
-      .subscribe();
+      );
+    });
+
+    channel.subscribe();
 
     return () => {
       supabase.removeChannel(channel);
@@ -40,7 +78,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <DataContext.Provider value={{ datos, loading }}>
+    <DataContext.Provider value={{ ...dbData, loading }}>
       {children}
     </DataContext.Provider>
   );
