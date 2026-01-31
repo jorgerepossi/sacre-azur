@@ -100,6 +100,7 @@ export const useCreatePerfume = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["perfumes"] });
       queryClient.invalidateQueries({ queryKey: ["tenant-products"] });
+      queryClient.invalidateQueries({ queryKey: ["brands"] }); 
     },
   });
 };

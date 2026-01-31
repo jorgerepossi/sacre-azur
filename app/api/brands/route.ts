@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-
 import { supabase } from "@/lib/supabaseClient";
-
 import { getTenantIdFromSlug } from "@/utils/tenantUtils";
+
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   try {
@@ -35,12 +36,7 @@ export async function GET(request: Request) {
       );
     }
 
-    return NextResponse.json(data, {
-      headers: {
-        "Cache-Control": "public, max-age=3600",
-        "CDN-Cache-Control": "public, max-age=3600",
-      },
-    });
+    return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
       { error: "Internal server error" },

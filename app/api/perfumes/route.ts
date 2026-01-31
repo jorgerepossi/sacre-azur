@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-
 import { supabase } from "@/lib/supabaseClient";
-
 import { getTenantIdFromSlug } from "@/utils/tenantUtils";
+
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   try {
@@ -95,12 +96,8 @@ export async function GET(request: Request) {
       notes &&
       (!perfumeIdsWithNotes || perfumeIdsWithNotes.length === 0)
     ) {
-      return NextResponse.json([], {
-        headers: {
-          "Cache-Control": "public, max-age=3600",
-          "CDN-Cache-Control": "public, max-age=3600",
-        },
-      });
+      // SIN CACHE AQUÍ
+      return NextResponse.json([]);
     }
 
     const { data, error } = await query;
@@ -151,12 +148,7 @@ export async function GET(request: Request) {
       })
       .filter((item): item is NonNullable<typeof item> => item !== null);
 
-    return NextResponse.json(transformedData, {
-      headers: {
-        "Cache-Control": "public, max-age=3600",
-        "CDN-Cache-Control": "public, max-age=3600",
-      },
-    });
+    return NextResponse.json(transformedData);
   } catch (error) {
     console.error("Error en API:", error);
     return NextResponse.json(

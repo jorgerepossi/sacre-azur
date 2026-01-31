@@ -262,6 +262,7 @@ export function useEditPerfume() {
 
       await queryClient.invalidateQueries({ queryKey: ["perfumes"] });
       await queryClient.invalidateQueries({ queryKey: ["tenant-products"] });
+      await queryClient.invalidateQueries({ queryKey: ["brands"] }); 
 
       router.push(`/${tenant.slug}/dashboard/perfumes`);
     } catch (error) {
