@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
+
 import { supabase } from "@/lib/supabaseClient";
+
 import { getTenantIdFromSlug } from "@/utils/tenantUtils";
 
 export const revalidate = 0;
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   try {
@@ -22,7 +24,6 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Tenant not found" }, { status: 404 });
     }
 
-    // Traer brands que tienen productos activos
     const { data: tenantProducts, error } = await supabase
       .from("tenant_products")
       .select(
@@ -31,6 +32,7 @@ export async function GET(request: Request) {
           brand:brand_id(
             id,
             name,
+            slug,
             active,
             image
           )
@@ -48,7 +50,6 @@ export async function GET(request: Request) {
       );
     }
 
-    // Extraer brands únicas
     const brandsMap = new Map();
 
     tenantProducts?.forEach((tp: any) => {
@@ -61,6 +62,7 @@ export async function GET(request: Request) {
         brandsMap.set(brand.id, {
           id: brand.id,
           name: brand.name,
+          slug: brand.slug,
           active: brand.active,
           image: brand.image,
         });

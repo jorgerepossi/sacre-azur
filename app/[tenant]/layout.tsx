@@ -16,7 +16,7 @@ export default function TenantLayout({ children, params }: TenantLayoutProps) {
       <div className="grid h-full">
         <div className="grid h-full grid-rows-[auto_1fr_auto]">
           <Header />
-          <main className="flex h-full flex-col gap-20 overflow-auto bg-background">
+          <main className="flex h-full flex-col gap-20  bg-background">
             {children}
           </main>
           <Footer />

@@ -24,7 +24,6 @@ export const useCreatePerfume = () => {
         throw new Error("No hay tenant seleccionado");
       }
 
- 
       const { data: imageData, error: imageError } = await supabase.storage
         .from("perfume-images")
         .upload(`perfumes/${Date.now()}-${imageFile.name}`, imageFile, {
@@ -41,7 +40,7 @@ export const useCreatePerfume = () => {
 
       const imageUrl = data.publicUrl;
 
-       const { data: perfumeData, error: perfumeError } = await supabase
+      const { data: perfumeData, error: perfumeError } = await supabase
         .from("perfume")
         .insert([
           {
@@ -100,7 +99,7 @@ export const useCreatePerfume = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["perfumes"] });
       queryClient.invalidateQueries({ queryKey: ["tenant-products"] });
-      queryClient.invalidateQueries({ queryKey: ["brands"] }); 
+      queryClient.invalidateQueries({ queryKey: ["brands"] });
     },
   });
 };

@@ -13,22 +13,21 @@ export const usePerfume = (pricePer100ml: number, profit: number) => {
   const [quantity, setQuantity] = useState(1);
   const [profitMargin, setProfitMargin] = useState(profit);
 
-  // Calcular precio con profit margin y size factor
+
   const calculatePrice = (sizeInMl: number) => {
-    // 1. Aplicar profit margin al precio base
+
     const priceWithProfit = pricePer100ml * (1 + profitMargin / 100);
 
-    // 2. Calcular precio por ml
+
     const pricePerMl = priceWithProfit / 100;
 
-    // 3. Obtener factor de tamaño
+
     const sizeFactor =
       SIZE_FACTORS[sizeInMl as keyof typeof SIZE_FACTORS] || 1.0;
 
-    // 4. Calcular precio final
-    return pricePerMl * sizeInMl * sizeFactor;
-  };
 
+    return Math.round(pricePerMl * sizeInMl * sizeFactor);
+  };
   const rawUnitPrice = calculatePrice(selectedSize.value);
   const rawTotalPrice = rawUnitPrice * quantity;
 

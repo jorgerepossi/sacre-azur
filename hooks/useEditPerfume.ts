@@ -107,17 +107,14 @@ export function useEditPerfume() {
 
       setTenantProductId(tenantProduct.id);
 
-      // Fetch existing notes relations
-      const { data: relationsData } = await supabase
-        .from("perfume_note_relation")
-        .select("note_id")
-        .eq("perfume_id", perfumeId);
+
+      const { data: relationsData } = await supabase.from("perfume_note_relation").select("note_id").eq("perfume_id", perfumeId);
 
       const initialNotes =
         relationsData?.map((r) => r.note_id.toString()) || [];
       setSelectedNotes(initialNotes);
 
-      // Reset form con TODOS los datos (perfume + tenant_products)
+
       reset({
         name: perfumeData.name,
         description: perfumeData.description,
@@ -130,7 +127,7 @@ export function useEditPerfume() {
         image: undefined,
       });
 
-      // Handle image preview
+
       const path = perfumeData.image?.replace(
         `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/perfume-images/`,
         "",
@@ -254,6 +251,8 @@ export function useEditPerfume() {
         .eq("id", tenantProductId)
         .select();
 
+
+
       if (tenantProductError) throw tenantProductError;
 
       await updateNotesRelations(data.note_ids);
@@ -262,7 +261,7 @@ export function useEditPerfume() {
 
       await queryClient.invalidateQueries({ queryKey: ["perfumes"] });
       await queryClient.invalidateQueries({ queryKey: ["tenant-products"] });
-      await queryClient.invalidateQueries({ queryKey: ["brands"] }); 
+      await queryClient.invalidateQueries({ queryKey: ["brands"] });
 
       router.push(`/${tenant.slug}/dashboard/perfumes`);
     } catch (error) {

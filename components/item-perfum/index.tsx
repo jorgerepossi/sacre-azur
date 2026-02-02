@@ -42,7 +42,6 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
     return null;
   }
 
-  // Calcular precio con size factors
   const calculatePrice = (sizeInMl: number) => {
     const basePrice = Number(item.price);
     const profitMargin = Number(item.profit_margin);
@@ -51,10 +50,9 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
 
     const priceWithProfit = basePrice * (1 + profitMargin / 100);
     const pricePerMl = priceWithProfit / 100;
-    const sizeFactor =
-      SIZE_FACTORS[sizeInMl as keyof typeof SIZE_FACTORS] || 1.0;
+    const sizeFactor = SIZE_FACTORS[sizeInMl as keyof typeof SIZE_FACTORS] || 1.0;
 
-    return Math.floor(pricePerMl * sizeInMl * sizeFactor);
+    return Math.round(pricePerMl * sizeInMl * sizeFactor);
   };
 
   const currentPrice = calculatePrice(selectedSize);
@@ -83,8 +81,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
     <Flex className="!hover:shadow-md w-full overflow-hidden rounded-lg bg-background !shadow-sm transition-all duration-300 hover:-translate-y-1">
       <Flex className="w-full p-4">
         <Flex className={"w-full flex-col"}>
-          {/* Imagen - HEIGHT FIJO */}
-          <Flex className={"h-full items-center justify-center py-4 md:py-2"}>
+           <Flex className={"h-full items-center justify-center py-4 md:py-2"}>
             <Image
               src={item.image || "/placeholder.svg"}
               alt={item.name}
@@ -94,7 +91,6 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
             />
           </Flex>
 
-          {/* Info */}
           <Flex className={"flex-col justify-between py-[1rem] md:flex-row"}>
             <Flex className={"flex-1 flex-col gap-[.25rem]"}>
               <p className="m-0 font-bold">{item.name}</p>
@@ -103,40 +99,43 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
               </p>
             </Flex>
           </Flex>
+          {item.in_stock ? (
+            <>
+              <Flex className="mb-3 flex-col gap-2 sm:flex-row">
+                {SIZES.map((size) => (
+                  <button
+                    key={size.value}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setSelectedSize(size.value);
+                    }}
+                    className={`flex-1 rounded-full border-2 px-2 py-1 text-xs font-medium transition-all ${
+                      selectedSize === size.value
+                        ? "border-black bg-black text-white"
+                        : "border-gray-300 bg-white text-gray-700 hover:border-black"
+                    }`}
+                  >
+                    {size.label}
+                  </button>
+                ))}
+              </Flex>
 
-          <Flex className="mb-3 flex-col gap-2 sm:flex-row">
-            {SIZES.map((size) => (
-              <button
-                key={size.value}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setSelectedSize(size.value);
-                }}
-                className={`flex-1 rounded-full border-2 px-2 py-1 text-xs font-medium transition-all ${
-                  selectedSize === size.value
-                    ? "border-black bg-black text-white"
-                    : "border-gray-300 bg-white text-gray-700 hover:border-black"
-                } `}
-              >
-                {size.label}
-              </button>
-            ))}
-          </Flex>
-
-          <Flex className="mb-3">
-            <p className="text-md m-0 font-bold">
-              ${formatPrice(currentPrice)}
-            </p>
-          </Flex>
+              <Flex className="mb-3">
+                <p className="text-md m-0 font-bold">
+                  ${formatPrice(currentPrice)}
+                </p>
+              </Flex>
+            </>
+          ) : (<Flex className={'shrink-0 justify-center items-center mb-3  h-[50px]'}>
+            <Flex className={"bg-neutral-100 text-muted-foreground shrink-0  h-[25px]  items-center   rounded-full px-4 py-1"}> Sin Stock</Flex>
+          </Flex>)}
 
           <Flex
             className={
               "flex-col items-center justify-between gap-[1rem] border-t-2 border-muted pt-[16px] lg:justify-center xl:flex-row"
             }
           >
-            
-
             <Link
               href={`/perfume/${createSlug(item.name)}_${item.id}`}
               className="w-[120px]"
@@ -148,13 +147,23 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
                 Ver Producto
               </Button>
             </Link>
-<Button
-              className={"w-[120px] !bg-muted text-xs text-muted-foreground "}
-              variant={"ghost"}
-              onClick={handleAddToCart}
-            >
-              Comprar
-            </Button>
+            {item.in_stock ? (
+              <Button
+                className={"w-[120px] !bg-muted text-xs text-muted-foreground"}
+                variant={"ghost"}
+                onClick={handleAddToCart}
+              >
+                Comprar
+              </Button>
+            ) : (
+              <Button
+                className={"w-[120px] text-xs"}
+                variant={"ghost"}
+                disabled
+              >
+                Sin stock
+              </Button>
+            )}
           </Flex>
         </Flex>
       </Flex>

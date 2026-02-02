@@ -15,6 +15,8 @@ import { supabase } from "@/lib/supabaseClient";
 
 // components/LoginButton.tsx
 
+// components/LoginButton.tsx
+
 const LoginButton = () => {
   const login = async () => {
     const { error } = await supabase.auth.signInWithPassword({

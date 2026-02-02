@@ -2,6 +2,7 @@ export interface Brand {
   id: string;
   name: string;
   active: boolean;
+  slug: string;
   image?: string;
   tenant_id: string;
 }
@@ -26,6 +27,7 @@ export interface Perfume {
   external_link?: string;
   brand_id?: string;
   in_stock: boolean;
+  is_active: boolean;
   profit_margin: number;
   perfume_note_relation?: PerfumeNoteRelation[];
   tenant_id: string;

@@ -5,10 +5,10 @@ export const createClient = () =>
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-    global: {
-      headers: { 'Cache-Control': 'no-cache' },
+      global: {
+        headers: { "Cache-Control": "no-cache" },
+      },
     },
-  }
   );
 
 export const supabase = createClient();

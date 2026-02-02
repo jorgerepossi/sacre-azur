@@ -24,6 +24,7 @@ export const PerfumePageContent = () => {
 
   const brandFiltered = usePerfumeBrandFilter(nameFiltered, brandFilter);
   const finalPerfumes = useStockFilter(brandFiltered, onlyInStock);
+
   return (
     <div>
       <h1>Perfume Page</h1>

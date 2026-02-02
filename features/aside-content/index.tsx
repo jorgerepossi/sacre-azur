@@ -61,22 +61,22 @@ const AsideContent = ({ className }: SidebarProps) => {
         <p className="font-semibold">Filtrar</p>
       </Flex>
 
-      {/* Brands Section con scroll */}
+     
       <div className="space-y-2">
         <p className="mb-2 text-sm font-semibold">Marcas</p>
         <div className="max-h-[250px] space-y-2 overflow-y-auto pr-2">
           {sortedBrands.map((brand: Brand) => (
             <BrandItem
-              key={brand.id}
-              brand={brand}
-              selected={selectedBrands.includes(brand.id)}
-              onToggle={toggleBrand}
-            />
+  key={brand.id}
+  brand={brand}
+  selected={selectedBrands.includes(brand.slug)}  
+  onToggle={toggleBrand}
+/>
           ))}
         </div>
       </div>
 
-      {/* Notes Section con scroll */}
+     
       <div className="space-y-2 border-t-2 pt-4">
         <p className="mb-2 text-sm font-semibold">Notas Olfativas</p>
         <div className="max-h-[400px] space-y-2 overflow-y-auto pr-2">

@@ -1,12 +1,11 @@
 "use client";
 
-import { createContext, Suspense, useState } from "react";
-
+import { createContext, Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 type BrandFilterContextType = {
   selectedBrands: string[];
-  toggleBrand: (brandId: string) => void;
+  toggleBrand: (brandSlug: string) => void;
 };
 
 export const BrandFilterContext = createContext<BrandFilterContextType>({
@@ -43,10 +42,18 @@ function BrandFilterProviderContent({
     () => searchParams.get("brands")?.split(",").filter(Boolean) || [],
   );
 
-  const toggleBrand = (brandId: string) => {
-    const newBrands = selectedBrands.includes(brandId)
-      ? selectedBrands.filter((id) => id !== brandId)
-      : [...selectedBrands, brandId];
+  // useEffect FUERA de toggleBrand
+  useEffect(() => {
+    const brandsParam = searchParams.get("brands");
+    if (brandsParam) {
+      setSelectedBrands(brandsParam.split(","));
+    }
+  }, [searchParams]);
+
+  const toggleBrand = (brandSlug: string) => {
+    const newBrands = selectedBrands.includes(brandSlug)
+      ? selectedBrands.filter((slug) => slug !== brandSlug)
+      : [...selectedBrands, brandSlug];
 
     setSelectedBrands(newBrands);
 

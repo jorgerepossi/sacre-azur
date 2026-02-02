@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 
 // app/not-found.tsx
 
+// app/not-found.tsx
+
 export default function NotFound() {
   const router = useRouter();
 

@@ -19,8 +19,8 @@ import {
 
 import { useCreatePerfumeForm } from "@/hooks/useCreatePerfumeForm";
 
-import PricePreview from "../edit/components/price-preview";
 import ImageCropModal from "../edit/components/image-crop-modal";
+import PricePreview from "../edit/components/price-preview";
 
 const CreateForm = () => {
   const {

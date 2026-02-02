@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
+
 import { supabase } from "@/lib/supabaseClient";
+
 import { getTenantIdFromSlug } from "@/utils/tenantUtils";
 
 export const revalidate = 0;
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   try {
@@ -25,7 +27,7 @@ export async function GET(request: Request) {
     // TODAS las brands del tenant (para dashboard)
     const { data, error } = await supabase
       .from("brand")
-      .select("id, name, active, image")
+      .select("id, name, slug, active, image")
       .eq("tenant_id", tenantId)
       .order("name", { ascending: true });
 

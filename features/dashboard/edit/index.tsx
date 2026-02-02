@@ -67,7 +67,7 @@ export default function EditPerfumeContent() {
         className="flex flex-col gap-[2rem]"
       >
         <Flex className="items-center justify-between">
-          <h2 className="mb-4 text-2xl font-bold">Edit Perfume</h2>
+          <h2 className="mb-4 text-2xl font-bold">Editar Perfume</h2>
           <Controller
             name="in_stock"
             control={control}
@@ -91,7 +91,7 @@ export default function EditPerfumeContent() {
               render={({ field }) => (
                 <Flex className={"w-full flex-col gap-[1rem]"}>
                   <Label htmlFor={"name"} className={"text-muted-foreground"}>
-                    Name
+                    Nombre
                   </Label>
                   <Input
                     {...field}
@@ -111,7 +111,7 @@ export default function EditPerfumeContent() {
                     htmlFor={"description"}
                     className={"text-muted-foreground"}
                   >
-                    Description
+                    Descripción
                   </Label>
                   <RichTextEditor
                     value={field.value}
@@ -131,7 +131,7 @@ export default function EditPerfumeContent() {
                         htmlFor={"price"}
                         className={"text-muted-foreground"}
                       >
-                        Price
+                        Precio
                       </Label>
                       <Input
                         {...field}
@@ -153,7 +153,7 @@ export default function EditPerfumeContent() {
                         htmlFor={"profit"}
                         className={"text-muted-foreground"}
                       >
-                        Profit
+                        Gan Porcentaje
                       </Label>
                       <Input
                         {...field}
@@ -176,7 +176,7 @@ export default function EditPerfumeContent() {
                       htmlFor={"brand_id"}
                       className={"text-muted-foreground"}
                     >
-                      Change Brand
+                      Cambiar Marca
                     </Label>
                     <Select
                       onValueChange={field.onChange}

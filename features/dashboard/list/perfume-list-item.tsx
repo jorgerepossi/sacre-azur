@@ -26,6 +26,8 @@ interface PerfumeListItemProps {
 const PerfumeListItem = ({ item }: PerfumeListItemProps) => {
   const { tenant } = useTenant();
 
+  console.log("item", item);
+
   return (
     <TableRow>
       <TableCell key={item.id} className="font-medium">
@@ -74,7 +76,7 @@ const PerfumeListItem = ({ item }: PerfumeListItemProps) => {
       </TableCell>
       <TableCell className="font-medium">
         <p className={"text-body-medium"}>
-          ${formatNumberWithDots(item.price)}
+          ${formatNumberWithDots(Number(item.price))}
         </p>
       </TableCell>
       <TableCell className="font-medium">

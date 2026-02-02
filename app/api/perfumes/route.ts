@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
+
 import { supabase } from "@/lib/supabaseClient";
+
 import { getTenantIdFromSlug } from "@/utils/tenantUtils";
 
 export const revalidate = 0;
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   try {
@@ -36,13 +38,13 @@ export async function GET(request: Request) {
         .in("note_id", noteArray);
 
       if (noteRelations) {
-        // Agrupar por perfume_id y contar cuántas notas tiene
+
         const perfumeCounts = noteRelations.reduce((acc: any, rel: any) => {
           acc[rel.perfume_id] = (acc[rel.perfume_id] || 0) + 1;
           return acc;
         }, {});
 
-        // Solo perfumes que tengan TODAS las notas seleccionadas
+
         perfumeIdsWithNotes = Object.keys(perfumeCounts).filter(
           (id) => perfumeCounts[id] === noteArray.length,
         );
@@ -85,10 +87,20 @@ export async function GET(request: Request) {
       .eq("active", true);
 
     const brands = searchParams.get("brands");
-    if (brands) {
-      const brandArray = brands.split(",");
-      query = query.in("perfume.brand_id", brandArray);
-    }
+if (brands) {
+  const brandSlugs = brands.split(",");
+  
+  // Convertir slugs a IDs
+  const { data: brandData } = await supabase
+    .from("brand")
+    .select("id")
+    .in("slug", brandSlugs);
+  
+  if (brandData && brandData.length > 0) {
+    const brandIds = brandData.map(b => b.id);
+    query = query.in("perfume.brand_id", brandIds);
+  }
+}
 
     if (perfumeIdsWithNotes && perfumeIdsWithNotes.length > 0) {
       query = query.in("perfume_id", perfumeIdsWithNotes);
@@ -142,7 +154,7 @@ export async function GET(request: Request) {
           price: item.price,
           profit_margin: item.profit_margin,
           sizes_available: item.sizes_available,
-          stock: item.stock,
+          in_stock: item.stock > 0,
           tenant_product_id: item.id,
         };
       })

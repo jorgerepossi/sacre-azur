@@ -92,6 +92,7 @@ export default async function Page({
     price: tenantProduct.price,
     profit_margin: tenantProduct.profit_margin,
     in_stock: tenantProduct.stock > 0,
+    is_active: true,
     tenant_id: tenantProduct.tenant_id,
   };
 
