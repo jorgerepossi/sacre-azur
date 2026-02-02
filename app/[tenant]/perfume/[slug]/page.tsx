@@ -22,11 +22,11 @@ export default async function Page({
 
   if (!id || !/^[0-9a-f-]{36}$/.test(id)) return notFound();
 
-  // Obtener tenant ID
+ 
   const tenantId = await getTenantIdFromSlug(tenant);
   if (!tenantId) return notFound();
 
-  // Query desde tenant_products con JOINs
+ 
   const { data: tenantProduct, error } = await supabase
     .from("tenant_products")
     .select(
@@ -45,6 +45,7 @@ export default async function Page({
         brand:brand_id (
           id,
           name,
+          slug,
           image,
           active,
           tenant_id,
@@ -66,16 +67,22 @@ export default async function Page({
 
   if (error || !tenantProduct) return notFound();
 
-  // Transformar para mantener compatibilidad
+ 
   const perfumeData = Array.isArray(tenantProduct.perfume)
     ? tenantProduct.perfume[0]
     : tenantProduct.perfume;
 
-  const brand = Array.isArray(perfumeData?.brand)
+  const brandData = Array.isArray(perfumeData?.brand)
     ? perfumeData.brand[0]
     : perfumeData?.brand;
 
-  // Transformar perfume_note_relation
+  // Ensure brand has slug
+  const brand = {
+    ...brandData,
+    slug: brandData?.slug || createSlug(brandData?.name || ''),
+  };
+
+   
   const perfumeNoteRelation = perfumeData?.perfume_note_relation?.map(
     (relation: any) => ({
       note_id: relation.note_id,
