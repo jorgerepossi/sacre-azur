@@ -13,12 +13,12 @@ import { Brand } from "@/types/perfume.type";
 
 import { useFetchBrands } from "@/hooks/useFetchBrands";
 
-export default function BrandEditPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
+interface RouteParams {
+  tenant: string;
+  id: string;
+}
+export default function BrandEditPage({ params }: { params: Promise<RouteParams> }) {
+ const { tenant, id } =use(params);
   const router = useRouter();
   const { data, isLoading } = useFetchBrands();
 
