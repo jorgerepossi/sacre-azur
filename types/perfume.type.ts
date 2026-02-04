@@ -4,7 +4,6 @@ export interface Brand {
   active: boolean;
   slug: string;
   image?: string;
-  tenant_id: string;
 }
 
 export interface PerfumeNote {

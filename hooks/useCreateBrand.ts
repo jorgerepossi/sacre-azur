@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import { supabase } from "@/lib/supabaseClient";
 import { uploadBrandImage } from "@/lib/uploadImage";
 
@@ -15,10 +16,13 @@ export const useCreateBrand = () => {
     }) => {
       try {
         const imageUrl = await uploadBrandImage(imageFile);
-        
+
         // Generar slug
-        const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-        
+        const slug = name
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/(^-|-$)/g, "");
+
         const { data, error } = await supabase.from("brand").insert([
           {
             name,
@@ -33,7 +37,7 @@ export const useCreateBrand = () => {
           console.error("Supabase Error:", error);
           throw error;
         }
-        
+
         return data;
       } catch (err) {
         console.error("Unexpected Error:", err);

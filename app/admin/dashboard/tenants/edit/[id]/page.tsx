@@ -7,6 +7,5 @@ interface EditTenantPageProps {
 }
 
 export default async function EditTenantPage({ params }: EditTenantPageProps) {
-  const { id } = await params;
-  return <EditTenantContent tenantId={id} />;
+  return <EditTenantContent params={params} />;
 }

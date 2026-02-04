@@ -13,11 +13,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { supabase } from "@/lib/supabaseClient";
+import { useCreateTenant } from "@/hooks/admin/useCreateTenant";
 
-export default function CreateTenantContent() {
+export default function CreateTenantPage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const createMutation = useCreateTenant();
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -46,58 +46,27 @@ export default function CreateTenantContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
-    // Validar slug único
-    const { data: existing } = await supabase
-      .from("tenants")
-      .select("id")
-      .eq("slug", formData.slug)
-      .single();
-
-    if (existing) {
-      toast.error("Ya existe una tienda con ese slug");
-      setLoading(false);
-      return;
-    }
-
-    // Validar formato de WhatsApp
     if (!formData.whatsapp_number.startsWith("+")) {
       toast.error(
         "El número de WhatsApp debe empezar con + (ej: +5491112345678)",
       );
-      setLoading(false);
       return;
     }
 
-    const { data, error } = await supabase
-      .from("tenants")
-      .insert({
-        name: formData.name,
-        slug: formData.slug,
-        whatsapp_number: formData.whatsapp_number,
-        primary_color: formData.primary_color,
-        secondary_color: formData.secondary_color,
-        is_active: true,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error("Error creating tenant:", error);
-      toast.error("Error al crear la tienda");
-    } else {
+    try {
+      await createMutation.mutateAsync(formData);
       toast.success("Tienda creada exitosamente");
-      router.push("/dashboard/tenants");
+      router.push("/admin/dashboard/tenants");
+    } catch (error: any) {
+      toast.error(error.message || "Error al crear la tienda");
     }
-
-    setLoading(false);
   };
 
   return (
     <div className="container max-w-xl py-10">
       <Link
-        href="/dashboard/tenants"
+        href="/admin/dashboard/tenants"
         className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="mr-1 h-4 w-4" />
@@ -119,7 +88,7 @@ export default function CreateTenantContent() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="slug">Slug (subdominio) *</Label>
+          <Label htmlFor="slug">Slug (URL) *</Label>
           <div className="flex items-center gap-2">
             <Input
               id="slug"
@@ -130,9 +99,6 @@ export default function CreateTenantContent() {
               placeholder="mi-perfumeria"
               required
             />
-            <span className="whitespace-nowrap text-sm text-muted-foreground">
-              .sacreazur.vercel.app
-            </span>
           </div>
           <p className="text-xs text-muted-foreground">
             Solo letras minúsculas, números y guiones
@@ -202,8 +168,12 @@ export default function CreateTenantContent() {
         </div>
 
         <Flex className="gap-4 pt-4">
-          <Button type="submit" disabled={loading} className="flex-1">
-            {loading ? "Creando..." : "Crear Tienda"}
+          <Button
+            type="submit"
+            disabled={createMutation.isPending}
+            className="flex-1"
+          >
+            {createMutation.isPending ? "Creando..." : "Crear Tienda"}
           </Button>
         </Flex>
       </form>
@@ -211,7 +181,7 @@ export default function CreateTenantContent() {
       <div className="mt-8 rounded-lg bg-muted p-4">
         <h3 className="mb-2 font-semibold">Preview de la URL:</h3>
         <code className="text-sm">
-          https://\{formData.slug || "mi-tienda"}.sacreazur.vercel.app
+          {window.location.origin}/{formData.slug || "mi-tienda"}
         </code>
       </div>
     </div>

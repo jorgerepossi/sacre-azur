@@ -137,7 +137,6 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
                   "h-[25px] shrink-0 items-center rounded-full bg-neutral-100 px-4 py-1 text-muted-foreground"
                 }
               >
-                {" "}
                 Sin Stock
               </Flex>
             </Flex>
@@ -161,8 +160,9 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
             </Link>
             {item.in_stock ? (
               <Button
-                className={"w-[120px] !bg-muted text-xs text-muted-foreground"}
-                variant={"ghost"}
+                className={
+                  "!hover:bg-[#000000] w-[120px] !bg-muted text-xs text-muted-foreground"
+                }
                 onClick={handleAddToCart}
               >
                 Comprar

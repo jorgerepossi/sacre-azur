@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,20 +13,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { supabase } from "@/lib/supabaseClient";
+import { useFetchTenant } from "@/hooks/admin/useFetchTenant";
+import { useUpdateTenant } from "@/hooks/admin/useUpdateTenant";
 
-import { TENANT_URL } from "../../constants";
-
-interface EditTenantContentProps {
-  tenantId: string;
-}
-
-export default function EditTenantContent({
-  tenantId,
-}: EditTenantContentProps) {
+export default function EditTenantPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [fetching, setFetching] = useState(true);
+  const { data: tenant, isLoading } = useFetchTenant(id);
+  const updateMutation = useUpdateTenant(id);
+
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -36,97 +35,37 @@ export default function EditTenantContent({
   });
 
   useEffect(() => {
-    fetchTenant();
-  }, [tenantId]);
-
-  const fetchTenant = async () => {
-    const { data, error } = await supabase
-      .from("tenants")
-      .select("*")
-      .eq("id", tenantId)
-      .single();
-
-    if (error || !data) {
-      toast.error("Error al cargar la tienda");
-      console.error("Error fetching tenant:", error);
-    } else {
+    if (tenant) {
       setFormData({
-        name: data.name,
-        slug: data.slug,
-        whatsapp_number: data.whatsapp_number,
-        primary_color: data.primary_color || "#000000",
-        secondary_color: data.secondary_color || "#ffffff",
+        name: tenant.name,
+        slug: tenant.slug,
+        whatsapp_number: tenant.whatsapp_number,
+        primary_color: tenant.primary_color || "#000000",
+        secondary_color: tenant.secondary_color || "#ffffff",
       });
     }
-    setFetching(false);
-  };
-
-  const generateSlug = (name: string) => {
-    return name
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
-  };
-
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.value;
-    setFormData({
-      ...formData,
-      name,
-    });
-  };
+  }, [tenant]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
-    const { data: existing } = await supabase
-      .from("tenants")
-      .select("id")
-      .eq("slug", formData.slug)
-      .neq("id", tenantId)
-      .single();
-
-    if (existing) {
-      toast.error("Ya existe otra tienda con ese slug");
-      setLoading(false);
-      return;
-    }
-
-    // Validar formato de WhatsApp
     if (!formData.whatsapp_number.startsWith("+")) {
       toast.error(
         "El número de WhatsApp debe empezar con + (ej: +5491112345678)",
       );
-      setLoading(false);
       return;
     }
 
-    const { error } = await supabase
-      .from("tenants")
-      .update({
-        name: formData.name,
-        slug: formData.slug,
-        whatsapp_number: formData.whatsapp_number,
-        primary_color: formData.primary_color,
-        secondary_color: formData.secondary_color,
-      })
-      .eq("id", tenantId);
-
-    if (error) {
-      console.error("Error updating tenant:", error);
-      toast.error("Error al actualizar la tienda");
-    } else {
+    try {
+      await updateMutation.mutateAsync(formData);
       toast.success("Tienda actualizada exitosamente");
       router.push("/admin/dashboard/tenants");
+    } catch (error: any) {
+      toast.error(error.message || "Error al actualizar la tienda");
     }
-
-    setLoading(false);
   };
 
-  if (fetching) {
+  if (isLoading) {
     return (
       <div className="container py-10">
         <p>Cargando datos de la tienda...</p>
@@ -134,10 +73,18 @@ export default function EditTenantContent({
     );
   }
 
+  if (!tenant) {
+    return (
+      <div className="container py-10">
+        <p>Tienda no encontrada</p>
+      </div>
+    );
+  }
+
   return (
     <div className="container max-w-xl py-10">
       <Link
-        href={`/${TENANT_URL.AMIN}/${TENANT_URL.DASHBOARD}/tenants`}
+        href="/admin/dashboard/tenants"
         className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="mr-1 h-4 w-4" />
@@ -152,14 +99,14 @@ export default function EditTenantContent({
           <Input
             id="name"
             value={formData.name}
-            onChange={handleNameChange}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder="Mi Perfumería"
             required
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="slug">Slug (subdominio) *</Label>
+          <Label htmlFor="slug">Slug (URL) *</Label>
           <div className="flex items-center gap-2">
             <Input
               id="slug"
@@ -170,9 +117,6 @@ export default function EditTenantContent({
               placeholder="mi-perfumeria"
               required
             />
-            <span className="whitespace-nowrap text-sm text-muted-foreground">
-              .sacreazur.vercel.app
-            </span>
           </div>
           <p className="text-xs text-muted-foreground">
             Solo letras minúsculas, números y guiones
@@ -242,8 +186,12 @@ export default function EditTenantContent({
         </div>
 
         <Flex className="gap-4 pt-4">
-          <Button type="submit" disabled={loading} className="flex-1">
-            {loading ? "Guardando..." : "Guardar Cambios"}
+          <Button
+            type="submit"
+            disabled={updateMutation.isPending}
+            className="flex-1"
+          >
+            {updateMutation.isPending ? "Guardando..." : "Guardar Cambios"}
           </Button>
         </Flex>
       </form>
@@ -251,7 +199,8 @@ export default function EditTenantContent({
       <div className="mt-8 rounded-lg bg-muted p-4">
         <h3 className="mb-2 font-semibold">Preview de la URL:</h3>
         <code className="text-sm">
-          https://{formData.slug || "mi-tienda"}.sacreazur.vercel.app
+          {typeof window !== "undefined" && window.location.origin}/
+          {formData.slug || "mi-tienda"}
         </code>
       </div>
     </div>

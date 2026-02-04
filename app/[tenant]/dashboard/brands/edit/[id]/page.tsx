@@ -17,8 +17,12 @@ interface RouteParams {
   tenant: string;
   id: string;
 }
-export default function BrandEditPage({ params }: { params: Promise<RouteParams> }) {
- const { tenant, id } =use(params);
+export default function BrandEditPage({
+  params,
+}: {
+  params: Promise<RouteParams>;
+}) {
+  const { tenant, id } = use(params);
   const router = useRouter();
   const { data, isLoading } = useFetchBrands();
 
@@ -37,7 +41,7 @@ export default function BrandEditPage({ params }: { params: Promise<RouteParams>
   return (
     <Flex className="flex-col gap-4">
       <Flex className="" onClick={handleBack}>
-        Volver 
+        Volver
       </Flex>
       <Card className="p-6">
         <form className="space-y-4">

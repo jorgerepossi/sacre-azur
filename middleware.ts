@@ -12,7 +12,11 @@ const RESERVED_PATHS = [
   "favicon.ico",
   "login",
   "signup",
+  "sign-in",
+  "sign-up",
   "unauthorized",
+  "404",
+  ".well-known",
 ];
 
 export async function middleware(request: NextRequest) {
@@ -46,7 +50,7 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (pathname === "/") {
-    const defaultTenant = process.env.NEXT_PUBLIC_DEV_TENANT_SLUG || "demo";
+    const defaultTenant = process.env.NEXT_PUBLIC_DEV_TENANT_SLUG || "decants";
     return NextResponse.redirect(new URL(`/${defaultTenant}`, request.url));
   }
 
@@ -69,35 +73,29 @@ export async function middleware(request: NextRequest) {
   }
 
   // Otherwise, first segment is the tenant
+  // En la sección de verificación del tenant, reemplazá:
+
   if (firstSegment) {
-    response.headers.set("x-tenant-slug", firstSegment);
+    // ✅ VERIFICAR SI EL TENANT EXISTE
+    console.log("🔍 Checking tenant:", firstSegment);
 
-    // PROTEGER RUTAS DEL DASHBOARD
-    if (pathname.includes("/dashboard")) {
-      if (!user) {
-        // Redirigir a login si no está autenticado
-        const loginUrl = new URL("/login", request.url);
-        loginUrl.searchParams.set("redirectTo", pathname);
-        return NextResponse.redirect(loginUrl);
-      }
+    const { data: tenant, error } = await supabase
+      .from("tenants")
+      .select("id, slug, is_active")
+      .eq("slug", firstSegment)
+      .single();
 
-      // Verificar que el usuario tiene acceso al tenant
-      const { data: tenantAccess } = await supabase
-        .from("tenant_users")
-        .select("tenant_id, tenants(slug)")
-        .eq("user_id", user.id)
-        .single();
-
-      if (
-        !tenantAccess ||
-        (tenantAccess.tenants as any)?.slug !== firstSegment
-      ) {
-        // Usuario no tiene acceso a este tenant
-        return NextResponse.redirect(new URL("/unauthorized", request.url));
-      }
+    if (!tenant) {
+      return NextResponse.redirect(new URL("/404", request.url));
     }
-  }
 
+    if (!tenant.is_active) {
+      return NextResponse.redirect(new URL("/404", request.url));
+    }
+
+    response.headers.set("x-tenant-slug", firstSegment);
+    // ... resto del código
+  }
   // CORS
   const corsHeaders = {
     "Access-Control-Allow-Origin": "*",

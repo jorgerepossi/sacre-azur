@@ -1,62 +1,44 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import Link from "next/link";
 
-import { Check, Copy, Edit, ExternalLink, Plus } from "lucide-react";
+import { Check, Copy, Edit, Plus } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 import Flex from "@/components/flex";
 import { Button } from "@/components/ui/button";
 
-import { Tenant } from "@/types/tenant";
+import { useFetchTenants } from "@/hooks/admin/useFetchTenants";
+import { useToggleTenant } from "@/hooks/admin/useToggleTenant";
 
-import { supabase } from "@/lib/supabaseClient";
-
-import { TENANT_URL } from "./constants";
-
-export default function TenantsListContent() {
-  const [tenants, setTenants] = useState<Tenant[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function TenantsListPage() {
+  const { data: tenants, isLoading } = useFetchTenants();
+  const toggleMutation = useToggleTenant();
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchTenants();
-  }, []);
-
-  const fetchTenants = async () => {
-    const { data, error } = await supabase
-      .from("tenants")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Error fetching tenants:", error);
-    } else {
-      setTenants(data || []);
-    }
-    setLoading(false);
-  };
-
   const copyToClipboard = async (slug: string, id: string) => {
-    const url = "https://" + slug + ".sacreazur.vercel.app";
+    const url = `${window.location.origin}/${slug}`;
     await navigator.clipboard.writeText(url);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
+    toast.success("URL copiada al portapapeles");
   };
 
-  const toggleActive = async (tenant: Tenant) => {
-    const { error } = await supabase
-      .from("tenants")
-      .update({ is_active: !tenant.is_active })
-      .eq("id", tenant.id);
-
-    if (!error) {
-      fetchTenants();
+  const toggleActive = async (id: string, currentStatus: boolean) => {
+    try {
+      await toggleMutation.mutateAsync({
+        id,
+        is_active: !currentStatus,
+      });
+      toast.success(!currentStatus ? "Tienda activada" : "Tienda desactivada");
+    } catch (error: any) {
+      toast.error(error.message || "Error al cambiar estado");
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="container py-10">
         <p>Cargando tenants...</p>
@@ -68,9 +50,7 @@ export default function TenantsListContent() {
     <div className="container py-10">
       <Flex className="mb-8 items-center justify-between">
         <h1 className="text-3xl font-bold">Gestión de Tiendas</h1>
-        <Link
-          href={`/${TENANT_URL.AMIN}/${TENANT_URL.DASHBOARD}/tenants/create`}
-        >
+        <Link href="/admin/dashboard/tenants/create">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
             Nueva Tienda
@@ -79,10 +59,10 @@ export default function TenantsListContent() {
       </Flex>
 
       <div className="grid gap-4">
-        {tenants.length === 0 ? (
+        {!tenants || tenants.length === 0 ? (
           <p className="text-muted-foreground">No hay tiendas creadas</p>
         ) : (
-          tenants.map((tenant) => (
+          tenants.map((tenant: any) => (
             <div
               key={tenant.id}
               className="flex items-center justify-between rounded-lg border p-4"
@@ -125,13 +105,13 @@ export default function TenantsListContent() {
                 <Button
                   variant={tenant.is_active ? "destructive" : "default"}
                   size="sm"
-                  onClick={() => toggleActive(tenant)}
+                  onClick={() => toggleActive(tenant.id, tenant.is_active)}
+                  disabled={toggleMutation.isPending}
                 >
                   {tenant.is_active ? "Desactivar" : "Activar"}
                 </Button>
-                <Link
-                  href={`/${TENANT_URL.AMIN}/${TENANT_URL.DASHBOARD}//tenants/edit/${tenant.id}`}
-                >
+
+                <Link href={`/admin/dashboard/tenants/edit/${tenant.id}`}>
                   <Button variant="outline" size="sm">
                     <Edit className="mr-2 h-4 w-4" />
                     Editar

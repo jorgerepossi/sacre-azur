@@ -121,7 +121,7 @@ export default function PerfumeDetails({ perfume }: Props) {
                       relation.perfume_notes && (
                         <div
                           key={relation.perfume_notes.id}
-                          className="rounded-full border bg-muted px-[1rem]"
+                          className="rounded-full border bg-muted px-[1rem] py-[.5rem]"
                         >
                           <p className="text-body-small text-muted-foreground">
                             {relation.perfume_notes.name}

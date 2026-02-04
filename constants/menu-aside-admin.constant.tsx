@@ -9,6 +9,12 @@ const MENU_ASIDE_ADMIN: MenuAside[] = [
     label: "Tiendas",
     icon: <Building color={"var(--secondary-text-dark)"} />,
   },
+  {
+    id: "dashboard",
+    link: "/decants/dashboard/",
+    label: "Dashboard",
+    icon: <Building color={"var(--secondary-text-dark)"} />,
+  },
 ];
 
 export default MENU_ASIDE_ADMIN;
