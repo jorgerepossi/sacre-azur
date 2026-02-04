@@ -19,9 +19,8 @@ import { Perfume } from "@/types/perfume.type";
 import { usePerfume } from "@/hooks/usePerfume";
 
 import { cn } from "@/lib/utils";
+
 import { createSlug } from "@/utils/slugGenerator";
-
-
 
 type Props = {
   perfume: Perfume;
@@ -144,60 +143,60 @@ export default function PerfumeDetails({ perfume }: Props) {
             >
               {perfume.in_stock && (
                 <>
-                <Flex className="flex-col items-start justify-between gap-4">
-                <Label htmlFor="" className="font-semibold">
-                  Tamaño:
-                </Label>
-                <Flex className="gap-2">
-                  {sizes.map((s) => (
-                    <button
-                      type={'button'}
-                      key={s.label}
-                      onClick={() => setSelectedSize(s)}
-                      className={`rounded-full border-2 px-2 py-1 text-xs font-medium transition-all ${
-                        selectedSize?.label === s.label
-                          ? "border-black bg-black text-white"
-                          : "border-gray-300 bg-white text-gray-700 hover:border-black"
-                      }`}
-                    >
-                      {s.label}
-                    </button>
-                  ))}
-                </Flex>
-              </Flex>
+                  <Flex className="flex-col items-start justify-between gap-4">
+                    <Label htmlFor="" className="font-semibold">
+                      Tamaño:
+                    </Label>
+                    <Flex className="gap-2">
+                      {sizes.map((s) => (
+                        <button
+                          type={"button"}
+                          key={s.label}
+                          onClick={() => setSelectedSize(s)}
+                          className={`rounded-full border-2 px-2 py-1 text-xs font-medium transition-all ${
+                            selectedSize?.label === s.label
+                              ? "border-black bg-black text-white"
+                              : "border-gray-300 bg-white text-gray-700 hover:border-black"
+                          }`}
+                        >
+                          {s.label}
+                        </button>
+                      ))}
+                    </Flex>
+                  </Flex>
 
-              <Flex className="flex-col items-start justify-between gap-4">
-                <Label htmlFor='' className="font-semibold"> Cantidad:</Label>
-                <Flex className={" items-center gap-1"}>
-                  <button
-                    type="button"
-                    className="rounded-lg border px-3 py-1"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  >
-                    -
-                  </button>
-                  <span className="px-4">{quantity}</span>
-                  <button
-                    type="button"
-                    className="rounded-lg border px-3 py-1"
-                    onClick={() => setQuantity(quantity + 1)}
-                  >
-                    +
-                  </button>
-                </Flex>
-              </Flex>
-              </>
+                  <Flex className="flex-col items-start justify-between gap-4">
+                    <Label htmlFor="" className="font-semibold">
+                      {" "}
+                      Cantidad:
+                    </Label>
+                    <Flex className={"items-center gap-1"}>
+                      <button
+                        type="button"
+                        className="rounded-lg border px-3 py-1"
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      >
+                        -
+                      </button>
+                      <span className="px-4">{quantity}</span>
+                      <button
+                        type="button"
+                        className="rounded-lg border px-3 py-1"
+                        onClick={() => setQuantity(quantity + 1)}
+                      >
+                        +
+                      </button>
+                    </Flex>
+                  </Flex>
+                </>
               )}
-              
             </Flex>
 
-            {
-              perfume.in_stock && (
-                <div className="space-y-2">
-              <p className="text-lg font-semibold">Total: ${totalPrice}</p>
-            </div>
-              )
-            }
+            {perfume.in_stock && (
+              <div className="space-y-2">
+                <p className="text-lg font-semibold">Total: ${totalPrice}</p>
+              </div>
+            )}
 
             <Flex className="items-center gap-[2rem]">
               <Button
@@ -228,15 +227,14 @@ export default function PerfumeDetails({ perfume }: Props) {
             </Flex>
 
             <div className="space-y-4 pt-6">
-              {
-              !perfume.in_stock ? (
+              {!perfume.in_stock ? (
                 <div> sin stock </div>
               ) : (
                 <Button type="submit" size="lg" className="w-full">
-                Agregar al carrito
-              </Button>
+                  Agregar al carrito
+                </Button>
               )}
-              
+
               {/**
                * 
               <Button variant="outline" size="lg" className="w-full">

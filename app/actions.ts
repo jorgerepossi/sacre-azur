@@ -9,6 +9,11 @@ import { encodedRedirect } from "@/utils/utils";
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
+  const tenantName =
+    formData.get("tenantName")?.toString() ||
+    email?.split("@")[0] ||
+    "My Store";
+
   const supabase = await createClient();
   const origin = (await headers()).get("origin");
 
@@ -20,7 +25,8 @@ export const signUpAction = async (formData: FormData) => {
     );
   }
 
-  const { error } = await supabase.auth.signUp({
+  // 1. Crear usuario en Supabase Auth
+  const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -28,16 +34,61 @@ export const signUpAction = async (formData: FormData) => {
     },
   });
 
-  if (error) {
-    console.error(error.code + " " + error.message);
-    return encodedRedirect("error", "/sign-up", error.message);
-  } else {
-    return encodedRedirect(
-      "success",
-      "/sign-up",
-      "Thanks for signing up! Please check your email for a verification link.",
-    );
+  if (authError) {
+    console.error(authError.code + " " + authError.message);
+    return encodedRedirect("error", "/sign-up", authError.message);
   }
+
+  if (!authData.user) {
+    return encodedRedirect("error", "/sign-up", "User creation failed");
+  }
+
+  // 2. Crear tenant (slug basado en email o nombre)
+  const tenantSlug = tenantName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+  const { data: tenantData, error: tenantError } = await supabase
+    .from("tenants")
+    .insert([
+      {
+        name: tenantName,
+        slug: tenantSlug,
+        active: true,
+      },
+    ])
+    .select()
+    .single();
+
+  if (tenantError) {
+    console.error("Tenant creation error:", tenantError);
+    // Si falla, eliminar el usuario creado (opcional)
+    await supabase.auth.admin.deleteUser(authData.user.id);
+    return encodedRedirect("error", "/sign-up", "Store creation failed");
+  }
+
+  // 3. Asociar usuario con tenant
+  const { error: tenantUserError } = await supabase
+    .from("tenant_users")
+    .insert([
+      {
+        user_id: authData.user.id,
+        tenant_id: tenantData.id,
+        role: "admin",
+      },
+    ]);
+
+  if (tenantUserError) {
+    console.error("Tenant user association error:", tenantUserError);
+    return encodedRedirect("error", "/sign-up", "User association failed");
+  }
+
+  return encodedRedirect(
+    "success",
+    "/sign-up",
+    "Thanks for signing up! Please check your email for a verification link.",
+  );
 };
 
 export const signInAction = async (formData: FormData) => {
@@ -45,7 +96,7 @@ export const signInAction = async (formData: FormData) => {
   const password = formData.get("password") as string;
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -54,6 +105,19 @@ export const signInAction = async (formData: FormData) => {
     return encodedRedirect("error", "/sign-in", error.message);
   }
 
+  // Obtener tenant del usuario y redirigir a su dashboard
+  const { data: tenantUser } = await supabase
+    .from("tenant_users")
+    .select("tenants(slug)")
+    .eq("user_id", data.user.id)
+    .single();
+
+  if (tenantUser && tenantUser.tenants) {
+    const slug = (tenantUser.tenants as any).slug;
+    return redirect(`/${slug}/dashboard`);
+  }
+
+  // Fallback si no tiene tenant
   return redirect("/protected");
 };
 
@@ -98,7 +162,7 @@ export const resetPasswordAction = async (formData: FormData) => {
   const confirmPassword = formData.get("confirmPassword") as string;
 
   if (!password || !confirmPassword) {
-    encodedRedirect(
+    return encodedRedirect(
       "error",
       "/protected/reset-password",
       "Password and confirm password are required",
@@ -106,7 +170,7 @@ export const resetPasswordAction = async (formData: FormData) => {
   }
 
   if (password !== confirmPassword) {
-    encodedRedirect(
+    return encodedRedirect(
       "error",
       "/protected/reset-password",
       "Passwords do not match",
@@ -118,14 +182,18 @@ export const resetPasswordAction = async (formData: FormData) => {
   });
 
   if (error) {
-    encodedRedirect(
+    return encodedRedirect(
       "error",
       "/protected/reset-password",
       "Password update failed",
     );
   }
 
-  encodedRedirect("success", "/protected/reset-password", "Password updated");
+  return encodedRedirect(
+    "success",
+    "/protected/reset-password",
+    "Password updated",
+  );
 };
 
 export const signOutAction = async () => {

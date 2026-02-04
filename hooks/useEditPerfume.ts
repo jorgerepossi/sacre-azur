@@ -107,13 +107,14 @@ export function useEditPerfume() {
 
       setTenantProductId(tenantProduct.id);
 
-
-      const { data: relationsData } = await supabase.from("perfume_note_relation").select("note_id").eq("perfume_id", perfumeId);
+      const { data: relationsData } = await supabase
+        .from("perfume_note_relation")
+        .select("note_id")
+        .eq("perfume_id", perfumeId);
 
       const initialNotes =
         relationsData?.map((r) => r.note_id.toString()) || [];
       setSelectedNotes(initialNotes);
-
 
       reset({
         name: perfumeData.name,
@@ -126,7 +127,6 @@ export function useEditPerfume() {
         note_ids: initialNotes,
         image: undefined,
       });
-
 
       const path = perfumeData.image?.replace(
         `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/perfume-images/`,
@@ -250,8 +250,6 @@ export function useEditPerfume() {
         })
         .eq("id", tenantProductId)
         .select();
-
-
 
       if (tenantProductError) throw tenantProductError;
 

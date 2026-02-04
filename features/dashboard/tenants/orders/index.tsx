@@ -59,7 +59,7 @@ export default function OrdersTable() {
   const filteredAndSortedOrders = sortOrders(filteredOrders, sortConfig);
 
   return (
-    <ContentBlock title="Orders">
+    <ContentBlock title="Órdenes">
       <div>
         <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
 

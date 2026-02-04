@@ -1,11 +1,21 @@
-import React from "react";
-
 import BrandPageContent from "@/features/dashboard/brands";
 
-import ContentBlock from "@/components/content-block";
+import { requireOwner } from "@/lib/auth-helpers";
 
-const BrandsPage = () => {
+import { getTenantIdFromSlug } from "@/utils/tenantUtils";
+
+export default async function BrandsPage({
+  params,
+}: {
+  params: { tenant: string };
+}) {
+  const tenantId = await getTenantIdFromSlug(params.tenant);
+
+  if (!tenantId) {
+    throw new Error("Tenant not found");
+  }
+
+  await requireOwner(tenantId);
+
   return <BrandPageContent />;
-};
-
-export default BrandsPage;
+}

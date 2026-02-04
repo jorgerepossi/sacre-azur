@@ -183,9 +183,11 @@ export default function OrderConfirmedPage() {
   }
 
   // VISTA DEL ADMIN
-  return (
-    <div className="container py-10">
-      <h1 className="mb-6 text-3xl font-bold">
+  return <div className="container py-10">No debes estar aqui</div>;
+}
+
+/**
+ * <h1 className="mb-6 text-3xl font-bold">
         {isConfirmed ? "✅ Pedido Confirmado" : "📦 Nuevo Pedido"}
       </h1>
 
@@ -256,6 +258,4 @@ export default function OrderConfirmedPage() {
           </div>
         )}
       </div>
-    </div>
-  );
-}
+ */

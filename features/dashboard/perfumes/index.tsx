@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import ContentBlock from "@/components/content-block";
+
 import { Perfume } from "@/types/perfume.type";
 
 import { useFetchPerfumes } from "@/hooks/useFetchPerfumes";
@@ -26,9 +28,8 @@ export const PerfumePageContent = () => {
   const finalPerfumes = useStockFilter(brandFiltered, onlyInStock);
 
   return (
-    <div>
-      <h1>Perfume Page</h1>
+    <ContentBlock title="Perfumes">
       <PerfumeListContent data={finalPerfumes || []} />
-    </div>
+    </ContentBlock>
   );
 };

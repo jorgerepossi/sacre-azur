@@ -1,24 +1,17 @@
-import { useTenant } from "@/providers/TenantProvider";
 import { useQuery } from "@tanstack/react-query";
 
 import { getBaseUrl } from "@/lib/config";
 
-const fetchBrands = async (tenantSlug?: string | null) => {
+const fetchBrands = async () => {
   const baseUrl = getBaseUrl();
   if (!baseUrl) {
     throw new Error("API base URL not configured");
   }
 
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
-
-  if (tenantSlug) {
-    headers["x-tenant-slug"] = tenantSlug;
-  }
-
   const response = await fetch(`${baseUrl}/api/brands`, {
-    headers,
+    headers: {
+      "Content-Type": "application/json",
+    },
     cache: "no-store",
   });
 
@@ -29,12 +22,9 @@ const fetchBrands = async (tenantSlug?: string | null) => {
 };
 
 export const useFetchBrands = () => {
-  const { tenant } = useTenant();
-
   return useQuery({
-    queryKey: ["brands", tenant?.slug],
-    queryFn: () => fetchBrands(tenant?.slug),
-    enabled: !!tenant?.slug,
+    queryKey: ["brands"],
+    queryFn: fetchBrands,
     retry: 2,
   });
 };

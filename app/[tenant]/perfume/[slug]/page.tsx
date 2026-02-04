@@ -22,11 +22,9 @@ export default async function Page({
 
   if (!id || !/^[0-9a-f-]{36}$/.test(id)) return notFound();
 
- 
   const tenantId = await getTenantIdFromSlug(tenant);
   if (!tenantId) return notFound();
 
- 
   const { data: tenantProduct, error } = await supabase
     .from("tenant_products")
     .select(
@@ -67,7 +65,6 @@ export default async function Page({
 
   if (error || !tenantProduct) return notFound();
 
- 
   const perfumeData = Array.isArray(tenantProduct.perfume)
     ? tenantProduct.perfume[0]
     : tenantProduct.perfume;
@@ -79,10 +76,9 @@ export default async function Page({
   // Ensure brand has slug
   const brand = {
     ...brandData,
-    slug: brandData?.slug || createSlug(brandData?.name || ''),
+    slug: brandData?.slug || createSlug(brandData?.name || ""),
   };
 
-   
   const perfumeNoteRelation = perfumeData?.perfume_note_relation?.map(
     (relation: any) => ({
       note_id: relation.note_id,

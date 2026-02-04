@@ -122,7 +122,7 @@ const CreateForm = () => {
                     value={field.value ?? ""}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Choose Brand" />
+                      <SelectValue placeholder="Amouage..." />
                     </SelectTrigger>
                     <SelectContent>
                       <BrandSelectOptions brands={brands} />

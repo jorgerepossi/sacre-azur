@@ -50,7 +50,8 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
 
     const priceWithProfit = basePrice * (1 + profitMargin / 100);
     const pricePerMl = priceWithProfit / 100;
-    const sizeFactor = SIZE_FACTORS[sizeInMl as keyof typeof SIZE_FACTORS] || 1.0;
+    const sizeFactor =
+      SIZE_FACTORS[sizeInMl as keyof typeof SIZE_FACTORS] || 1.0;
 
     return Math.round(pricePerMl * sizeInMl * sizeFactor);
   };
@@ -81,7 +82,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
     <Flex className="!hover:shadow-md w-full overflow-hidden rounded-lg bg-background !shadow-sm transition-all duration-300 hover:-translate-y-1">
       <Flex className="w-full p-4">
         <Flex className={"w-full flex-col"}>
-           <Flex className={"h-full items-center justify-center py-4 md:py-2"}>
+          <Flex className={"h-full items-center justify-center py-4 md:py-2"}>
             <Image
               src={item.image || "/placeholder.svg"}
               alt={item.name}
@@ -127,9 +128,20 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
                 </p>
               </Flex>
             </>
-          ) : (<Flex className={'shrink-0 justify-center items-center mb-3  h-[50px]'}>
-            <Flex className={"bg-neutral-100 text-muted-foreground shrink-0  h-[25px]  items-center   rounded-full px-4 py-1"}> Sin Stock</Flex>
-          </Flex>)}
+          ) : (
+            <Flex
+              className={"mb-3 h-[50px] shrink-0 items-center justify-center"}
+            >
+              <Flex
+                className={
+                  "h-[25px] shrink-0 items-center rounded-full bg-neutral-100 px-4 py-1 text-muted-foreground"
+                }
+              >
+                {" "}
+                Sin Stock
+              </Flex>
+            </Flex>
+          )}
 
           <Flex
             className={

@@ -1,7 +1,4 @@
-import Link from "next/link";
-import { redirect } from "next/navigation";
-
-import { Button } from "@/components/ui/button";
+import { DashboardNav } from "@/components/dashboard-nav";
 
 interface TenantDashboardLayoutProps {
   children: React.ReactNode;
@@ -16,56 +13,9 @@ export default async function TenantDashboardLayout({
 }: TenantDashboardLayoutProps) {
   const { tenant } = await params;
 
-  // TODO: Aquí verificaremos autenticación después
-
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Header */}
-      <div className="border-b bg-background text-foreground">
-        <div className="container flex items-center justify-between py-4">
-          <div>
-            <h1 className="text-2xl font-bold">Dashboard</h1>
-            <p className="text-sm text-muted-foreground">Tienda: {tenant}</p>
-          </div>
-          <div className="flex gap-2">
-            <Link href={`/${tenant}`}>
-              <Button variant="outline" size="sm">
-                Ver Tienda
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation */}
-      <div className="border-b bg-background text-foreground">
-        <div className="container py-2">
-          <nav className="flex gap-4">
-            <Link href={`/${tenant}/dashboard/perfumes`}>
-              <Button variant="ghost" size="sm">
-                Perfumes
-              </Button>
-            </Link>
-            <Link href={`/${tenant}/dashboard/brands`}>
-              <Button variant="ghost" size="sm">
-                Marcas
-              </Button>
-            </Link>
-            <Link href={`/${tenant}/dashboard/orders`}>
-              <Button variant="ghost" size="sm">
-                Órdenes
-              </Button>
-            </Link>
-            <Link href={`/${tenant}/dashboard/create`}>
-              <Button variant="ghost" size="sm">
-                + Nuevo Perfume
-              </Button>
-            </Link>
-          </nav>
-        </div>
-      </div>
-
-      {/* Content */}
+      <DashboardNav tenant={tenant} />
       <div className="container py-8">{children}</div>
     </div>
   );

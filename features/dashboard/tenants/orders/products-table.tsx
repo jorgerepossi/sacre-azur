@@ -23,10 +23,10 @@ export default function ProductsTable({ products }: ProductsTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Product</TableHead>
-            <TableHead>Size</TableHead>
-            <TableHead className="text-right">Price</TableHead>
-            <TableHead className="text-right">Quantity</TableHead>
+            <TableHead className="text-bold">Producto</TableHead>
+            <TableHead>Tamaño</TableHead>
+            <TableHead className="text-right">Precio</TableHead>
+            <TableHead className="text-right">Cantidad</TableHead>
             <TableHead className="text-right">Subtotal</TableHead>
           </TableRow>
         </TableHeader>

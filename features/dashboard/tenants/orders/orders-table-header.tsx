@@ -22,9 +22,9 @@ export default function OrdersTableHeader({
           <Button
             variant="ghost"
             onClick={() => onRequestSort("order_code")}
-            className="flex items-center"
+            className="text-bold flex items-center"
           >
-            Order Code
+            Código de Orden
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         </TableHead>
@@ -34,13 +34,13 @@ export default function OrdersTableHeader({
             onClick={() => onRequestSort("created_at")}
             className="flex items-center"
           >
-            Date
+            Fecha
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         </TableHead>
-        <TableHead>Name</TableHead>
-        <TableHead>Phone</TableHead>
-        <TableHead>Products</TableHead>
+        <TableHead>Nombre</TableHead>
+        <TableHead>Teléfono</TableHead>
+        <TableHead>Productos</TableHead>
         <TableHead className="text-right">Total</TableHead>
         <TableHead className="flex items-center justify-end text-right">
           <Button
@@ -48,7 +48,7 @@ export default function OrdersTableHeader({
             onClick={() => onRequestSort("is_sent")}
             className="flex items-end"
           >
-            Status
+            Estado
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         </TableHead>

@@ -24,6 +24,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Tenant not found" }, { status: 404 });
     }
 
+    // Traer brands que tienen productos activos en este tenant
     const { data: tenantProducts, error } = await supabase
       .from("tenant_products")
       .select(
@@ -50,6 +51,7 @@ export async function GET(request: Request) {
       );
     }
 
+    // Extraer brands únicas
     const brandsMap = new Map();
 
     tenantProducts?.forEach((tp: any) => {

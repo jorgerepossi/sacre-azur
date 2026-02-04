@@ -1,10 +1,13 @@
 "use client";
 
+import { useTenant } from "@/providers/TenantProvider";
 import { useQuery } from "@tanstack/react-query";
 
 import { createClient } from "@/utils/supabase/client";
 
-const fetchOrders = async () => {
+const fetchOrders = async (tenantId?: string) => {
+  if (!tenantId) return [];
+
   const supabase = createClient();
 
   const { data, error } = await supabase
@@ -28,6 +31,7 @@ const fetchOrders = async () => {
       )
     `,
     )
+    .eq("tenant_id", tenantId) // ← AGREGAR FILTRO
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -38,9 +42,12 @@ const fetchOrders = async () => {
 };
 
 const useFetchOrders = () => {
+  const { tenant } = useTenant();
+
   return useQuery({
-    queryKey: ["orders"],
-    queryFn: fetchOrders,
+    queryKey: ["orders", tenant?.id],
+    queryFn: () => fetchOrders(tenant?.id),
+    enabled: !!tenant?.id,
   });
 };
 

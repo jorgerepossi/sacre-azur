@@ -217,7 +217,6 @@ export default function OrderRow({
             <div className="space-y-4">
               <ProductsTable products={order.order_products} />
 
-              {/* Botones de acciones */}
               <div className="flex justify-end gap-2 border-t pt-2">
                 <ShippingDialog
                   order={order}

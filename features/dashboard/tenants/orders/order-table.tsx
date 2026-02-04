@@ -174,7 +174,7 @@ export default function OrdersTable() {
                     onClick={() => requestSort("order_code")}
                     className="flex items-center"
                   >
-                    Order Code
+                    Código de Orden
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
@@ -184,7 +184,7 @@ export default function OrdersTable() {
                     onClick={() => requestSort("created_at")}
                     className="flex items-center"
                   >
-                    Date
+                    Fecha
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
@@ -279,13 +279,13 @@ export default function OrdersTable() {
                             <Table>
                               <TableHeader>
                                 <TableRow>
-                                  <TableHead>Product</TableHead>
-                                  <TableHead>Size</TableHead>
+                                  <TableHead>Producto</TableHead>
+                                  <TableHead>Tamaño</TableHead>
                                   <TableHead className="text-right">
-                                    Price
+                                    Precio
                                   </TableHead>
                                   <TableHead className="text-right">
-                                    Quantity
+                                    Cantidad
                                   </TableHead>
                                   <TableHead className="text-right">
                                     Subtotal

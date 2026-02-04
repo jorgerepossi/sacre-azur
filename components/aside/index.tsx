@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+
 import { cn } from "@/lib/utils";
 
 interface AsideProps {
@@ -13,7 +14,7 @@ const AsideWrapper = ({ children, sticky = false }: AsideProps) => {
     <aside
       className={cn(
         "w-full shrink-0 rounded-lg border bg-card p-4 md:w-[320px]",
-        sticky && "md:sticky md:top-6"
+        sticky && "md:sticky md:top-6",
       )}
     >
       {children}
