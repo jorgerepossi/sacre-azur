@@ -26,13 +26,13 @@ interface PerfumeListItemProps {
 const PerfumeListItem = ({ item }: PerfumeListItemProps) => {
   const { tenant } = useTenant();
 
-  console.log("item", item);
+
 
   return (
     <TableRow>
       <TableCell key={item.id} className="font-medium">
         <Image
-          src={item.image}
+          src={item.image ||  ''}
           alt={item.name}
           width={80}
           height={80}
