@@ -1,19 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-
 import Image from "next/image";
-
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "react-hot-toast";
-
 import Flex from "@/components/flex";
 import { Link } from "@/components/link";
-import { SkeletonBox } from "@/components/skeletons";
 import { Button } from "@/components/ui/button";
-
 import { Perfume } from "@/types/perfume.type";
-
 import { SIZE_FACTORS } from "@/lib/pricing-constants";
 
 interface ItemPerfumeProps {
@@ -37,6 +31,7 @@ const SIZES = [
 const ItemPerfume = ({ item }: ItemPerfumeProps) => {
   const [selectedSize, setSelectedSize] = useState<number>(2.5);
   const addItem = useCartStore((state) => state.addItem);
+
 
   if (!item?.id || !item?.name) {
     return null;
@@ -72,7 +67,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
       price: currentPrice,
       size: selectedSize,
       quantity: 1,
-      image: item.image,
+      image: item.image || "/placeholder.svg",
     });
 
     toast.success("Agregado al carrito");
