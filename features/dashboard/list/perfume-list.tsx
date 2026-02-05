@@ -30,7 +30,7 @@ const PerfumeListContent = ({ data }: PerfumeListProps) => {
             <TableHead>Price</TableHead>
             <TableHead>Profit</TableHead>
             <TableHead>External Link</TableHead>
-            <TableHead>In Stock</TableHead>
+            <TableHead>Stock</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

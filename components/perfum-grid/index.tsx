@@ -12,6 +12,10 @@ import SkeletonPerfumeList from "@/components/skeletons/skeleton-perfume-list";
 import { Perfume } from "@/types/perfume.type";
 
 import { useFetchPerfumes } from "@/hooks/useFetchPerfumes";
+import Flex from "@/components/flex";
+
+import { bottlePerfume } from '@lucide/lab';
+import { Icon } from 'lucide-react';
 
 export function PerfumeGrid() {
   const { selectedBrands } = useContext(BrandFilterContext);
@@ -38,7 +42,10 @@ export function PerfumeGrid() {
     .sort((a: any, b: any) => a?.brand?.name.localeCompare(b?.brand?.name));
 
   if (validPerfumes.length === 0) {
-    return <p>No se encontraron perfumes</p>;
+    return (<Flex className={'flex flex-col items-center justify-center  w-full h-[60vh]'}>
+      <Icon iconNode={bottlePerfume} size={48} className={'text-muted-foreground'} />
+      <p className={'text-muted-foreground font-bold'}>No se encontraron perfumes</p>
+    </Flex>);
   }
 
   return (

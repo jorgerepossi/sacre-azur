@@ -51,38 +51,40 @@ const PerfumeSearchList = ({
         />
       </Flex>
 
-      <Flex className="w-full max-w-[500px] items-center gap-[2rem]">
-        <p className="w-[100px]">Filter by:</p>
+      <Flex className="w-full max-w-[450px] items-center justify-between gap-[2rem]">
+        <Flex className={'items-center gap-4'}>
+          <p className="w-[80px] shrink-0">Filtrar por:</p>
 
-        <Flex className={"w-full gap-[1rem]"}>
-          <Select
-            onValueChange={(value) =>
-              setBrandFilter(value === "" ? null : value)
-            }
-            value={brandFilter ?? ""}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Brands" />
-            </SelectTrigger>
-            <SelectContent>
-              <BrandSelectOptions brands={brands || []} />
-            </SelectContent>
-          </Select>
-          {brandFilter && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setBrandFilter(null)}
+          <Flex className={"w-full items-center gap-[1rem]"}>
+            <Select
+              onValueChange={(value) =>
+                setBrandFilter(value === "" ? null : value)
+              }
+              value={brandFilter ?? ""}
             >
-              ✕
-            </Button>
-          )}
+              <SelectTrigger>
+                <SelectValue placeholder="Brands" />
+              </SelectTrigger>
+              <SelectContent>
+                <BrandSelectOptions brands={brands || []} />
+              </SelectContent>
+            </Select>
+            {brandFilter && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setBrandFilter(null)}
+              >
+                ✕
+              </Button>
+            )}
+          </Flex>
         </Flex>
         <Button
           variant={onlyInStock ? "default" : "outline"}
           onClick={() => setOnlyInStock(!onlyInStock)}
         >
-          In Stock
+          En Stock
         </Button>
       </Flex>
     </Flex>

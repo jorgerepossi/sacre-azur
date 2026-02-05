@@ -12,6 +12,7 @@ import { usePerfumeNameFilter } from "@/hooks/usePerfumeNameFilter";
 import { useStockFilter } from "@/hooks/useStockFilter";
 
 import PerfumeListContent from "../list/perfume-list";
+import PerfumeSearchList from "@/components/perfume-search-filter";
 
 export const PerfumePageContent = () => {
   const { data: perfumes, isLoading, error } = useFetchPerfumes();
@@ -26,9 +27,18 @@ export const PerfumePageContent = () => {
 
   const brandFiltered = usePerfumeBrandFilter(nameFiltered, brandFilter);
   const finalPerfumes = useStockFilter(brandFiltered, onlyInStock);
+  const totalPerfume = finalPerfumes.length;
 
   return (
-    <ContentBlock title="Perfumes">
+    <ContentBlock title="Perfumes" quantity={totalPerfume} >
+      <PerfumeSearchList
+        nameFilter={nameFilter}
+        setNameFilter={setNameFilter}
+        brandFilter={brandFilter}
+        setBrandFilter={setBrandFilter}
+        onlyInStock={onlyInStock}
+        setOnlyInStock={setOnlyInStock}
+      />
       <PerfumeListContent data={finalPerfumes || []} />
     </ContentBlock>
   );

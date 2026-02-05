@@ -1,7 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-
 import { createServerClient } from "@supabase/ssr";
-
 import { updateSession } from "@/utils/supabase/middleware";
 
 const RESERVED_PATHS = [
@@ -50,9 +48,9 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // ✅ PERMITIR QUE "/" PASE SIN REDIRECT
   if (pathname === "/") {
-    const defaultTenant = process.env.NEXT_PUBLIC_DEV_TENANT_SLUG || "decants";
-    return NextResponse.redirect(new URL(`/${defaultTenant}`, request.url));
+    return response;
   }
 
   if (firstSegment && RESERVED_PATHS.includes(firstSegment)) {
@@ -74,12 +72,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Otherwise, first segment is the tenant
-  // En la sección de verificación del tenant, reemplazá:
-
   if (firstSegment) {
-    // ✅ VERIFICAR SI EL TENANT EXISTE
-    console.log("🔍 Checking tenant:", firstSegment);
-
     const { data: tenant, error } = await supabase
       .from("tenants")
       .select("id, slug, is_active")
@@ -95,8 +88,30 @@ export async function middleware(request: NextRequest) {
     }
 
     response.headers.set("x-tenant-slug", firstSegment);
-    // ... resto del código
+
+    // PROTEGER RUTAS DEL DASHBOARD
+    if (pathname.includes("/dashboard")) {
+      if (!user) {
+        const loginUrl = new URL("/sign-in", request.url);
+        loginUrl.searchParams.set("redirectTo", pathname);
+        return NextResponse.redirect(loginUrl);
+      }
+
+      const { data: tenantAccess } = await supabase
+        .from("tenant_users")
+        .select("tenant_id, tenants(slug)")
+        .eq("user_id", user.id)
+        .single();
+
+      if (
+        !tenantAccess ||
+        (tenantAccess.tenants as any)?.slug !== firstSegment
+      ) {
+        return NextResponse.redirect(new URL("/unauthorized", request.url));
+      }
+    }
   }
+
   // CORS
   const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
