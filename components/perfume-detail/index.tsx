@@ -35,7 +35,7 @@ export default function PerfumeDetails({ perfume }: Props) {
     selectedSize,
     setQuantity,
     setSelectedSize,
-  } = usePerfume(perfume.price, perfume.profit_margin);
+  } = usePerfume(perfume.price || 0, perfume.profit_margin || 0);
 
   const { control, handleSubmit } = useForm();
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -47,7 +47,7 @@ export default function PerfumeDetails({ perfume }: Props) {
       price: rawUnitPrice,
       size: selectedSize.value,
       quantity: quantity,
-      image: perfume.image,
+      image: perfume.image || '',
     });
     toast.success("Agregado al carrito");
   };
@@ -97,7 +97,7 @@ export default function PerfumeDetails({ perfume }: Props) {
               <h2 className="m-0 text-base font-semibold md:text-xl">
                 Description
               </h2>
-              {perfume.description.length ? (
+              {perfume?.description?.length ? (
                 <div
                   className="prose max-w-none text-muted-foreground"
                   dangerouslySetInnerHTML={{ __html: perfume.description }}
