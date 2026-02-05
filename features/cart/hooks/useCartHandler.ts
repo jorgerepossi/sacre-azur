@@ -81,7 +81,7 @@ export const useCartHandler = () => {
       }
 
       // Redirigir a página de confirmación
-      router.push(`/order-confirmed?code=${order_code}&view=client`);
+      router.push(`/${tenant?.slug}/order-confirmed?code=${order_code}&view=client`);
     } catch (err) {
       toast.error("Error al guardar el pedido");
       console.error("SaveOrder failed", err);

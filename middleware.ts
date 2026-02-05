@@ -17,6 +17,7 @@ const RESERVED_PATHS = [
   "unauthorized",
   "404",
   ".well-known",
+  "order-confirmed",
 ];
 
 export async function middleware(request: NextRequest) {

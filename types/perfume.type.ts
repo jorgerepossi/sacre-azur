@@ -19,17 +19,17 @@ export interface PerfumeNoteRelation {
 export interface Perfume {
   id: string;
   name: string;
-  brand: Brand;
-  image: string;
-  price: number;
-  description: string;
+  description?: string;
+  image?: string;
   external_link?: string;
-  brand_id?: string;
-  in_stock: boolean;
-  is_active: boolean;
-  profit_margin: number;
+  created_at?: string;
+  brand: Brand;
   perfume_note_relation?: PerfumeNoteRelation[];
-  tenant_id: string;
+  price?: number;
+  profit_margin?: number;
+  in_stock?: boolean;
+  is_active?: boolean;
+  tenant_id?: string;
   tenant_product_id?: string;
 }
 
