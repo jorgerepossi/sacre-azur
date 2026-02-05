@@ -35,7 +35,7 @@ export async function middleware(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: Array<{ name: string; value: string; options?: any }>) {  // ← AGREGAR TIPO
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options),
           );
@@ -73,7 +73,7 @@ export async function middleware(request: NextRequest) {
 
   // Otherwise, first segment is the tenant
   if (firstSegment) {
-    const { data: tenant, error } = await supabase
+    const { data: tenant } = await supabase
       .from("tenants")
       .select("id, slug, is_active")
       .eq("slug", firstSegment)
