@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-
 import { Perfume } from "@/types/perfume.type";
 
 export const usePerfumeBrandFilter = (
@@ -8,6 +7,6 @@ export const usePerfumeBrandFilter = (
 ): Perfume[] => {
   return useMemo(() => {
     if (!brandId) return perfumes;
-    return perfumes.filter((perfume) => perfume.brand_id === brandId);
+    return perfumes.filter((perfume) => perfume.brand?.id === brandId);
   }, [perfumes, brandId]);
 };
