@@ -15,6 +15,7 @@ export const useCreatePerfume = () => {
       description,
       price,
       profit_margin,
+      size,
       external_link,
       imageFile,
       brand_id,
@@ -59,6 +60,8 @@ export const useCreatePerfume = () => {
       const createdPerfumeId = perfumeData[0].id;
 
       // 3. Crear relación en tenant_products (inventario del tenant)
+      const isDecantType = tenant.product_type === "decant" || !tenant.product_type;
+
       const { error: tenantProductError } = await supabase
         .from("tenant_products")
         .insert([
@@ -66,8 +69,9 @@ export const useCreatePerfume = () => {
             tenant_id: tenant.id,
             perfume_id: createdPerfumeId,
             price: price.toString(),
-            profit_margin: profit_margin.toString(),
-            sizes_available: ["2.5", "5", "10"], // Default sizes
+            profit_margin: profit_margin?.toString() || "0",
+            size: size || null,
+            sizes_available: isDecantType ? ["2.5", "5", "10"] : [size?.toString()],
             stock: 100, // Default stock
             active: true,
           },
@@ -76,7 +80,7 @@ export const useCreatePerfume = () => {
       if (tenantProductError)
         throw new Error(
           "Error agregando producto al inventario: " +
-            tenantProductError.message,
+          tenantProductError.message,
         );
 
       // 4. Guardar notas olfativas

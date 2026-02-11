@@ -12,6 +12,7 @@ export type FormValues = {
   description: string;
   price: number;
   profit_margin: number;
+  size?: number;
   external_link: string;
   image: FileList;
   brand_id: string;

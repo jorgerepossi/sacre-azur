@@ -13,11 +13,13 @@ import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
+  SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 
 import { useCreatePerfumeForm } from "@/hooks/useCreatePerfumeForm";
+import { useTenant } from "@/providers/TenantProvider";
 
 import ImageCropModal from "../edit/components/image-crop-modal";
 import PricePreview from "../edit/components/price-preview";
@@ -43,6 +45,9 @@ const CreateForm = () => {
     handleCropComplete,
     setShowCropModal,
   } = useCreatePerfumeForm();
+
+  const { tenant } = useTenant();
+  const isDecantSeller = tenant?.product_type === "decant" || !tenant?.product_type;
 
   if (isLoading || error || !brands) return null;
 
@@ -85,7 +90,7 @@ const CreateForm = () => {
               name="price"
               render={({ field }) => (
                 <Flex className="flex-col gap-[1rem]">
-                  <Label htmlFor="price">Precio</Label>
+                  <Label htmlFor="price">{isDecantSeller ? "Precio (100ml)" : "Precio de Venta"}</Label>
                   <Input
                     {...field}
                     type="number"
@@ -95,21 +100,46 @@ const CreateForm = () => {
                 </Flex>
               )}
             />
-            <Controller
-              control={control}
-              name="profit_margin"
-              render={({ field }) => (
-                <Flex className="flex-col gap-[1rem]">
-                  <Label htmlFor="profit">Ganancia</Label>
-                  <Input
-                    {...field}
-                    type="number"
-                    id="profit"
-                    placeholder="50"
-                  />
-                </Flex>
-              )}
-            />
+            {isDecantSeller ? (
+              <Controller
+                control={control}
+                name="profit_margin"
+                render={({ field }) => (
+                  <Flex className="flex-col gap-[1rem]">
+                    <Label htmlFor="profit">Ganancia (%)</Label>
+                    <Input
+                      {...field}
+                      type="number"
+                      id="profit"
+                      placeholder="50"
+                    />
+                  </Flex>
+                )}
+              />
+            ) : (
+              <Controller
+                control={control}
+                name="size"
+                render={({ field }) => (
+                  <Flex className="flex-col gap-[1rem]">
+                    <Label htmlFor="size">Tamaño</Label>
+                    <Select
+                      onValueChange={(val) => field.onChange(Number(val))}
+                      value={field.value?.toString() ?? ""}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="30">30ml</SelectItem>
+                        <SelectItem value="50">50ml</SelectItem>
+                        <SelectItem value="100">100ml</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </Flex>
+                )}
+              />
+            )}
 
             <Controller
               control={control}
@@ -132,7 +162,7 @@ const CreateForm = () => {
               )}
             />
           </Flex>
-          <PricePreview control={control} />
+          {isDecantSeller && <PricePreview control={control} />}
           <Controller
             control={control}
             name="external_link"

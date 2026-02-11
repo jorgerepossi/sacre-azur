@@ -1,3 +1,5 @@
+export type ProductType = 'decant' | 'perfume';
+
 export interface Tenant {
   id: string;
   slug: string;
@@ -8,6 +10,7 @@ export interface Tenant {
   secondary_color: string;
   currency: string;
   is_active: boolean;
+  product_type: ProductType;
   created_at: string;
   updated_at: string;
 }
@@ -30,6 +33,7 @@ export interface CreateTenantInput {
   slug: string;
   name: string;
   whatsapp_number: string;
+  product_type?: ProductType;
   logo_url?: string | null;
   primary_color?: string;
   secondary_color?: string;

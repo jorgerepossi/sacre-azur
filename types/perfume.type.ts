@@ -27,6 +27,8 @@ export interface Perfume {
   perfume_note_relation?: PerfumeNoteRelation[];
   price?: number;
   profit_margin?: number;
+  size?: number;
+  product_type?: "decant" | "perfume";
   in_stock?: boolean;
   is_active?: boolean;
   tenant_id?: string;

@@ -19,13 +19,14 @@ import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
+  SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 
 import { useEditPerfume } from "@/hooks/useEditPerfume";
-import { useTenantUrl } from "@/hooks/useTenantUrl";
+import { useTenant } from "@/providers/TenantProvider";
 
 import EditPerfumeSkeleton from "./components/edit-form-skeleton";
 import ImageCropModal from "./components/image-crop-modal";
@@ -50,14 +51,16 @@ export default function EditPerfumeContent() {
     setShowCropModal,
     handleCropComplete,
   } = useEditPerfume();
-  const { tenant } = useTenantUrl();
+  const { tenant } = useTenant();
+  const isDecantSeller = tenant?.product_type === "decant" || !tenant?.product_type;
+
 
   if (isPending || !brands) {
     return <EditPerfumeSkeleton />;
   }
 
   const handleCancel = () => {
-    router.push(`/${tenant}/dashboard`);
+    router.push(`/${tenant?.slug}/dashboard`);
   };
 
   return (
@@ -121,50 +124,58 @@ export default function EditPerfumeContent() {
               )}
             />
             <Flex className="gap-4">
-              <Flex className={"flex-col gap-[1rem]"}>
-                <Controller
-                  name="price"
-                  control={control}
-                  render={({ field }) => (
-                    <Flex className={"w-full flex-col gap-[1rem]"}>
-                      <Label
-                        htmlFor={"price"}
-                        className={"text-muted-foreground"}
-                      >
-                        Precio
-                      </Label>
-                      <Input
-                        {...field}
-                        id={"price"}
-                        type="number"
-                        placeholder="Price"
-                      />
-                    </Flex>
-                  )}
-                />
-              </Flex>
-              <Flex className={"flex-col gap-[1rem]"}>
+              <Controller
+                name="price"
+                control={control}
+                render={({ field }) => (
+                  <Flex className={"w-full flex-col gap-[1rem]"}>
+                    <Label htmlFor={"price"} className={"text-muted-foreground"}>
+                      {isDecantSeller ? "Precio (100ml)" : "Precio de Venta"}
+                    </Label>
+                    <Input {...field} id={"price"} type="number" placeholder="Price" />
+                  </Flex>
+                )}
+              />
+
+              {isDecantSeller ? (
                 <Controller
                   name="profit_margin"
                   control={control}
                   render={({ field }) => (
                     <Flex className={"w-full flex-col gap-[1rem]"}>
-                      <Label
-                        htmlFor={"profit"}
-                        className={"text-muted-foreground"}
-                      >
-                        Gan Porcentaje
+                      <Label htmlFor={"profit"} className={"text-muted-foreground"}>
+                        Ganancia (%)
                       </Label>
-                      <Input
-                        {...field}
-                        id={"profit"}
-                        type="number"
-                        placeholder="Profit"
-                      />
+                      <Input {...field} id={"profit"} type="number" placeholder="Profit" />
                     </Flex>
                   )}
                 />
-              </Flex>
+              ) : (
+                <Controller
+                  name="size"
+                  control={control}
+                  render={({ field }) => (
+                    <Flex className={"w-full flex-col gap-[1rem]"}>
+                      <Label htmlFor={"size"} className={"text-muted-foreground"}>
+                        Tamaño
+                      </Label>
+                      <Select
+                        onValueChange={(val) => field.onChange(Number(val))}
+                        value={field.value?.toString() ?? ""}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccionar..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="30">30ml</SelectItem>
+                          <SelectItem value="50">50ml</SelectItem>
+                          <SelectItem value="100">100ml</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </Flex>
+                  )}
+                />
+              )}
 
               <Controller
                 control={control}
@@ -172,10 +183,7 @@ export default function EditPerfumeContent() {
                 rules={{ required: "Choose Brand" }}
                 render={({ field }) => (
                   <Flex className={"w-full flex-col gap-[1rem]"}>
-                    <Label
-                      htmlFor={"brand_id"}
-                      className={"text-muted-foreground"}
-                    >
+                    <Label htmlFor={"brand_id"} className={"text-muted-foreground"}>
                       Cambiar Marca
                     </Label>
                     <Select
@@ -193,6 +201,8 @@ export default function EditPerfumeContent() {
                 )}
               />
             </Flex>
+
+            {isDecantSeller && <PricePreview control={control} />}
             <PricePreview control={control} />
           </Flex>
           {/* end block one */}

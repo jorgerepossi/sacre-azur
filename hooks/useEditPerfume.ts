@@ -21,6 +21,7 @@ type FormValues = {
   description: string;
   price: number;
   profit_margin: number;
+  size?: number;
   external_link: string;
   brand_id: string;
   image?: FileList;
@@ -241,12 +242,15 @@ export function useEditPerfume() {
 
       if (perfumeError) throw perfumeError;
 
+      const isDecantSeller = tenant?.product_type === "decant" || !tenant?.product_type;
+
       const { data: updateResult, error: tenantProductError } = await supabase
         .from("tenant_products")
         .update({
           price: data.price.toString(),
-          profit_margin: data.profit_margin.toString(),
+          profit_margin: isDecantSeller ? data.profit_margin.toString() : "0",
           stock: data.in_stock ? 100 : 0,
+          ...((!isDecantSeller && data.size) && { size: data.size.toString() }),
         })
         .eq("id", tenantProductId)
         .select();

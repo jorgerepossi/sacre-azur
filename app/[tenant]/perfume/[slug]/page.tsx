@@ -20,20 +20,22 @@ export default async function Page({
   const slugParts = slug.split("_");
   const id = slugParts[slugParts.length - 1];
 
-
   if (!id || !/^[0-9a-f-]{36}$/.test(id)) {
-
     return notFound();
   }
 
   const tenantId = await getTenantIdFromSlug(tenant);
 
-
   if (!tenantId) {
-
     return notFound();
   }
 
+  // Traer product_type del tenant
+  const { data: tenantInfo } = await supabase
+    .from("tenants")
+    .select("product_type")
+    .eq("id", tenantId)
+    .single();
 
   const { data: tenantProduct, error } = await supabase
     .from("tenant_products")
@@ -43,6 +45,7 @@ export default async function Page({
       profit_margin,
       stock,
       tenant_id,
+      size,
       perfume:perfume_id (
         id,
         name,
@@ -73,10 +76,8 @@ export default async function Page({
     .single();
 
   if (error || !tenantProduct) {
-
     return notFound();
   }
-
 
   const perfumeData = Array.isArray(tenantProduct.perfume)
     ? tenantProduct.perfume[0]
@@ -106,18 +107,17 @@ export default async function Page({
     perfume_note_relation: perfumeNoteRelation,
     price: Number(tenantProduct.price),
     profit_margin: Number(tenantProduct.profit_margin),
+    size: tenantProduct.size ? Number(tenantProduct.size) : undefined,
     in_stock: tenantProduct.stock > 0,
     is_active: true,
     tenant_id: tenantProduct.tenant_id,
+    product_type: tenantInfo?.product_type || "decant",
   };
 
   const expectedSlug = `${createSlug(perfume.name)}_${perfume.id}`;
   if (slug !== expectedSlug) {
-
     return notFound();
   }
-
-
 
   return (
     <section>

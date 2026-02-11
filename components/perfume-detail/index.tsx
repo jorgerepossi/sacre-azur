@@ -27,6 +27,8 @@ type Props = {
 };
 
 export default function PerfumeDetails({ perfume }: Props) {
+  const isDecantSeller = perfume.product_type === "decant" || !perfume.product_type;
+
   const {
     sizes,
     quantity,
@@ -40,20 +42,31 @@ export default function PerfumeDetails({ perfume }: Props) {
   const { control, handleSubmit } = useForm();
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("es-AR").format(price);
+  };
+
+  const displayPrice = isDecantSeller
+    ? totalPrice
+    : formatPrice((perfume.price || 0) * quantity);
+
+  const cartPrice = isDecantSeller ? rawUnitPrice : perfume.price || 0;
+  const cartSize = isDecantSeller ? selectedSize?.value : perfume.size || 0;
+
   const onSubmit = () => {
     useCartStore.getState().addItem({
       id: String(perfume.id),
       name: perfume.name,
-      price: rawUnitPrice,
-      size: selectedSize.value,
+      price: cartPrice,
+      size: cartSize,
       quantity: quantity,
-      image: perfume.image || '',
+      image: perfume.image || "",
     });
     toast.success("Agregado al carrito");
   };
 
   useEffect(() => {
-    if (sizes.length > 0 && !selectedSize) {
+    if (isDecantSeller && sizes.length > 0 && !selectedSize) {
       setSelectedSize(sizes[0]);
     }
   }, [sizes, selectedSize]);
@@ -104,7 +117,7 @@ export default function PerfumeDetails({ perfume }: Props) {
                 />
               ) : (
                 <p className="text-muted-foreground">
-                  No se encontró descripcióm
+                  No se encontró descripción
                 </p>
               )}
             </Flex>
@@ -136,6 +149,7 @@ export default function PerfumeDetails({ perfume }: Props) {
                 </p>
               )}
             </Flex>
+
             <Flex
               className={
                 "flex-col gap-[1rem] border-t-2 py-[1rem] xs:flex-row md:gap-[3rem] md:py-[3rem]"
@@ -143,33 +157,36 @@ export default function PerfumeDetails({ perfume }: Props) {
             >
               {perfume.in_stock && (
                 <>
-                  <Flex className="flex-col items-start justify-between gap-4">
-                    <Label htmlFor="" className="font-semibold">
-                      Tamaño:
-                    </Label>
-                    <Flex className="gap-2">
-                      {sizes.map((s) => (
-                        <button
-                          type={"button"}
-                          key={s.label}
-                          onClick={() => setSelectedSize(s)}
-                          className={`rounded-full border-2 px-2 py-1 text-xs font-medium transition-all ${
-                            selectedSize?.label === s.label
-                              ? "border-black bg-black text-white"
-                              : "border-gray-300 bg-white text-gray-700 hover:border-black"
-                          }`}
-                        >
-                          {s.label}
-                        </button>
-                      ))}
+                  {isDecantSeller ? (
+                    <Flex className="flex-col items-start justify-between gap-4">
+                      <Label className="font-semibold">Tamaño:</Label>
+                      <Flex className="gap-2">
+                        {sizes.map((s) => (
+                          <button
+                            type={"button"}
+                            key={s.label}
+                            onClick={() => setSelectedSize(s)}
+                            className={`rounded-full border-2 px-2 py-1 text-xs font-medium transition-all ${selectedSize?.label === s.label
+                                ? "border-black bg-black text-white"
+                                : "border-gray-300 bg-white text-gray-700 hover:border-black"
+                              }`}
+                          >
+                            {s.label}
+                          </button>
+                        ))}
+                      </Flex>
                     </Flex>
-                  </Flex>
+                  ) : (
+                    <Flex className="flex-col items-start justify-between gap-4">
+                      <Label className="font-semibold">Tamaño:</Label>
+                      <span className="rounded-full border-2 border-black bg-black px-3 py-1 text-xs font-medium text-white">
+                        {perfume.size}ml
+                      </span>
+                    </Flex>
+                  )}
 
                   <Flex className="flex-col items-start justify-between gap-4">
-                    <Label htmlFor="" className="font-semibold">
-                      {" "}
-                      Cantidad:
-                    </Label>
+                    <Label className="font-semibold">Cantidad:</Label>
                     <Flex className={"items-center gap-1"}>
                       <button
                         type="button"
@@ -194,7 +211,7 @@ export default function PerfumeDetails({ perfume }: Props) {
 
             {perfume.in_stock && (
               <div className="space-y-2">
-                <p className="text-lg font-semibold">Total: ${totalPrice}</p>
+                <p className="text-lg font-semibold">Total: ${displayPrice}</p>
               </div>
             )}
 
@@ -234,13 +251,6 @@ export default function PerfumeDetails({ perfume }: Props) {
                   Agregar al carrito
                 </Button>
               )}
-
-              {/**
-               * 
-              <Button variant="outline" size="lg" className="w-full">
-                Add to Wishlist
-              </Button>
-               */}
             </div>
           </div>
         </div>
