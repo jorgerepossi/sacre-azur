@@ -142,7 +142,7 @@ export async function GET(request: Request) {
 
     if (error) throw error;
 
-    const transformedData = data
+    const transformedData = (data as any[])
       ?.map((item) => {
         const perfume = Array.isArray(item.perfume)
           ? item.perfume[0]
