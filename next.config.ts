@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
   },
+  // Standalone es excelente para Docker/Producción
   output: process.env.NODE_ENV === "production" ? "standalone" : undefined,
   images: {
     remotePatterns: [
@@ -12,6 +13,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "eidnomajsrpyibegxvpw.supabase.co",
         pathname: "/storage/v1/object/public/**",
+      },
+      {
+        protocol: "https",
+        hostname: "fimgs.net",
+        pathname: "/**",
       },
     ],
   },

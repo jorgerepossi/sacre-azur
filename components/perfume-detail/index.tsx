@@ -71,6 +71,8 @@ export default function PerfumeDetails({ perfume }: Props) {
     }
   }, [sizes, selectedSize]);
 
+  console.log(perfume)
+
   return (
     <div className="container py-10">
       <Link
@@ -97,18 +99,19 @@ export default function PerfumeDetails({ perfume }: Props) {
               <h1 className="text-xl font-bold md:text-3xl">
                 {perfume.name} - {perfume.brand.name}
               </h1>
-              <Image
-                src={perfume.brand.image || "/placeholder.svg"}
-                alt={`${perfume.brand.name} logo`}
-                width={100}
-                height={100}
-                className="h-full border object-contain"
-              />
+              <div className="relative h-20 w-20 overflow-hidden border rounded-md">
+                <Image
+                  src={perfume.brand.image || "/placeholder.svg"}
+                  alt={`${perfume.brand.name} logo`}
+                  fill
+                  className="object-contain p-2"
+                />
+              </div>
             </Flex>
 
             <Flex className="flex-col space-y-4">
               <h2 className="m-0 text-base font-semibold md:text-xl">
-                Description
+                Descripción
               </h2>
               {perfume?.description?.length ? (
                 <div
@@ -122,32 +125,80 @@ export default function PerfumeDetails({ perfume }: Props) {
               )}
             </Flex>
 
-            <Flex className="flex-col space-y-4 border-t-2 py-[2rem] md:space-y-4">
+            {/* Acordes Principales (Olfactive Families) */}
+            <Flex className="flex-col space-y-4 border-t-2 mt-6 pt-6">
               <h2 className="m-0 text-base font-semibold md:text-xl">
                 Acordes principales
               </h2>
 
-              {perfume?.perfume_note_relation?.length ? (
-                <Flex className={"flex-wrap gap-[16px]"}>
-                  {perfume?.perfume_note_relation.map(
+              {perfume?.perfume_family_relation?.length ? (
+                <Flex className={"flex-wrap gap-[12px]"}>
+                  {perfume?.perfume_family_relation.map(
                     (relation) =>
-                      relation.perfume_notes && (
+                      relation.olfactive_families && (
                         <div
-                          key={relation.perfume_notes.id}
-                          className="rounded-full border bg-muted px-[1rem] py-[.5rem]"
+                          key={relation.family_id}
+                          className="rounded-full border bg-muted px-[1rem] py-[.4rem]"
                         >
-                          <p className="text-body-small text-muted-foreground">
-                            {relation.perfume_notes.name}
+                          <p className="text-body-small text-muted-foreground font-medium">
+                            {relation.olfactive_families.name}
                           </p>
                         </div>
                       ),
                   )}
                 </Flex>
               ) : (
-                <p className="text-muted-foreground">
-                  No fragrance notes available
+                <p className="text-sm text-muted-foreground italic">
+                  Acordes no disponibles
                 </p>
               )}
+            </Flex>
+
+            {/* Pirámide Olfativa (Notes by Type) */}
+            <Flex className="flex-col space-y-6 border-t-2 mt-6 pt-6 mb-6">
+              <h2 className="m-0 text-base font-semibold md:text-xl">
+                Pirámide Olfativa
+              </h2>
+
+              <div className="space-y-4">
+                {[
+                  { type: "top", label: "Notas de Salida" },
+                  { type: "heart", label: "Notas de Corazón" },
+                  { type: "base", label: "Notas de Fondo" },
+                ].map((section) => {
+                  const notes =
+                    perfume.perfume_note_relation?.filter(
+                      (rel) => rel.note_type === section.type,
+                    ) || [];
+
+                  if (notes.length === 0) return null;
+
+                  return (
+                    <div key={section.type} className="space-y-2">
+                      <h3 className="text-sm font-medium text-primary">
+                        {section.label}
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {notes.map((rel) => (
+                          <span
+                            key={rel.note_id}
+                            className="bg-secondary/10 text-secondary-foreground text-xs px-2.5 py-1 rounded-md border"
+                          >
+                            {rel.perfume_notes.name}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {(!perfume.perfume_note_relation ||
+                  perfume.perfume_note_relation.length === 0) && (
+                    <p className="text-sm text-muted-foreground italic">
+                      Notas no disponibles
+                    </p>
+                  )}
+              </div>
             </Flex>
 
             <Flex
@@ -167,8 +218,8 @@ export default function PerfumeDetails({ perfume }: Props) {
                             key={s.label}
                             onClick={() => setSelectedSize(s)}
                             className={`rounded-full border-2 px-2 py-1 text-xs font-medium transition-all ${selectedSize?.label === s.label
-                                ? "border-black bg-black text-white"
-                                : "border-gray-300 bg-white text-gray-700 hover:border-black"
+                              ? "border-black bg-black text-white"
+                              : "border-gray-300 bg-white text-gray-700 hover:border-black"
                               }`}
                           >
                             {s.label}

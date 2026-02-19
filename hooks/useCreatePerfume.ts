@@ -19,7 +19,10 @@ export const useCreatePerfume = () => {
       external_link,
       imageFile,
       brand_id,
-      note_ids,
+      top_note_ids,
+      heart_note_ids,
+      base_note_ids,
+      family_ids,
     }: CreatePerfumeInputType) => {
       if (!tenant?.id) {
         throw new Error("No hay tenant seleccionado");
@@ -83,19 +86,47 @@ export const useCreatePerfume = () => {
           tenantProductError.message,
         );
 
-      // 4. Guardar notas olfativas
-      if (note_ids && note_ids.length > 0) {
-        const { error: relationError } = await supabase
-          .from("perfume_note_relation")
+      // 4. Guardar notas olfativas (Pirámide Olfativa)
+      const allNoteRelations = [
+        ...top_note_ids.map((id) => ({
+          perfume_id: createdPerfumeId,
+          note_id: parseInt(id),
+          note_type: "top" as const,
+        })),
+        ...heart_note_ids.map((id) => ({
+          perfume_id: createdPerfumeId,
+          note_id: parseInt(id),
+          note_type: "heart" as const,
+        })),
+        ...base_note_ids.map((id) => ({
+          perfume_id: createdPerfumeId,
+          note_id: parseInt(id),
+          note_type: "base" as const,
+        })),
+      ];
+
+      if (allNoteRelations.length > 0) {
+        const { error: noteError } = await supabase
+          .from("perfume_to_notes")
+          .insert(allNoteRelations);
+
+        if (noteError)
+          throw new Error("Error guardando notas: " + noteError.message);
+      }
+
+      // 5. Guardar familias olfativas (Acordes principales)
+      if (family_ids && family_ids.length > 0) {
+        const { error: familyError } = await supabase
+          .from("perfume_to_families")
           .insert(
-            note_ids.map((note_id) => ({
+            family_ids.map((family_id) => ({
               perfume_id: createdPerfumeId,
-              note_id: note_id,
+              family_id: parseInt(family_id),
             })),
           );
 
-        if (relationError)
-          throw new Error("Error guardando notas: " + relationError.message);
+        if (familyError)
+          throw new Error("Error guardando familias: " + familyError.message);
       }
 
       return perfumeData;

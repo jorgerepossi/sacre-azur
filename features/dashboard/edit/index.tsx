@@ -41,7 +41,16 @@ export default function EditPerfumeContent() {
     preview,
     onSubmit,
     isPending,
+    topNotes,
+    heartNotes,
+    baseNotes,
+    selectedFamilies,
+    setTopNotes,
+    setHeartNotes,
+    setBaseNotes,
+    setSelectedFamilies,
     orderNotes,
+    orderFamilies,
     fileInputRef,
     handleSubmit,
     handleIconClick,
@@ -203,21 +212,78 @@ export default function EditPerfumeContent() {
             </Flex>
 
             {isDecantSeller && <PricePreview control={control} />}
-            <PricePreview control={control} />
+
           </Flex>
           {/* end block one */}
           <Flex className="flex-2 flex-col gap-[2rem]">
             <Controller
-              name="note_ids"
+              name="family_ids"
               control={control}
               render={({ field }) => (
                 <Flex className="flex-col gap-[1rem]">
                   <Label className="text-muted-foreground">
-                    Acordes principales
+                    Acordes principales (Olfactive Families)
                   </Label>
                   <MultiNoteSelector
                     control={control}
-                    name="note_ids"
+                    name="family_ids"
+                    notes={orderFamilies}
+                    selectedNotes={field.value || []}
+                    onNotesChange={field.onChange}
+                  />
+                </Flex>
+              )}
+            />
+
+            <Controller
+              name="top_note_ids"
+              control={control}
+              render={({ field }) => (
+                <Flex className="flex-col gap-[1rem]">
+                  <Label className="text-muted-foreground">
+                    Notas de Salida (Top Notes)
+                  </Label>
+                  <MultiNoteSelector
+                    control={control}
+                    name="top_note_ids"
+                    notes={orderNotes}
+                    selectedNotes={field.value || []}
+                    onNotesChange={field.onChange}
+                  />
+                </Flex>
+              )}
+            />
+
+            <Controller
+              name="heart_note_ids"
+              control={control}
+              render={({ field }) => (
+                <Flex className="flex-col gap-[1rem]">
+                  <Label className="text-muted-foreground">
+                    Notas de Corazón (Heart Notes)
+                  </Label>
+                  <MultiNoteSelector
+                    control={control}
+                    name="heart_note_ids"
+                    notes={orderNotes}
+                    selectedNotes={field.value || []}
+                    onNotesChange={field.onChange}
+                  />
+                </Flex>
+              )}
+            />
+
+            <Controller
+              name="base_note_ids"
+              control={control}
+              render={({ field }) => (
+                <Flex className="flex-col gap-[1rem]">
+                  <Label className="text-muted-foreground">
+                    Notas de Fondo (Base Notes)
+                  </Label>
+                  <MultiNoteSelector
+                    control={control}
+                    name="base_note_ids"
                     notes={orderNotes}
                     selectedNotes={field.value || []}
                     onNotesChange={field.onChange}

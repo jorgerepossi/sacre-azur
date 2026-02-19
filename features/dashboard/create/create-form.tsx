@@ -36,6 +36,7 @@ const CreateForm = () => {
     handleSubmit,
     fileInputRef,
     orderNotes,
+    orderFamilies,
     createPerfume,
     handleImageChange,
     handleIconClick,
@@ -178,15 +179,66 @@ const CreateForm = () => {
               </Flex>
             )}
           />
-          <Label htmlFor="note_ids">Acordes Principales</Label>
           <Controller
-            name="note_ids"
+            control={control}
+            name="family_ids"
+            render={({ field }) => (
+              <Flex className="flex-col gap-[1rem]">
+                <Label htmlFor="family_ids">Acordes Principales</Label>
+                <MultiNoteSelector
+                  control={control}
+                  name="family_ids"
+                  notes={orderFamilies ?? []}
+                  selectedNotes={field.value || []}
+                  onNotesChange={field.onChange}
+                />
+              </Flex>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="top_note_ids"
+            render={({ field }) => (
+              <Flex className="flex-col gap-[1rem]">
+                <Label htmlFor="top_note_ids">Notas de Salida (Top Notes)</Label>
+                <MultiNoteSelector
+                  control={control}
+                  name="top_note_ids"
+                  notes={orderNotes ?? []}
+                  selectedNotes={field.value || []}
+                  onNotesChange={field.onChange}
+                />
+              </Flex>
+            )}
+          />
+
+          <Controller
+            name="heart_note_ids"
             control={control}
             render={({ field }) => (
               <Flex className="flex-col gap-[1rem]">
+                <Label htmlFor="heart_note_ids">Notas de Corazón (Heart Notes)</Label>
                 <MultiNoteSelector
                   control={control}
-                  name="note_ids"
+                  name="heart_note_ids"
+                  notes={orderNotes ?? []}
+                  selectedNotes={field.value || []}
+                  onNotesChange={field.onChange}
+                />
+              </Flex>
+            )}
+          />
+
+          <Controller
+            name="base_note_ids"
+            control={control}
+            render={({ field }) => (
+              <Flex className="flex-col gap-[1rem]">
+                <Label htmlFor="base_note_ids">Notas de Fondo (Base Notes)</Label>
+                <MultiNoteSelector
+                  control={control}
+                  name="base_note_ids"
                   notes={orderNotes ?? []}
                   selectedNotes={field.value || []}
                   onNotesChange={field.onChange}

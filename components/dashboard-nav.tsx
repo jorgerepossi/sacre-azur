@@ -44,6 +44,11 @@ export function DashboardNav({ tenant }: DashboardNavProps) {
       <div className="border-b bg-background text-foreground">
         <div className="container py-2">
           <nav className="flex gap-4">
+            <Link href={`/${tenant}/dashboard`}>
+              <Button variant="ghost" size="sm">
+                Inicio
+              </Button>
+            </Link>
             {/* Todos los roles */}
             <Link href={`/${tenant}/dashboard/perfumes`}>
               <Button variant="ghost" size="sm">

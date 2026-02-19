@@ -26,7 +26,10 @@ type FormValues = {
   brand_id: string;
   image?: FileList;
   in_stock: boolean;
-  note_ids: string[];
+  top_note_ids: string[];
+  heart_note_ids: string[];
+  base_note_ids: string[];
+  family_ids: string[];
 };
 
 export function useEditPerfume() {
@@ -38,10 +41,15 @@ export function useEditPerfume() {
   const [preview, setPreview] = useState<string | null>(null);
   const [originalPath, setOriginalPath] = useState<string | null>(null);
   const [allNotes, setAllNotes] = useState<Note[]>([]);
-  const [selectedNotes, setSelectedNotes] = useState<string[]>([]);
+  const [allFamilies, setAllFamilies] = useState<Note[]>([]); // Using same simplified Note type
+  const [topNotes, setTopNotes] = useState<string[]>([]);
+  const [heartNotes, setHeartNotes] = useState<string[]>([]);
+  const [baseNotes, setBaseNotes] = useState<string[]>([]);
+  const [selectedFamilies, setSelectedFamilies] = useState<string[]>([]);
   const [tenantProductId, setTenantProductId] = useState<string | null>(null);
 
   const orderNotes = allNotes.sort((a, b) => a.name.localeCompare(b.name));
+  const orderFamilies = allFamilies.sort((a, b) => a.name.localeCompare(b.name));
 
   const {
     data: brands,
@@ -59,15 +67,21 @@ export function useEditPerfume() {
   const [tempImageSrc, setTempImageSrc] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchNotes = async () => {
-      const { data, error } = await supabase
+    const fetchData = async () => {
+      // Fetch available notes
+      const { data: notesData } = await supabase
         .from("perfume_notes")
         .select("id, name");
+      if (notesData) setAllNotes(notesData);
 
-      if (!error) setAllNotes(data || []);
+      // Fetch available families
+      const { data: familiesData } = await supabase
+        .from("olfactive_families")
+        .select("id, name");
+      if (familiesData) setAllFamilies(familiesData);
     };
 
-    fetchNotes();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -108,14 +122,38 @@ export function useEditPerfume() {
 
       setTenantProductId(tenantProduct.id);
 
-      const { data: relationsData } = await supabase
-        .from("perfume_note_relation")
-        .select("note_id")
+      // Fetch current notes from perfume_to_notes
+      const { data: notesRelations } = await supabase
+        .from("perfume_to_notes")
+        .select("note_id, note_type")
         .eq("perfume_id", perfumeId);
 
-      const initialNotes =
-        relationsData?.map((r) => r.note_id.toString()) || [];
-      setSelectedNotes(initialNotes);
+      const initialTop =
+        notesRelations
+          ?.filter((r) => r.note_type === "top")
+          .map((r) => r.note_id.toString()) || [];
+      const initialHeart =
+        notesRelations
+          ?.filter((r) => r.note_type === "heart")
+          .map((r) => r.note_id.toString()) || [];
+      const initialBase =
+        notesRelations
+          ?.filter((r) => r.note_type === "base")
+          .map((r) => r.note_id.toString()) || [];
+
+      setTopNotes(initialTop);
+      setHeartNotes(initialHeart);
+      setBaseNotes(initialBase);
+
+      // Fetch current families from perfume_to_families
+      const { data: familiesRelations } = await supabase
+        .from("perfume_to_families")
+        .select("family_id")
+        .eq("perfume_id", perfumeId);
+
+      const initialFamilies =
+        familiesRelations?.map((r) => r.family_id.toString()) || [];
+      setSelectedFamilies(initialFamilies);
 
       reset({
         name: perfumeData.name,
@@ -125,7 +163,10 @@ export function useEditPerfume() {
         price: Number(tenantProduct.price),
         profit_margin: Number(tenantProduct.profit_margin),
         in_stock: tenantProduct.stock > 0,
-        note_ids: initialNotes,
+        top_note_ids: initialTop,
+        heart_note_ids: initialHeart,
+        base_note_ids: initialBase,
+        family_ids: initialFamilies,
         image: undefined,
       });
 
@@ -167,27 +208,61 @@ export function useEditPerfume() {
     setTempImageSrc(null);
   };
 
-  const updateNotesRelations = async (noteIds: string[]) => {
+  const updateOlfactoryData = async (
+    topNoteIds: string[],
+    heartNoteIds: string[],
+    baseNoteIds: string[],
+    familyIds: string[],
+  ) => {
     if (!perfumeId) return;
 
-    // Delete existing relations
+    // 1. Update Notes (perfume_to_notes)
+    await supabase.from("perfume_to_notes").delete().eq("perfume_id", perfumeId);
+
+    const allNoteRelations = [
+      ...topNoteIds.map((id) => ({
+        perfume_id: perfumeId,
+        note_id: parseInt(id),
+        note_type: "top" as const,
+      })),
+      ...heartNoteIds.map((id) => ({
+        perfume_id: perfumeId,
+        note_id: parseInt(id),
+        note_type: "heart" as const,
+      })),
+      ...baseNoteIds.map((id) => ({
+        perfume_id: perfumeId,
+        note_id: parseInt(id),
+        note_type: "base" as const,
+      })),
+    ];
+
+    if (allNoteRelations.length > 0) {
+      const { error: noteError } = await supabase
+        .from("perfume_to_notes")
+        .insert(allNoteRelations);
+
+      if (noteError) throw noteError;
+    }
+
+    // 2. Update Families (perfume_to_families)
+    // ... around line 215 in original
     await supabase
-      .from("perfume_note_relation")
+      .from("perfume_to_families")
       .delete()
       .eq("perfume_id", perfumeId);
 
-    // Insert new relations if any
-    if (noteIds.length > 0) {
-      const relations = noteIds.map((noteId) => ({
+    if (familyIds.length > 0) {
+      const familyRelations = familyIds.map((familyId) => ({
         perfume_id: perfumeId,
-        note_id: parseInt(noteId),
+        family_id: parseInt(familyId),
       }));
 
-      const { error } = await supabase
-        .from("perfume_note_relation")
-        .insert(relations);
+      const { error: familyError } = await supabase
+        .from("perfume_to_families")
+        .insert(familyRelations);
 
-      if (error) throw error;
+      if (familyError) throw familyError;
     }
   };
 
@@ -242,7 +317,8 @@ export function useEditPerfume() {
 
       if (perfumeError) throw perfumeError;
 
-      const isDecantSeller = tenant?.product_type === "decant" || !tenant?.product_type;
+      const isDecantSeller =
+        tenant?.product_type === "decant" || !tenant?.product_type;
 
       const { data: updateResult, error: tenantProductError } = await supabase
         .from("tenant_products")
@@ -250,14 +326,19 @@ export function useEditPerfume() {
           price: data.price.toString(),
           profit_margin: isDecantSeller ? data.profit_margin.toString() : "0",
           stock: data.in_stock ? 100 : 0,
-          ...((!isDecantSeller && data.size) && { size: data.size.toString() }),
+          ...(!isDecantSeller && data.size && { size: data.size.toString() }),
         })
         .eq("id", tenantProductId)
         .select();
 
       if (tenantProductError) throw tenantProductError;
 
-      await updateNotesRelations(data.note_ids);
+      await updateOlfactoryData(
+        data.top_note_ids,
+        data.heart_note_ids,
+        data.base_note_ids,
+        data.family_ids,
+      );
 
       toast.success("Perfume updated successfully!");
 
@@ -285,8 +366,10 @@ export function useEditPerfume() {
     brands,
     onSubmit,
     allNotes,
+    allFamilies,
     isPending,
     orderNotes,
+    orderFamilies,
     brandsError,
     fileInputRef,
     showCropModal,
@@ -294,10 +377,16 @@ export function useEditPerfume() {
     handleCropComplete,
     setShowCropModal,
     handleSubmit,
-    selectedNotes,
+    topNotes,
+    heartNotes,
+    baseNotes,
+    selectedFamilies,
     brandsLoading,
     handleIconClick,
-    setSelectedNotes,
+    setTopNotes,
+    setHeartNotes,
+    setBaseNotes,
+    setSelectedFamilies,
     handleImageChange,
   };
 }

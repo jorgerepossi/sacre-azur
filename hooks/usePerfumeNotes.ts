@@ -8,12 +8,12 @@ export const usePerfumeNotes = (perfumeId: number) => {
     queryKey: ["perfume-notes", perfumeId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("perfume_note_relation")
-        .select("*, note(*)")
+        .from("perfume_to_notes")
+        .select("*, perfume_notes(*)")
         .eq("perfume_id", perfumeId);
 
       if (error) throw new Error(error.message);
-      return data?.map((relation) => relation.note) || [];
+      return data?.map((relation: any) => relation.perfume_notes) || [];
     },
     enabled: !!perfumeId, // Solo se ejecuta si hay un perfumeId válido
   });

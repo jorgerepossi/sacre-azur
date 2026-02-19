@@ -33,7 +33,7 @@ export async function GET(request: Request) {
 
       // Buscar perfumes que tengan TODAS las notas seleccionadas
       const { data: noteRelations } = await supabase
-        .from("perfume_note_relation")
+        .from("perfume_to_notes")
         .select("perfume_id, note_id")
         .in("note_id", noteArray);
 
@@ -72,9 +72,17 @@ export async function GET(request: Request) {
             name,
             image
           ),
-          perfume_note_relation (
+          perfume_to_notes (
             note_id,
-            perfume_notes:note_id (
+            note_type,
+            perfume_notes (
+              id,
+              name
+            )
+          ),
+          perfume_to_families (
+            family_id,
+            olfactive_families (
               id,
               name
             )
@@ -131,13 +139,26 @@ export async function GET(request: Request) {
 
         // Transformar notas
         const perfumeNotes =
-          perfume.perfume_note_relation?.map((rel: any) => {
+          perfume.perfume_to_notes?.map((rel: any) => {
             const note = Array.isArray(rel.perfume_notes)
               ? rel.perfume_notes[0]
               : rel.perfume_notes;
             return {
               note_id: rel.note_id,
+              note_type: rel.note_type,
               perfume_notes: note,
+            };
+          }) || [];
+
+        // Transformar familias (acordes)
+        const perfumeFamilies =
+          perfume.perfume_to_families?.map((rel: any) => {
+            const family = Array.isArray(rel.olfactive_families)
+              ? rel.olfactive_families[0]
+              : rel.olfactive_families;
+            return {
+              family_id: rel.family_id,
+              olfactive_families: family,
             };
           }) || [];
 
@@ -150,6 +171,7 @@ export async function GET(request: Request) {
           created_at: perfume.created_at,
           brand: brand,
           perfume_note_relation: perfumeNotes,
+          perfume_family_relation: perfumeFamilies,
           price: item.price,
           profit_margin: item.profit_margin,
           size: item.size,

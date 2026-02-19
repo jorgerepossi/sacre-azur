@@ -61,9 +61,17 @@ export default async function Page({
           active,
           created_at
         ),
-        perfume_note_relation (
+        perfume_to_notes (
           note_id,
-          perfume_notes:note_id (
+          note_type,
+          perfume_notes (
+            id,
+            name
+          )
+        ),
+        perfume_to_families (
+          family_id,
+          olfactive_families (
             id,
             name
           )
@@ -75,7 +83,12 @@ export default async function Page({
     .eq("tenant_id", tenantId)
     .single();
 
-  if (error || !tenantProduct) {
+  if (error) {
+    console.error("Supabase error fetching perfume detail:", error);
+    return notFound();
+  }
+
+  if (!tenantProduct) {
     return notFound();
   }
 
@@ -92,12 +105,22 @@ export default async function Page({
     slug: brandData?.slug || createSlug(brandData?.name || ""),
   };
 
-  const perfumeNoteRelation = perfumeData?.perfume_note_relation?.map(
+  const perfumeNoteRelation = perfumeData?.perfume_to_notes?.map(
     (relation: any) => ({
       note_id: relation.note_id,
+      note_type: relation.note_type,
       perfume_notes: Array.isArray(relation.perfume_notes)
         ? relation.perfume_notes[0]
         : relation.perfume_notes,
+    }),
+  );
+
+  const perfumeFamilyRelation = perfumeData?.perfume_to_families?.map(
+    (relation: any) => ({
+      family_id: relation.family_id,
+      olfactive_families: Array.isArray(relation.olfactive_families)
+        ? relation.olfactive_families[0]
+        : relation.olfactive_families,
     }),
   );
 
@@ -105,6 +128,7 @@ export default async function Page({
     ...perfumeData,
     brand: brand,
     perfume_note_relation: perfumeNoteRelation,
+    perfume_family_relation: perfumeFamilyRelation,
     price: Number(tenantProduct.price),
     profit_margin: Number(tenantProduct.profit_margin),
     size: tenantProduct.size ? Number(tenantProduct.size) : undefined,

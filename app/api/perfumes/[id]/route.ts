@@ -46,8 +46,17 @@ export async function GET(
             tenant_id,
             created_at
           ),
-          perfume_note_relation (
-            perfume_notes:note_id (
+          perfume_to_notes (
+            note_id,
+            note_type,
+            perfume_notes (
+              id,
+              name
+            )
+          ),
+          perfume_to_families (
+            family_id,
+            olfactive_families (
               id,
               name
             )
@@ -59,7 +68,15 @@ export async function GET(
       .eq("tenant_id", tenantId)
       .single();
 
-    if (error || !tenantProduct) {
+    if (error) {
+      console.error("Supabase error fetching perfume:", error);
+      return NextResponse.json(
+        { error: "Error de base de datos", details: error.message },
+        { status: 500 },
+      );
+    }
+
+    if (!tenantProduct) {
       return NextResponse.json(
         { error: "Perfume no encontrado" },
         { status: 404 },
@@ -70,8 +87,35 @@ export async function GET(
       ? tenantProduct.perfume[0]
       : tenantProduct.perfume;
 
+    const noteRelations = (perfume.perfume_to_notes ?? []).map(
+      (rel: any) => {
+        const note = Array.isArray(rel.perfume_notes)
+          ? rel.perfume_notes[0]
+          : rel.perfume_notes;
+        return {
+          note_id: rel.note_id,
+          note_type: rel.note_type,
+          perfume_notes: note,
+        };
+      },
+    );
+
+    const familyRelations = (perfume.perfume_to_families ?? []).map(
+      (rel: any) => {
+        const family = Array.isArray(rel.olfactive_families)
+          ? rel.olfactive_families[0]
+          : rel.olfactive_families;
+        return {
+          family_id: rel.family_id,
+          olfactive_families: family,
+        };
+      },
+    );
+
     const response = {
       ...perfume,
+      perfume_note_relation: noteRelations,
+      perfume_family_relation: familyRelations,
       price: tenantProduct.price,
       profit_margin: tenantProduct.profit_margin,
     };
