@@ -89,7 +89,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
               alt={item.name}
               width={200}
               height={200}
-              className="max-w-[120px]"
+              className=" max-w-[150px]"
             />
             <Badge
               variant={isDecantSeller ? "default" : "secondary"}

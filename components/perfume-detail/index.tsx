@@ -89,7 +89,7 @@ export default function PerfumeDetails({ perfume }: Props) {
             <Image
               src={perfume.image || "/placeholder.svg"}
               alt={perfume.name}
-              width={375}
+              width={475}
               height={500}
               className=""
             />
