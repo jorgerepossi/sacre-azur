@@ -83,13 +83,13 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
     <Flex className="!hover:shadow-md w-full overflow-hidden rounded-lg bg-background !shadow-sm transition-all duration-300 hover:-translate-y-1">
       <Flex className="w-full p-4">
         <Flex className={"w-full flex-col"}>
-          <Flex className={"relative h-full items-center justify-center py-4 md:py-2"}>
+          <Flex className={"relative h-full bg-white items-center justify-center py-4 md:py-2"}>
             <Image
               src={item.image || "/placeholder.svg"}
               alt={item.name}
               width={200}
               height={200}
-              className="object-cover"
+              className="max-w-[120px]"
             />
             <Badge
               variant={isDecantSeller ? "default" : "secondary"}
@@ -123,8 +123,8 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
                         setSelectedSize(size.value);
                       }}
                       className={`flex-1 rounded-full border-2 px-2 py-1 text-xs font-medium transition-all ${selectedSize === size.value
-                          ? "border-black bg-black text-white"
-                          : "border-gray-300 bg-white text-gray-700 hover:border-black"
+                        ? "border-black bg-black text-white"
+                        : "border-gray-300 bg-white text-gray-700 hover:border-black"
                         }`}
                     >
                       {size.label}

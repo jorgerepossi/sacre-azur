@@ -129,3 +129,46 @@ export async function GET(
     );
   }
 }
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const { id } = await params;
+    const tenantSlug = request.headers.get("x-tenant-slug");
+
+    if (!tenantSlug) {
+      return NextResponse.json(
+        { error: "Tenant not specified" },
+        { status: 400 },
+      );
+    }
+
+    const tenantId = await getTenantIdFromSlug(tenantSlug);
+    if (!tenantId) {
+      return NextResponse.json({ error: "Tenant not found" }, { status: 404 });
+    }
+
+    const { error } = await supabase
+      .from("tenant_products")
+      .delete()
+      .eq("perfume_id", id)
+      .eq("tenant_id", tenantId);
+
+    if (error) {
+      console.error("Supabase error deleting perfume:", error);
+      return NextResponse.json(
+        { error: "Error deleting perfume", details: error.message },
+        { status: 500 },
+      );
+    }
+
+    return NextResponse.json({ message: "Perfume deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting perfume:", error);
+    return NextResponse.json(
+      { error: "Error interno del servidor" },
+      { status: 500 },
+    );
+  }
+}

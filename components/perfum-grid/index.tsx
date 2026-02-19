@@ -12,20 +12,27 @@ import SkeletonPerfumeList from "@/components/skeletons/skeleton-perfume-list";
 import { Perfume } from "@/types/perfume.type";
 
 import { useFetchPerfumes } from "@/hooks/useFetchPerfumes";
+import { useFetchHomePerfumes } from "@/hooks/useFetchHomePerfumes";
 import Flex from "@/components/flex";
 
 import { bottlePerfume } from '@lucide/lab';
 import { Icon } from 'lucide-react';
 
-export function PerfumeGrid() {
+interface PerfumeGridProps {
+  isHome?: boolean;
+}
+
+export function PerfumeGrid({ isHome = false }: PerfumeGridProps) {
   const { selectedBrands } = useContext(BrandFilterContext);
   const { selectedNotes } = useContext(NoteFilterContext);
+
+  const fetchPerfumesHook = isHome ? useFetchHomePerfumes : useFetchPerfumes;
 
   const {
     data: perfumes,
     isPending,
     error,
-  } = useFetchPerfumes(selectedBrands, selectedNotes);
+  } = fetchPerfumesHook(selectedBrands, selectedNotes);
 
   if (isPending) {
     return <SkeletonPerfumeList />;

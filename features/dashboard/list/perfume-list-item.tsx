@@ -19,20 +19,27 @@ import { Perfume } from "@/types/perfume.type";
 
 import { formatNumberWithDots } from "@/lib/formatNumberWithDots";
 
+import { useDeletePerfume } from "@/hooks/useDeletePerfume";
+
 interface PerfumeListItemProps {
   item: Perfume;
 }
 
 const PerfumeListItem = ({ item }: PerfumeListItemProps) => {
   const { tenant } = useTenant();
+  const deletePerfume = useDeletePerfume();
 
-
+  const handleDelete = () => {
+    if (window.confirm(`¿Estás seguro de que deseas eliminar "${item.name}"?`)) {
+      deletePerfume.mutate(item.id);
+    }
+  };
 
   return (
     <TableRow>
       <TableCell key={item.id} className="font-medium">
         <Image
-          src={item.image ||  ''}
+          src={item.image || ''}
           alt={item.name}
           width={80}
           height={80}
@@ -55,15 +62,14 @@ const PerfumeListItem = ({ item }: PerfumeListItemProps) => {
                 </Flex>
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className="!w-full">
-              <Link
-                href={`/${tenant?.slug}/dashboard/edit?id=${item.id}`}
-                className="w-full"
-              >
-                <Flex className="w-full gap-[1rem]">
-                  <Trash2 size={16} /> Delete
-                </Flex>
-              </Link>
+            <DropdownMenuItem
+              className="!w-full text-red-600 focus:text-red-600"
+              onClick={handleDelete}
+              disabled={deletePerfume.isPending}
+            >
+              <Flex className="w-full gap-[1rem]">
+                <Trash2 size={16} /> {deletePerfume.isPending ? "Deleting..." : "Delete"}
+              </Flex>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

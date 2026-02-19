@@ -85,12 +85,13 @@ export default function PerfumeDetails({ perfume }: Props) {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-10 md:grid-cols-2">
-          <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
+          <div className="relative aspect-square overflow-hidden rounded-lg bg-white flex items-center  justify-center">
             <Image
               src={perfume.image || "/placeholder.svg"}
               alt={perfume.name}
-              fill
-              className="object-cover"
+              width={375}
+              height={500}
+              className=""
             />
           </div>
 

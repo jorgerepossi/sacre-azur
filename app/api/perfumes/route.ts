@@ -49,10 +49,29 @@ export async function GET(request: Request) {
       }
     }
 
+    const isMinimal = searchParams.get("minimal") === "true";
+
     let query = supabase
       .from("tenant_products")
       .select(
-        `
+        isMinimal
+          ? `
+        id,
+        price,
+        profit_margin,
+        size,
+        stock,
+        active,
+        perfume:perfume_id (
+          id,
+          name,
+          image,
+          brand:brand_id (
+            name
+          )
+        )
+      `
+          : `
         id,
         price,
         profit_margin,
@@ -135,6 +154,21 @@ export async function GET(request: Request) {
         // Si no hay perfume o datos críticos, devolver null
         if (!perfume?.id || !perfume?.name) {
           return null;
+        }
+
+        if (isMinimal) {
+          return {
+            id: perfume.id,
+            name: perfume.name,
+            image: perfume.image,
+            brand: brand,
+            // Pre-calcular precio con el margen para no exponerlo en el JSON
+            price: Math.round(Number(item.price) * (1 + (Number(item.profit_margin) || 0) / 100)),
+            profit_margin: 0,
+            size: item.size,
+            in_stock: item.stock > 0,
+            tenant_product_id: item.id,
+          };
         }
 
         // Transformar notas

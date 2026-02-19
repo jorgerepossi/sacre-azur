@@ -3,10 +3,14 @@
 import Flex from "@/components/flex";
 import { PerfumeGrid } from "@/components/perfum-grid";
 
-export default function PerfumeGridClient() {
+interface PerfumeGridClientProps {
+  isHome?: boolean;
+}
+
+export default function PerfumeGridClient({ isHome = false }: PerfumeGridClientProps) {
   return (
     <Flex className={"relative w-full"}>
-      <PerfumeGrid />
+      <PerfumeGrid isHome={isHome} />
     </Flex>
   );
 }

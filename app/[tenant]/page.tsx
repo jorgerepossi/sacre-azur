@@ -35,7 +35,7 @@ export default function Home() {
             </aside>
 
             <div className="min-w-0 flex-1">
-              <PerfumeGridClient />
+              <PerfumeGridClient isHome={true} />
             </div>
           </div>
 
