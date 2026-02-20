@@ -17,6 +17,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Perfume } from "@/types/perfume.type";
 import { usePerfume } from "@/hooks/usePerfume";
 
+import { useTenant } from "@/providers/TenantProvider";
 import { cn } from "@/lib/utils";
 import { createSlug } from "@/utils/slugGenerator";
 
@@ -25,6 +26,7 @@ type Props = {
 };
 
 export default function PerfumeDetails({ perfume }: Props) {
+  const { tenant } = useTenant();
   const isDecantSeller = perfume.product_type === "decant" || !perfume.product_type;
 
   const {
@@ -36,7 +38,10 @@ export default function PerfumeDetails({ perfume }: Props) {
     setQuantity,
     setSelectedSize,
     calculatePrice,
-  } = usePerfume(perfume.price || 0, perfume.profit_margin || 0);
+  } = usePerfume(perfume.price || 0, perfume.profit_margin || 0, {
+    minSize: tenant?.decant_min_size || 2.5,
+    has12ml: tenant?.has_1_2ml_option || false,
+  });
 
   const { control, handleSubmit } = useForm();
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;

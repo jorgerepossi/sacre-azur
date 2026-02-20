@@ -27,14 +27,25 @@ export function useUserRole() {
           return;
         }
 
-        const { data } = await supabase
+        const { data: tenantUserData } = await supabase
           .from("tenant_users")
           .select("role")
           .eq("user_id", user.id)
           .eq("tenant_id", tenant.id)
           .single();
 
-        setRole((data?.role as UserRole) || null);
+        // Check if user is super admin
+        const { data: superAdminData } = await supabase
+          .from("super_admins")
+          .select("user_id")
+          .eq("user_id", user.id)
+          .single();
+
+        if (superAdminData) {
+          setRole("superadmin");
+        } else {
+          setRole((tenantUserData?.role as UserRole) || null);
+        }
       } catch (error) {
         console.error("Error fetching role:", error);
         setRole(null);
@@ -50,6 +61,7 @@ export function useUserRole() {
     role,
     loading,
     isOwner: role === "owner",
+    isAdmin: role === "admin",
     isSuperAdmin: role === "superadmin",
     isTenant: role === "tenant",
   };

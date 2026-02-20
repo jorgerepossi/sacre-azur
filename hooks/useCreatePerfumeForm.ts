@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import { useFetchFamilies } from "@/hooks/fetchs/useFetchFamilies";
 import { useFetchNotes } from "@/hooks/fetchs/useFetchNotes";
 import { useCreatePerfume } from "@/hooks/useCreatePerfume";
+import { useAddExistingPerfume } from "@/hooks/useAddExistingPerfume";
 import { useFetchBrands } from "@/hooks/useFetchBrands";
 
 export type FormValues = {
@@ -28,6 +29,7 @@ export const useCreatePerfumeForm = () => {
     useForm<FormValues>();
   const [preview, setPreview] = useState<string | null>(null);
   const createPerfume = useCreatePerfume();
+  const addExistingPerfume = useAddExistingPerfume();
   const { data: brands, isLoading: brandsLoading, error: brandsError } = useFetchBrands();
   const { data: notes } = useFetchNotes();
   const { data: families } = useFetchFamilies();
@@ -35,6 +37,17 @@ export const useCreatePerfumeForm = () => {
 
   const [showCropModal, setShowCropModal] = useState(false);
   const [tempImageSrc, setTempImageSrc] = useState<string | null>(null);
+
+  // Modal para perfume existente
+  const [showExistingModal, setShowExistingModal] = useState(false);
+  const [existingPerfumeData, setExistingPerfumeData] = useState<{
+    id: string;
+    name: string;
+    brandName: string;
+    price: number;
+    profit_margin: number;
+    size?: number;
+  } | null>(null);
 
   const orderNotes = notes
     ? [...notes].sort((a, b) => a.name.localeCompare(b.name))
@@ -74,6 +87,32 @@ export const useCreatePerfumeForm = () => {
     fileInputRef.current?.click();
   };
 
+  const handleUseExistingPerfume = () => {
+    if (!existingPerfumeData) return;
+
+    addExistingPerfume.mutate(
+      {
+        perfumeId: existingPerfumeData.id,
+        price: existingPerfumeData.price,
+        profit_margin: existingPerfumeData.profit_margin,
+        size: existingPerfumeData.size,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Perfume agregado a tu inventario correctamente!");
+          reset();
+          setPreview(null);
+          setShowExistingModal(false);
+          setExistingPerfumeData(null);
+          if (fileInputRef.current) fileInputRef.current.value = "";
+        },
+        onError: () => {
+          toast.error("Error al agregar el perfume al inventario.");
+        },
+      },
+    );
+  };
+
   const handleOnSubmit = (data: FormValues) => {
     const imageFile = data.image[0];
 
@@ -98,8 +137,25 @@ export const useCreatePerfumeForm = () => {
           setPreview(null);
           if (fileInputRef.current) fileInputRef.current.value = "";
         },
-        onError: () => {
-          toast.error("Hubo un error al crear el perfume.");
+        onError: (error: any) => {
+          const errorMessage = error.message || "Hubo un error al crear el perfume.";
+
+          // Si el error es que el perfume ya existe
+          if (errorMessage.includes("ya existe en el catálogo")) {
+            const brandName = brands?.find((b: { id: string; }) => b.id === data.brand_id)?.name || "esta marca";
+
+            setExistingPerfumeData({
+              id: error.existingPerfumeId,
+              name: data.name,
+              brandName,
+              price: data.price,
+              profit_margin: data.profit_margin,
+              size: data.size,
+            });
+            setShowExistingModal(true);
+          } else {
+            toast.error(errorMessage);
+          }
         },
       },
     );
@@ -129,5 +185,12 @@ export const useCreatePerfumeForm = () => {
     tempImageSrc,
     handleCropComplete,
     setShowCropModal,
+    // Modal de perfume existente
+    showExistingModal,
+    setShowExistingModal,
+    existingPerfumeData,
+    handleUseExistingPerfume,
+    setExistingPerfumeData,
+    isAddingExisting: addExistingPerfume.isPending,
   };
 };

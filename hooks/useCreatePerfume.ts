@@ -44,23 +44,46 @@ export const useCreatePerfume = () => {
 
       const imageUrl = data.publicUrl;
 
-      const { data: perfumeData, error: perfumeError } = await supabase
+      // 1. Primero verificar si el perfume ya existe
+      const { data: existingPerfume, error: checkError } = await supabase
         .from("perfume")
-        .insert([
-          {
-            name,
-            description,
-            external_link,
-            image: imageUrl,
-            brand_id,
-          },
-        ])
-        .select("id");
+        .select("id")
+        .eq("name", name)
+        .eq("brand_id", brand_id)
+        .single();
 
-      if (perfumeError)
-        throw new Error("Error creando perfume: " + perfumeError.message);
+      if (checkError && checkError.code !== "PGRST116") {
+        // PGRST116 = no rows found (es lo que esperamos)
+        throw new Error("Error buscando perfume: " + checkError.message);
+      }
 
-      const createdPerfumeId = perfumeData[0].id;
+      let createdPerfumeId: string;
+
+      if (existingPerfume) {
+        // El perfume ya existe, lanzar error con info del perfume existente
+        const error = new Error(`El perfume "${name}" de esta marca ya existe en el catálogo.`);
+        (error as any).existingPerfumeId = existingPerfume.id;
+        throw error;
+      } else {
+        // El perfume no existe, crearlo
+        const { data: perfumeData, error: perfumeError } = await supabase
+          .from("perfume")
+          .insert([
+            {
+              name,
+              description,
+              external_link,
+              image: imageUrl,
+              brand_id,
+            },
+          ])
+          .select("id");
+
+        if (perfumeError)
+          throw new Error("Error creando perfume: " + perfumeError.message);
+
+        createdPerfumeId = perfumeData[0].id;
+      }
 
       // 3. Crear relación en tenant_products (inventario del tenant)
       const isDecantType = tenant.product_type === "decant" || !tenant.product_type;
@@ -75,7 +98,7 @@ export const useCreatePerfume = () => {
             profit_margin: profit_margin?.toString() || "0",
             size: size || null,
             sizes_available: isDecantType ? ["2.5", "5", "10"] : [size?.toString()],
-            stock: 100, // Default stock
+            stock: 1,
             active: true,
           },
         ]);
@@ -129,7 +152,7 @@ export const useCreatePerfume = () => {
           throw new Error("Error guardando familias: " + familyError.message);
       }
 
-      return perfumeData;
+      return { id: createdPerfumeId };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["perfumes"] });

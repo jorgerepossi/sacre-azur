@@ -24,17 +24,23 @@ const createSlug = (name: string) => {
     .replace(/(^-|-$)/g, "");
 };
 
-const DECANT_SIZES = [
-  { label: "2.5ml", value: 2.5 },
-  { label: "5ml", value: 5 },
-  { label: "10ml", value: 10 },
-];
-
 const ItemPerfume = ({ item }: ItemPerfumeProps) => {
-  const [selectedSize, setSelectedSize] = useState<number>(2.5);
-  const addItem = useCartStore((state) => state.addItem);
   const { tenant } = useTenant();
   const isDecantSeller = tenant?.product_type === "decant" || !tenant?.product_type;
+
+  const decantSizes = [];
+  if (isDecantSeller) {
+    if (tenant?.has_1_2ml_option) {
+      decantSizes.push({ label: "1.2ml", value: 1.2 });
+    }
+    const minSize = tenant?.decant_min_size || 2.5;
+    decantSizes.push({ label: `${minSize}ml`, value: minSize });
+    decantSizes.push({ label: "5ml", value: 5 });
+    decantSizes.push({ label: "10ml", value: 10 });
+  }
+
+  const [selectedSize, setSelectedSize] = useState<number>(tenant?.decant_min_size || 2.5);
+  const addItem = useCartStore((state) => state.addItem);
 
   if (!item?.id || !item?.name) {
     return null;
@@ -114,7 +120,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
               {/* Size Selector (only for decants) */}
               {isDecantSeller && (
                 <Flex className="mb-3 flex-col gap-2 sm:flex-row">
-                  {DECANT_SIZES.map((size) => (
+                  {decantSizes.map((size: { label: string; value: number }) => (
                     <button
                       key={size.value}
                       onClick={(e) => {

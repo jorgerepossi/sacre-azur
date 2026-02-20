@@ -1,6 +1,7 @@
 import { useWatch } from "react-hook-form";
 
 import { Card } from "@/components/ui/card";
+import { useTenant } from "@/providers/TenantProvider";
 
 import { SIZE_FACTORS } from "@/lib/pricing-constants";
 
@@ -9,8 +10,17 @@ interface PricePreviewProps {
 }
 
 export default function PricePreview({ control }: PricePreviewProps) {
+  const { tenant } = useTenant();
   const price = useWatch({ control, name: "price" });
   const profitMargin = useWatch({ control, name: "profit_margin" });
+
+  const previewSizes = [];
+  if (tenant?.has_1_2ml_option) {
+    previewSizes.push(1.2);
+  }
+  previewSizes.push(Number(tenant?.decant_min_size) || 2.5);
+  previewSizes.push(5);
+  previewSizes.push(10);
 
   const calculatePrice = (sizeInMl: number) => {
     if (!price || !profitMargin) return 0;
@@ -33,24 +43,14 @@ export default function PricePreview({ control }: PricePreviewProps) {
     <Card className="bg-muted/30 p-4">
       <p className="mb-2 text-sm font-semibold">Precios finales:</p>
       <div className="space-y-1 text-sm">
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">2.5ml:</span>
-          <span className="font-mono font-semibold">
-            ${formatPrice(calculatePrice(2.5))}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">5ml:</span>
-          <span className="font-mono font-semibold">
-            ${formatPrice(calculatePrice(5))}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">10ml:</span>
-          <span className="font-mono font-semibold">
-            ${formatPrice(calculatePrice(10))}
-          </span>
-        </div>
+        {previewSizes.map((size) => (
+          <div key={size} className="flex justify-between">
+            <span className="text-muted-foreground">{size}ml:</span>
+            <span className="font-mono font-semibold">
+              ${formatPrice(calculatePrice(size))}
+            </span>
+          </div>
+        ))}
       </div>
     </Card>
   );

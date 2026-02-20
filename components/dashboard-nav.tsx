@@ -14,7 +14,7 @@ interface DashboardNavProps {
 }
 
 export function DashboardNav({ tenant }: DashboardNavProps) {
-  const { isOwner, isSuperAdmin, loading } = useUserRole();
+  const { isOwner, isAdmin, isSuperAdmin, isTenant, loading } = useUserRole();
 
   if (loading) {
     return <div className="h-10 animate-pulse rounded bg-muted" />;
@@ -76,19 +76,20 @@ export function DashboardNav({ tenant }: DashboardNavProps) {
               </Link>
             )}
 
-            {(isOwner || isSuperAdmin) && (
-              <>
-                <Link href={`/${tenant}/dashboard/settings`}>
-                  <Button variant="ghost" size="sm" className="flex gap-2">
-                    <LockKeyhole size={12} /> Configuración
-                  </Button>
-                </Link>
-                <Link href={`/${tenant}/dashboard/users`}>
-                  <Button variant="ghost" size="sm" className="flex gap-2">
-                    <LockKeyhole size={12} /> Usuarios
-                  </Button>
-                </Link>
-              </>
+            {(isOwner || isAdmin || isSuperAdmin || isTenant) && (
+              <Link href={`/${tenant}/dashboard/settings`}>
+                <Button variant="ghost" size="sm" className="flex gap-2">
+                  <LockKeyhole size={12} /> Configuración
+                </Button>
+              </Link>
+            )}
+
+            {isOwner && (
+              <Link href={`/${tenant}/dashboard/users`}>
+                <Button variant="ghost" size="sm" className="flex gap-2">
+                  <LockKeyhole size={12} /> Usuarios
+                </Button>
+              </Link>
             )}
           </nav>
         </div>

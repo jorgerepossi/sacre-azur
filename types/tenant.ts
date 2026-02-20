@@ -11,6 +11,8 @@ export interface Tenant {
   currency: string;
   is_active: boolean;
   product_type: ProductType;
+  decant_min_size: number;
+  has_1_2ml_option: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -38,4 +40,6 @@ export interface CreateTenantInput {
   primary_color?: string;
   secondary_color?: string;
   currency?: string;
+  decant_min_size?: number;
+  has_1_2ml_option?: boolean;
 }

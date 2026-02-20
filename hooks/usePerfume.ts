@@ -2,13 +2,23 @@ import { useState } from "react";
 
 import { SIZE_FACTORS } from "@/lib/pricing-constants";
 
-const sizes = [
-  { label: "2.5 ml", value: 2.5 },
-  { label: "5 ml", value: 5 },
-  { label: "10 ml", value: 10 },
-];
+export const usePerfume = (pricePer100ml: number, profit: number, decantSettings?: { minSize: number, has12ml: boolean }) => {
+  const sizes = [];
 
-export const usePerfume = (pricePer100ml: number, profit: number) => {
+  if (decantSettings) {
+    if (decantSettings.has12ml) {
+      sizes.push({ label: "1.2 ml", value: 1.2 });
+    }
+    sizes.push({ label: `${decantSettings.minSize} ml`, value: decantSettings.minSize });
+    sizes.push({ label: "5 ml", value: 5 });
+    sizes.push({ label: "10 ml", value: 10 });
+  } else {
+    // Default fallback
+    sizes.push({ label: "2.5 ml", value: 2.5 });
+    sizes.push({ label: "5 ml", value: 5 });
+    sizes.push({ label: "10 ml", value: 10 });
+  }
+
   const [selectedSize, setSelectedSize] = useState(sizes[0]);
   const [quantity, setQuantity] = useState(1);
   const [profitMargin, setProfitMargin] = useState(profit);
