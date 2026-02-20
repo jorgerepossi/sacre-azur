@@ -144,7 +144,7 @@ export default function PerfumeDetails({ perfume }: Props) {
               </div>
             </Flex>
 
-            <Flex className="flex-col py-4">
+            <Flex className="flex-col gap-3 py-4">
               <h2 className="m-0 text-base  font-semibold md:text-xl">
                 Descripción
               </h2>
@@ -275,9 +275,8 @@ export default function PerfumeDetails({ perfume }: Props) {
             <div className="border-t-2 py-6 space-y-6">
               {perfume.in_stock ? (
                 <>
-
                   <div className="space-y-3">
-                    <Label className="text-[10px] font-medium tracking-[2.5px] uppercase text-muted-foreground">
+                    <Label className="text-[10px] font-medium tracking-[2.5px]  text-muted-foreground">
                       Elegí tu tamaño
                     </Label>
                     {isDecantSeller ? (
@@ -287,17 +286,19 @@ export default function PerfumeDetails({ perfume }: Props) {
                             type="button"
                             key={s.label}
                             onClick={() => setSelectedSize(s)}
-                            className={`flex flex-col items-center py-3 px-2 rounded-xl border-[1.5px] transition-all ${selectedSize?.label === s.label
-                              ? "border-foreground bg-muted/50"
-                              : "border-border bg-background hover:border-muted-foreground/40"
+                            className={`flex flex-col items-center py-3 px-2 rounded-xl  transition-all ${selectedSize?.label === s.label
+                              ? "border-[1.5px]  bg-muted/50"
+                              : "border-[1.5px] border-transparent bg-background hover:border-muted-foreground/40"
                               }`}
                           >
-                            <span className="text-lg font-normal text-foreground leading-tight">
-                              {s.value}
-                            </span>
-                            <span className="text-[10px] tracking-[1px] uppercase text-muted-foreground">
-                              ml
-                            </span>
+                            <Flex className="gap-2 items-center">
+                              <span className="text-lg font-normal text-foreground leading-tight">
+                                {s.value}
+                              </span>
+                              <span className="text-[10px] tracking-[1px] uppercase text-muted-foreground">
+                                ml
+                              </span>
+                            </Flex>
                             <span className="text-[11px] text-muted-foreground mt-1">
                               ${formatPrice(calculatePrice(s.value))}
                             </span>
@@ -327,7 +328,7 @@ export default function PerfumeDetails({ perfume }: Props) {
 
                   <Flex className="items-end justify-between">
                     <Flex className="flex-col space-y-2">
-                      <Label className="text-[10px] font-medium tracking-[2.5px] uppercase text-muted-foreground">
+                      <Label className="text-[10px] font-medium tracking-[2.5px]  text-muted-foreground">
                         Cantidad
                       </Label>
                       <div className="inline-flex items-center border rounded-lg overflow-hidden">
@@ -352,7 +353,7 @@ export default function PerfumeDetails({ perfume }: Props) {
                     </Flex>
 
                     <div className="text-right">
-                      <p className="text-[10px] font-medium tracking-[2.5px] uppercase text-muted-foreground mb-1">
+                      <p className="text-[10px] font-medium tracking-[2.5px]   text-muted-foreground mb-1">
                         Total
                       </p>
                       <p className="text-2xl font-normal text-foreground">

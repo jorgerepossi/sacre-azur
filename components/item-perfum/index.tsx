@@ -123,8 +123,8 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
                         setSelectedSize(size.value);
                       }}
                       className={`flex-1 rounded-full border-2 px-2 py-1 text-xs font-medium transition-all ${selectedSize === size.value
-                        ? "border-black bg-black text-white"
-                        : "border-gray-300 bg-white text-gray-700 hover:border-black"
+                        ? "border-black bg-primary text-primary-foreground"
+                        : "border-secondary bg-secondary text-secondary-foreground hover:border-black"
                         }`}
                     >
                       {size.label}
