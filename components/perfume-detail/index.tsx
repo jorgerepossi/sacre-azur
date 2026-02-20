@@ -1,25 +1,23 @@
 "use client";
 
-import { useEffect } from "react";
-
 import Image from "next/image";
+import { useEffect } from "react";
+import { toast } from "react-hot-toast";
+import { useForm } from "react-hook-form";
+import { ArrowLeft, Copy } from "lucide-react";
+
 
 import { useCartStore } from "@/stores/cartStore";
-import { ArrowLeft, Copy } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
 
 import Flex from "@/components/flex";
 import { Link } from "@/components/link";
-import { Button, buttonVariants } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 import { Perfume } from "@/types/perfume.type";
-
 import { usePerfume } from "@/hooks/usePerfume";
 
 import { cn } from "@/lib/utils";
-
 import { createSlug } from "@/utils/slugGenerator";
 
 type Props = {
@@ -37,6 +35,7 @@ export default function PerfumeDetails({ perfume }: Props) {
     selectedSize,
     setQuantity,
     setSelectedSize,
+    calculatePrice,
   } = usePerfume(perfume.price || 0, perfume.profit_margin || 0);
 
   const { control, handleSubmit } = useForm();
@@ -85,18 +84,53 @@ export default function PerfumeDetails({ perfume }: Props) {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-10 md:grid-cols-2">
-          <div className="relative aspect-square overflow-hidden rounded-lg bg-white flex items-center  justify-center">
-            <Image
-              src={perfume.image || "/placeholder.svg"}
-              alt={perfume.name}
-              width={475}
-              height={500}
-              className=""
-            />
-          </div>
+          <Flex className="flex-col sticky top-10 self-start">
+
+            <Flex className="relative flex-col aspect-square overflow-hidden rounded-lg bg-white flex items-center  justify-center">
+              <Image
+                src={perfume.image || "/placeholder.svg"}
+                alt={perfume.name}
+                width={475}
+                height={500}
+                className=""
+              />
+
+            </Flex>
+            <Flex className="flex-col items-center justify-center space-y-4">
+
+
+              <Flex className="items-center py-4 gap-[2rem]">
+                <Button
+                  variant="outline"
+                  type={"button"}
+                  className="flex items-center gap-2"
+                  onClick={() => {
+                    const link = `${baseUrl}/perfume/${createSlug(perfume.name)}_${perfume.id}`;
+                    navigator.clipboard.writeText(link);
+                    toast.success("Link copied to clipboard!");
+                  }}
+                >
+                  <Copy className="h-4 w-4" />
+                  Compartir
+                </Button>
+                {perfume.external_link !== null ? (
+                  <Link
+                    href={perfume.external_link || ""}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    Fragrantica
+                  </Link>
+                ) : (
+                  ""
+                )}
+              </Flex>
+            </Flex>
+          </Flex>
 
           <div className="space-y-2">
-            <Flex className="items-center justify-between">
+            <Flex className="items-center justify-between gap-4">
               <h1 className="text-xl font-bold md:text-3xl">
                 {perfume.name} - {perfume.brand.name}
               </h1>
@@ -110,13 +144,13 @@ export default function PerfumeDetails({ perfume }: Props) {
               </div>
             </Flex>
 
-            <Flex className="flex-col space-y-4">
-              <h2 className="m-0 text-base font-semibold md:text-xl">
+            <Flex className="flex-col py-4">
+              <h2 className="m-0 text-base  font-semibold md:text-xl">
                 Descripción
               </h2>
               {perfume?.description?.length ? (
                 <div
-                  className="prose max-w-none text-muted-foreground"
+                  className="prose max-w-none text-muted-foreground text-sm"
                   dangerouslySetInnerHTML={{ __html: perfume.description }}
                 />
               ) : (
@@ -127,7 +161,7 @@ export default function PerfumeDetails({ perfume }: Props) {
             </Flex>
 
             {/* Acordes Principales (Olfactive Families) */}
-            <Flex className="flex-col space-y-4 border-t-2 mt-6 pt-6">
+            <Flex className="flex-col space-y-4 border-t-2 mt-6 py-6 ">
               <h2 className="m-0 text-base font-semibold md:text-xl">
                 Acordes principales
               </h2>
@@ -155,155 +189,192 @@ export default function PerfumeDetails({ perfume }: Props) {
               )}
             </Flex>
 
-            {/* Pirámide Olfativa (Notes by Type) */}
-            <Flex className="flex-col space-y-6 border-t-2 mt-6 pt-6 mb-6">
+
+            {/* Pirámide Olfativa */}
+            <Flex className="flex-col space-y-4 border-t-2 mt-6 py-6 mb-6">
               <h2 className="m-0 text-base font-semibold md:text-xl">
                 Pirámide Olfativa
               </h2>
 
-              <div className="space-y-4">
-                {[
-                  { type: "top", label: "Notas de Salida" },
-                  { type: "heart", label: "Notas de Corazón" },
-                  { type: "base", label: "Notas de Fondo" },
-                ].map((section) => {
-                  const notes =
-                    perfume.perfume_note_relation?.filter(
-                      (rel) => rel.note_type === section.type,
-                    ) || [];
+              {perfume.perfume_note_relation && perfume.perfume_note_relation.length > 0 ? (
+                <div className="relative flex flex-col">
+                  {/* Línea vertical conectora */}
+                  <div className="absolute left-[15px] top-7 bottom-7 w-px bg-gradient-to-b from-gray-300 via-gray-400 to-gray-700 opacity-25" />
 
-                  if (notes.length === 0) return null;
+                  {[
+                    { type: "top", label: "Salida", icon: "triangle" },
+                    { type: "heart", label: "Corazón", icon: "heart" },
+                    { type: "base", label: "Fondo", icon: "circle" },
+                  ].map((section, idx) => {
+                    const notes =
+                      perfume.perfume_note_relation?.filter(
+                        (rel) => rel.note_type === section.type,
+                      ) || [];
 
-                  return (
-                    <div key={section.type} className="space-y-2">
-                      <h3 className="text-sm font-medium text-primary">
-                        {section.label}
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
-                        {notes.map((rel) => (
-                          <span
-                            key={rel.note_id}
-                            className="bg-secondary/10 text-secondary-foreground text-xs px-2.5 py-1 rounded-md border"
-                          >
-                            {rel.perfume_notes.name}
-                          </span>
-                        ))}
+                    if (notes.length === 0) return null;
+
+                    const iconBg = "bg-muted";
+                    const iconColor = "text-muted-foreground";
+
+
+
+                    return (
+                      <div
+                        key={section.type}
+                        className={`grid grid-cols-[32px_1fr] gap-4 items-start py-4 `}
+                      >
+                        <div
+                          className={`w-8 h-8 rounded-full ${iconBg} flex items-center justify-center relative z-10`}
+                        >
+                          {section.icon === "triangle" && (
+                            <svg className={`w-3.5 h-3.5 ${iconColor}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                              <path d="M12 3L20 17H4L12 3Z" />
+                            </svg>
+                          )}
+                          {section.icon === "heart" && (
+                            <svg className={`w-3.5 h-3.5 ${iconColor}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                            </svg>
+                          )}
+                          {section.icon === "circle" && (
+                            <svg className={`w-3.5 h-3.5 ${iconColor}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                              <circle cx="12" cy="12" r="9" />
+                              <path d="M12 3v18" />
+                              <path d="M3 12h18" />
+                            </svg>
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-[12px] font-bold   text-gray-400 mb-1.5">
+                            {section.label}
+                          </p>
+                          <div className="flex flex-wrap gap-y-0.5">
+                            {notes.map((rel, i) => (
+                              <span key={rel.note_id} className="text-sm font-light text-muted-foreground leading-7">
+                                {rel.perfume_notes.name}
+                                {i < notes.length - 1 && (
+                                  <span className="mx-2 text-gray-300">·</span>
+                                )}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-
-                {(!perfume.perfume_note_relation ||
-                  perfume.perfume_note_relation.length === 0) && (
-                    <p className="text-sm text-muted-foreground italic">
-                      Notas no disponibles
-                    </p>
-                  )}
-              </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground italic">
+                  Notas no disponibles
+                </p>
+              )}
             </Flex>
 
-            <Flex
-              className={
-                "flex-col gap-[1rem] border-t-2 py-[1rem] xs:flex-row md:gap-[3rem] md:py-[3rem]"
-              }
-            >
-              {perfume.in_stock && (
+
+
+            <div className="border-t-2 py-6 space-y-6">
+              {perfume.in_stock ? (
                 <>
-                  {isDecantSeller ? (
-                    <Flex className="flex-col items-start justify-between gap-4">
-                      <Label className="font-semibold">Tamaño:</Label>
-                      <Flex className="gap-2">
+
+                  <div className="space-y-3">
+                    <Label className="text-[10px] font-medium tracking-[2.5px] uppercase text-muted-foreground">
+                      Elegí tu tamaño
+                    </Label>
+                    {isDecantSeller ? (
+                      <div className="grid grid-cols-3 gap-2">
                         {sizes.map((s) => (
                           <button
-                            type={"button"}
+                            type="button"
                             key={s.label}
                             onClick={() => setSelectedSize(s)}
-                            className={`rounded-full border-2 px-2 py-1 text-xs font-medium transition-all ${selectedSize?.label === s.label
-                              ? "border-black bg-black text-white"
-                              : "border-gray-300 bg-white text-gray-700 hover:border-black"
+                            className={`flex flex-col items-center py-3 px-2 rounded-xl border-[1.5px] transition-all ${selectedSize?.label === s.label
+                              ? "border-foreground bg-muted/50"
+                              : "border-border bg-background hover:border-muted-foreground/40"
                               }`}
                           >
-                            {s.label}
+                            <span className="text-lg font-normal text-foreground leading-tight">
+                              {s.value}
+                            </span>
+                            <span className="text-[10px] tracking-[1px] uppercase text-muted-foreground">
+                              ml
+                            </span>
+                            <span className="text-[11px] text-muted-foreground mt-1">
+                              ${formatPrice(calculatePrice(s.value))}
+                            </span>
                           </button>
                         ))}
-                      </Flex>
-                    </Flex>
-                  ) : (
-                    <Flex className="flex-col items-start justify-between gap-4">
-                      <Label className="font-semibold">Tamaño:</Label>
-                      <span className="rounded-full border-2 border-black bg-black px-3 py-1 text-xs font-medium text-white">
-                        {perfume.size}ml
-                      </span>
-                    </Flex>
-                  )}
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-3 gap-2">
+                        <button
+                          type="button"
+                          className="flex flex-col items-center py-3 px-2 rounded-xl border-[1.5px] border-foreground bg-muted/50"
+                        >
+                          <span className="text-lg font-normal text-foreground leading-tight">
+                            {perfume.size}
+                          </span>
+                          <span className="text-[10px] tracking-[1px] uppercase text-muted-foreground">
+                            ml
+                          </span>
+                          <span className="text-[11px] text-muted-foreground mt-1">
+                            ${formatPrice(perfume.price || 0)}
+                          </span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
 
-                  <Flex className="flex-col items-start justify-between gap-4">
-                    <Label className="font-semibold">Cantidad:</Label>
-                    <Flex className={"items-center gap-1"}>
-                      <button
-                        type="button"
-                        className="rounded-lg border px-3 py-1"
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      >
-                        -
-                      </button>
-                      <span className="px-4">{quantity}</span>
-                      <button
-                        type="button"
-                        className="rounded-lg border px-3 py-1"
-                        onClick={() => setQuantity(quantity + 1)}
-                      >
-                        +
-                      </button>
+
+                  <Flex className="items-end justify-between">
+                    <Flex className="flex-col space-y-2">
+                      <Label className="text-[10px] font-medium tracking-[2.5px] uppercase text-muted-foreground">
+                        Cantidad
+                      </Label>
+                      <div className="inline-flex items-center border rounded-lg overflow-hidden">
+                        <button
+                          type="button"
+                          className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors"
+                          onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        >
+                          −
+                        </button>
+                        <span className="w-10 h-10 flex items-center justify-center text-sm font-medium border-x">
+                          {quantity}
+                        </span>
+                        <button
+                          type="button"
+                          className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors"
+                          onClick={() => setQuantity(quantity + 1)}
+                        >
+                          +
+                        </button>
+                      </div>
                     </Flex>
+
+                    <div className="text-right">
+                      <p className="text-[10px] font-medium tracking-[2.5px] uppercase text-muted-foreground mb-1">
+                        Total
+                      </p>
+                      <p className="text-2xl font-normal text-foreground">
+                        <span className="text-base text-muted-foreground">$</span>
+                        {displayPrice}
+                      </p>
+                    </div>
                   </Flex>
+
+                  {/* Botón */}
+                  <Button type="submit" size="lg" className="w-full">
+                    Agregar al carrito
+                  </Button>
                 </>
-              )}
-            </Flex>
-
-            {perfume.in_stock && (
-              <div className="space-y-2">
-                <p className="text-lg font-semibold">Total: ${displayPrice}</p>
-              </div>
-            )}
-
-            <Flex className="items-center gap-[2rem]">
-              <Button
-                variant="outline"
-                type={"button"}
-                className="flex items-center gap-2"
-                onClick={() => {
-                  const link = `${baseUrl}/perfume/${createSlug(perfume.name)}_${perfume.id}`;
-                  navigator.clipboard.writeText(link);
-                  toast.success("Link copied to clipboard!");
-                }}
-              >
-                <Copy className="h-4 w-4" />
-                Compartir
-              </Button>
-              {perfume.external_link !== null ? (
-                <Link
-                  href={perfume.external_link || ""}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline"
-                >
-                  Fragrantica
-                </Link>
               ) : (
-                ""
-              )}
-            </Flex>
-
-            <div className="space-y-4 pt-6">
-              {!perfume.in_stock ? (
-                <div> sin stock </div>
-              ) : (
-                <Button type="submit" size="lg" className="w-full">
-                  Agregar al carrito
-                </Button>
+                <div className="text-center py-4 text-muted-foreground">Sin stock</div>
               )}
             </div>
+
+
+
+
           </div>
         </div>
       </form>

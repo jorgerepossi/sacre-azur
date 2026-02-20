@@ -40,5 +40,6 @@ export const usePerfume = (pricePer100ml: number, profit: number) => {
     setQuantity,
     setSelectedSize,
     setProfitMargin,
+    calculatePrice
   };
 };
