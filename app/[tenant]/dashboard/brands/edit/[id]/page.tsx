@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Brand } from "@/types/perfume.type";
 import { useFetchBrands } from "@/hooks/useFetchBrands";
 import { useUpdateBrand } from "@/hooks/useUpdateBrand";
+import { useTenantLink } from "@/hooks/useTenantLink";
 
 interface RouteParams {
   tenant: string;
@@ -36,6 +37,7 @@ export default function BrandEditPage({
   const router = useRouter();
   const { data, isLoading } = useFetchBrands();
   const updateBrand = useUpdateBrand();
+  const { getLink } = useTenantLink();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -98,7 +100,7 @@ export default function BrandEditPage({
       {
         onSuccess: () => {
           toast.success("Marca actualizada correctamente");
-          router.push(`/${tenant}/dashboard/brands`);
+          router.push(getLink("/dashboard/brands"));
         },
         onError: () => {
           toast.error("Hubo un error al actualizar la marca.");

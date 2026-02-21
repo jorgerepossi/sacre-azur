@@ -43,7 +43,15 @@ export default function LoginPage() {
 
       if (tenantUser) {
         const slug = (tenantUser.tenants as any).slug;
-        router.push(`/${slug}/dashboard`);
+        const hostname = typeof window !== "undefined" ? window.location.hostname : "";
+        const baseDomain = process.env.NEXT_PUBLIC_BASE_DOMAIN || "defragancias.com";
+        const isSubdomain = hostname.endsWith(`.${baseDomain}`) && hostname !== baseDomain && hostname !== `www.${baseDomain}`;
+
+        if (isSubdomain) {
+          router.push(`/dashboard`);
+        } else {
+          router.push(`/${slug}/dashboard`);
+        }
         router.refresh();
       } else {
         toast.error("No se encontró tenant para este usuario");

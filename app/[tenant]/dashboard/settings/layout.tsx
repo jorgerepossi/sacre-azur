@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { useParams } from "next/navigation";
+import { Link } from "@/components/link";
+import { useTenantLink } from "@/hooks/useTenantLink";
 
 export default function SettingsLayout({
     children,
@@ -11,35 +11,37 @@ export default function SettingsLayout({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const params = useParams();
-    const tenant = params?.tenant;
+    const { getLink } = useTenantLink();
 
     const navItems = [
         {
             label: "General",
-            href: `/${tenant}/dashboard/settings`,
-            active: pathname === `/${tenant}/dashboard/settings`,
+            href: "/dashboard/settings",
         },
         {
             label: "Envíos",
-            href: `/${tenant}/dashboard/settings/shipping`,
-            active: pathname === `/${tenant}/dashboard/settings/shipping`,
+            href: "/dashboard/settings/shipping",
         },
     ];
 
     return (
         <div className="flex flex-col space-y-6">
             <div className="flex space-x-2 border-b pb-4">
-                {navItems.map((item) => (
-                    <Link key={item.href} href={item.href}>
-                        <Button
-                            variant={item.active ? "default" : "ghost"}
-                            size="sm"
-                        >
-                            {item.label}
-                        </Button>
-                    </Link>
-                ))}
+                {navItems.map((item) => {
+                    const fullHref = getLink(item.href);
+                    const isActive = pathname === fullHref || (pathname === item.href && !pathname.includes(`/${fullHref.split('/')[1]}/`));
+
+                    return (
+                        <Link key={item.href} href={fullHref}>
+                            <Button
+                                variant={isActive ? "default" : "ghost"}
+                                size="sm"
+                            >
+                                {item.label}
+                            </Button>
+                        </Link>
+                    );
+                })}
             </div>
             <div>{children}</div>
         </div>

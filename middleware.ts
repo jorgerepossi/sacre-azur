@@ -21,11 +21,57 @@ const RESERVED_PATHS = [
 export async function middleware(request: NextRequest) {
   const url = new URL(request.url);
   const pathname = url.pathname;
+  const hostname = request.headers.get("host") || "";
+  const baseDomain = process.env.NEXT_PUBLIC_BASE_DOMAIN || "defragancias.com";
+
+
+  let subdomain: string | null = null;
+  const hostParts = hostname.split('.');
+
+  if (
+    hostname.includes(baseDomain) &&
+    hostname !== baseDomain &&
+    hostname !== `www.${baseDomain}`
+  ) {
+    // Production subdomain detection
+    const baseDomainPartsCount = baseDomain.split('.').length;
+    if (hostParts.length > baseDomainPartsCount) {
+      subdomain = hostParts[0];
+    }
+  } else if (
+    hostname.includes("localhost") &&
+    hostParts.length > 1 &&
+    !hostname.startsWith("localhost")
+  ) {
+    // Local development subdomain detection (e.g., demo.localhost:3000)
+    subdomain = hostParts[0];
+  }
+
+  // Pre-process response to add session
+  const response = await updateSession(request);
+
+  // If we have a subdomain, we rewrite but ALSO need to set the tenant header
+  if (subdomain) {
+    response.headers.set("x-tenant-slug", subdomain);
+
+    // Check if this is a reserved path on the subdomain
+    const isReserved = RESERVED_PATHS.some(p => pathname === `/${p}` || pathname.startsWith(`/${p}/`));
+
+    if (!isReserved && !pathname.startsWith(`/${subdomain}/`) && pathname !== `/${subdomain}`) {
+      const newPath = `/${subdomain}${pathname}`;
+      const rewriteUrl = new URL(newPath, request.url);
+      rewriteUrl.search = url.search;
+      // We return a rewrite but we MUST preserve the headers we set on 'response'
+      // Next.js middleware allows returning a response with a rewrite "header" or using NextResponse.rewrite
+      const rewriteResponse = NextResponse.rewrite(rewriteUrl);
+      // Transfer headers and cookies from the updated session response
+      response.headers.forEach((value, key) => rewriteResponse.headers.set(key, value));
+      return rewriteResponse;
+    }
+  }
 
   const segments = pathname.split("/").filter(Boolean);
   const firstSegment = segments[0] || null;
-
-  const response = await updateSession(request);
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -63,16 +109,17 @@ export async function middleware(request: NextRequest) {
 
       if (tenantUser) {
         const slug = (tenantUser.tenants as any).slug;
-        return NextResponse.redirect(
-          new URL(`/${slug}/dashboard`, request.url),
-        );
+        const targetUrl = subdomain
+          ? new URL(`/dashboard`, request.url)
+          : new URL(`/${slug}/dashboard`, request.url);
+        return NextResponse.redirect(targetUrl);
       }
     }
     return response;
   }
 
-  // Otherwise, first segment is the tenant
-  if (firstSegment) {
+  // Otherwise, first segment is the tenant (for path-based)
+  if (!subdomain && firstSegment) {
     const { data: tenant } = await supabase
       .from("tenants")
       .select("id, slug, is_active")
@@ -88,27 +135,30 @@ export async function middleware(request: NextRequest) {
     }
 
     response.headers.set("x-tenant-slug", firstSegment);
+  }
 
-    // PROTEGER RUTAS DEL DASHBOARD
-    if (pathname.includes("/dashboard")) {
-      if (!user) {
-        const loginUrl = new URL("/sign-in", request.url);
-        loginUrl.searchParams.set("redirectTo", pathname);
-        return NextResponse.redirect(loginUrl);
-      }
+  // PROTEGER RUTAS DEL DASHBOARD (Tanto en subdominio como en path-based)
+  const isDashboardPath = pathname.includes("/dashboard");
+  const activeSlug = subdomain || (!RESERVED_PATHS.includes(firstSegment!) ? firstSegment : null);
 
-      const { data: tenantAccess } = await supabase
-        .from("tenant_users")
-        .select("tenant_id, tenants(slug)")
-        .eq("user_id", user.id)
-        .single();
+  if (isDashboardPath && activeSlug) {
+    if (!user) {
+      const loginUrl = new URL("/sign-in", request.url);
+      loginUrl.searchParams.set("redirectTo", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
 
-      if (
-        !tenantAccess ||
-        (tenantAccess.tenants as any)?.slug !== firstSegment
-      ) {
-        return NextResponse.redirect(new URL("/unauthorized", request.url));
-      }
+    const { data: tenantAccess } = await supabase
+      .from("tenant_users")
+      .select("tenant_id, tenants(slug)")
+      .eq("user_id", user.id)
+      .single();
+
+    if (
+      !tenantAccess ||
+      (tenantAccess.tenants as any)?.slug !== activeSlug
+    ) {
+      return NextResponse.redirect(new URL("/unauthorized", request.url));
     }
   }
 

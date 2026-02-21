@@ -8,6 +8,7 @@ import { LogoutButton } from "@/components/logout-button";
 import { Button } from "@/components/ui/button";
 
 import { useUserRole } from "@/hooks/useUserRole";
+import { useTenantLink } from "@/hooks/useTenantLink";
 
 interface DashboardNavProps {
   tenant: string;
@@ -15,6 +16,7 @@ interface DashboardNavProps {
 
 export function DashboardNav({ tenant }: DashboardNavProps) {
   const { isOwner, isAdmin, isSuperAdmin, isTenant, loading } = useUserRole();
+  const { getLink } = useTenantLink();
 
   if (loading) {
     return <div className="h-10 animate-pulse rounded bg-muted" />;
@@ -30,7 +32,7 @@ export function DashboardNav({ tenant }: DashboardNavProps) {
             <p className="text-sm text-muted-foreground">Tienda: {tenant}</p>
           </div>
           <div className="flex gap-2">
-            <Link href={`/${tenant}`} target="_blank">
+            <Link href={getLink("/")} target="_blank">
               <Button variant="outline" size="sm">
                 Ver Tienda
               </Button>
@@ -44,32 +46,32 @@ export function DashboardNav({ tenant }: DashboardNavProps) {
       <div className="border-b bg-background text-foreground">
         <div className="container py-2">
           <nav className="flex gap-4">
-            <Link href={`/${tenant}/dashboard`}>
+            <Link href={getLink("/dashboard")}>
               <Button variant="ghost" size="sm">
                 Inicio
               </Button>
             </Link>
             {/* Todos los roles */}
-            <Link href={`/${tenant}/dashboard/perfumes`}>
+            <Link href={getLink("/dashboard/perfumes")}>
               <Button variant="ghost" size="sm">
                 Perfumes
               </Button>
             </Link>
 
-            <Link href={`/${tenant}/dashboard/orders`}>
+            <Link href={getLink("/dashboard/orders")}>
               <Button variant="ghost" size="sm">
                 Órdenes
               </Button>
             </Link>
 
-            <Link href={`/${tenant}/dashboard/create`}>
+            <Link href={getLink("/dashboard/create")}>
               <Button variant="ghost" size="sm">
                 + Nuevo Perfume
               </Button>
             </Link>
 
-            {isOwner && (
-              <Link href={`/${tenant}/dashboard/brands`}>
+            {isSuperAdmin && (
+              <Link href={getLink("/dashboard/brands")}>
                 <Button variant="ghost" size="sm" className="flex gap-2">
                   <LockKeyhole size={12} /> Marcas
                 </Button>
@@ -77,15 +79,15 @@ export function DashboardNav({ tenant }: DashboardNavProps) {
             )}
 
             {(isOwner || isAdmin || isSuperAdmin || isTenant) && (
-              <Link href={`/${tenant}/dashboard/settings`}>
+              <Link href={getLink("/dashboard/settings")}>
                 <Button variant="ghost" size="sm" className="flex gap-2">
                   <LockKeyhole size={12} /> Configuración
                 </Button>
               </Link>
             )}
 
-            {isOwner && (
-              <Link href={`/${tenant}/dashboard/users`}>
+            {isSuperAdmin && (
+              <Link href={getLink("/dashboard/users")}>
                 <Button variant="ghost" size="sm" className="flex gap-2">
                   <LockKeyhole size={12} /> Usuarios
                 </Button>
