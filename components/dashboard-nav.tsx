@@ -71,7 +71,7 @@ export function DashboardNav({ tenant }: DashboardNavProps) {
               </Button>
             </Link>
 
-            {isSuperAdmin && (
+            {isOwner && (
               <Link href={getLink("/dashboard/brands")}>
                 <Button variant="ghost" size="sm" className="flex gap-2">
                   <LockKeyhole size={12} /> Marcas
@@ -87,7 +87,7 @@ export function DashboardNav({ tenant }: DashboardNavProps) {
               </Link>
             )}
 
-            {isSuperAdmin && (
+            {isOwner && (
               <Link href={getLink("/dashboard/users")}>
                 <Button variant="ghost" size="sm" className="flex gap-2">
                   <LockKeyhole size={12} /> Usuarios

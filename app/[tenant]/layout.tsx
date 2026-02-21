@@ -53,6 +53,7 @@ export default async function TenantLayout({
   params,
 }: TenantLayoutProps) {
   const { tenant } = await params;
+  console.log("TENANT LAYOUT - slug:", tenant);
   return (
     <TenantProvider tenantSlug={tenant}>
       <div className="grid h-full">

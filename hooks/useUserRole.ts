@@ -35,11 +35,17 @@ export function useUserRole() {
           .single();
 
         // Check if user is super admin
-        const { data: superAdminData } = await supabase
-          .from("super_admins")
-          .select("user_id")
-          .eq("user_id", user.id)
-          .single();
+        let superAdminData = null;
+        try {
+          const { data } = await supabase
+            .from("super_admins")
+            .select("user_id")
+            .eq("user_id", user.id)
+            .maybeSingle();
+          superAdminData = !!data;
+        } catch {
+          // super_admins check failed, continue as regular user
+        }
 
         if (superAdminData) {
           setRole("superadmin");
