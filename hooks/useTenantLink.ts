@@ -1,7 +1,7 @@
 "use client";
 
 import { useTenant } from "@/providers/TenantProvider";
-import { getTenantLink } from "@/lib/tenant-utils";
+import { getTenantLink, getTenantUrl } from "@/lib/tenant-utils";
 
 /**
  * Hook to generate links for the current tenant.
@@ -14,5 +14,7 @@ export const useTenantLink = () => {
         return getTenantLink(path, tenant?.slug);
     };
 
-    return { getLink, slug: tenant?.slug };
+    const storeUrl = getTenantUrl(tenant?.slug);
+
+    return { getLink, storeUrl, slug: tenant?.slug };
 };

@@ -28,3 +28,11 @@ export const getTenantLink = (path: string, slug: string | undefined) => {
     // Fallback or path-based routing
     return `/${slug}${cleanPath}`;
 };
+
+
+export const getTenantUrl = (slug: string | undefined) => {
+    if (!slug) return "/";
+    const baseDomain = process.env.NEXT_PUBLIC_BASE_DOMAIN || "defragancias.com";
+    const protocol = baseDomain.includes("localhost") ? "http" : "https";
+    return `${protocol}://${slug}.${baseDomain}`;
+};

@@ -16,7 +16,7 @@ interface DashboardNavProps {
 
 export function DashboardNav({ tenant }: DashboardNavProps) {
   const { isOwner, isAdmin, isSuperAdmin, isTenant, loading } = useUserRole();
-  const { getLink } = useTenantLink();
+  const { getLink, storeUrl } = useTenantLink();
 
   if (loading) {
     return <div className="h-10 animate-pulse rounded bg-muted" />;
@@ -32,7 +32,7 @@ export function DashboardNav({ tenant }: DashboardNavProps) {
             <p className="text-sm text-muted-foreground">Tienda: {tenant}</p>
           </div>
           <div className="flex gap-2">
-            <Link href={getLink("/")} target="_blank">
+            <Link href={storeUrl} target="_blank">
               <Button variant="outline" size="sm">
                 Ver Tienda
               </Button>
@@ -41,6 +41,7 @@ export function DashboardNav({ tenant }: DashboardNavProps) {
           </div>
         </div>
       </div>
+
 
       {/* Navigation */}
       <div className="border-b bg-background text-foreground">
