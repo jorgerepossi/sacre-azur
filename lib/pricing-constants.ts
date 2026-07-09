@@ -10,3 +10,22 @@ export const SIZE_FACTORS = {
 } as const;
 
 export type SizeML = keyof typeof SIZE_FACTORS;
+
+// Fuente única de verdad para el cálculo de precio de un decant.
+// Usada tanto en el cliente (preview de precio) como en el server
+// (recálculo autoritativo al crear una orden) para que nunca diverjan.
+export const calculateDecantPrice = (
+  basePrice: number,
+  profitMargin: number,
+  sizeInMl: number,
+  isDecantSeller: boolean,
+): number => {
+  if (!basePrice) return 0;
+
+  if (!isDecantSeller) return basePrice;
+
+  const priceWithProfit = basePrice * (1 + profitMargin / 100);
+  const pricePerMl = priceWithProfit / 100;
+  const sizeFactor = SIZE_FACTORS[sizeInMl as SizeML] || 1.0;
+  return Math.round(pricePerMl * sizeInMl * sizeFactor);
+};

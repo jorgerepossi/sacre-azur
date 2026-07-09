@@ -1,4 +1,3 @@
-// app/not-found.tsx
 "use client";
 
 import { useEffect } from "react";
@@ -7,24 +6,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-
-// app/not-found.tsx
-
-// app/not-found.tsx
-
-// app/not-found.tsx
-
-// app/not-found.tsx
-
-// app/not-found.tsx
-
-// app/not-found.tsx
-
-// app/not-found.tsx
-
-// app/not-found.tsx
-
-// app/not-found.tsx
 
 export default function NotFound() {
   const router = useRouter();

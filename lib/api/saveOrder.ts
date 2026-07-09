@@ -1,30 +1,32 @@
-import { v4 as uuidv4 } from "uuid";
+import { getBaseUrl } from "@/lib/config";
 
-import { supabase } from "@/lib/supabaseClient";
-
+// El precio NO viaja desde acá: el server recalcula price/stock desde
+// tenant_products antes de grabar la orden, así que el cliente solo
+// manda qué está pidiendo, no cuánto vale.
 export const saveOrder = async (
-  items: any[],
-  tenantId: string, // <-- NUEVO
+  items: { id: string; name: string; size: number; quantity: number }[],
+  tenantSlug: string,
   customerName?: string,
   customerPhone?: string,
 ) => {
-  const order_code = uuidv4();
-
-  const { error } = await supabase.from("orders").insert([
-    {
-      order_code,
-      tenant_id: tenantId, // <-- NUEVO
-      customer_name: customerName || null,
-      customer_phone: customerPhone || null,
-      order_products: items,
-      status: "PENDIENTE",
+  const response = await fetch(`${getBaseUrl()}/api/orders`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-tenant-slug": tenantSlug,
     },
-  ]);
+    body: JSON.stringify({
+      customerName: customerName || null,
+      customerPhone: customerPhone || null,
+      items,
+    }),
+  });
 
-  if (error) {
-    console.error("Error saving order:", error.message);
-    throw new Error("Error saving order");
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || "Error saving order");
   }
 
-  return order_code;
+  const data = await response.json();
+  return data.order_code as string;
 };

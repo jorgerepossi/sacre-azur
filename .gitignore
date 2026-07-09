@@ -41,3 +41,12 @@ yarn-error.log*
 next-env.d.ts
 
 DOCUMENT.md
+
+# Reducto
+reducto-out/*
+
+# Claude
+.claude/*
+
+# JetBrains IDEs
+.idea/*

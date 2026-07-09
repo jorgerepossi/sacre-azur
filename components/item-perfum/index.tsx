@@ -1,16 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
-import { useCartStore } from "@/stores/cartStore";
 import { toast } from "react-hot-toast";
+import Image from "next/image";
+
+import { useCartStore } from "@/stores/cartStore";
+
 import Flex from "@/components/flex";
 import { Link } from "@/components/link";
-import { Button } from "@/components/ui/button";
-import { Perfume } from "@/types/perfume.type";
-import { SIZE_FACTORS } from "@/lib/pricing-constants";
 import { Badge } from "@/components/ui/badge";
+import { Perfume } from "@/types/perfume.type";
+import { Button } from "@/components/ui/button";
 import { useTenant } from "@/providers/TenantProvider";
+
+import { calculateDecantPrice } from "@/lib/pricing-constants";
 
 interface ItemPerfumeProps {
   item: Perfume;
@@ -46,22 +49,13 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
     return null;
   }
 
-  const calculatePrice = (sizeInMl: number) => {
-    const basePrice = Number(item.price);
-    const profitMargin = Number(item.profit_margin) || 0;
-
-    if (!basePrice) return 0;
-
-    if (isDecantSeller) {
-      const priceWithProfit = basePrice * (1 + profitMargin / 100);
-      const pricePerMl = priceWithProfit / 100;
-      const sizeFactor =
-        SIZE_FACTORS[sizeInMl as keyof typeof SIZE_FACTORS] || 1.0;
-      return Math.round(pricePerMl * sizeInMl * sizeFactor);
-    } else {
-      return basePrice;
-    }
-  };
+  const calculatePrice = (sizeInMl: number) =>
+    calculateDecantPrice(
+      Number(item.price),
+      Number(item.profit_margin) || 0,
+      sizeInMl,
+      isDecantSeller,
+    );
 
   const currentPrice = calculatePrice(selectedSize);
 
@@ -105,7 +99,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
             </Badge>
           </Flex>
 
-          {/* Product Info */}
+
           <Flex className={"flex-col justify-between py-[1rem] md:flex-row"}>
             <Flex className={"flex-1 flex-col gap-[.25rem]"}>
               <p className="m-0 font-bold">{item.name}</p>
@@ -117,7 +111,7 @@ const ItemPerfume = ({ item }: ItemPerfumeProps) => {
 
           {item.in_stock ? (
             <>
-              {/* Size Selector (only for decants) */}
+
               {isDecantSeller && (
                 <Flex className="mb-3 flex-col gap-2 sm:flex-row">
                   {decantSizes.map((size: { label: string; value: number }) => (

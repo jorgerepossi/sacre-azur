@@ -1,8 +1,38 @@
 import { NextResponse } from "next/server";
 
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/utils/supabase/server";
 
 import { getTenantIdFromSlug } from "@/utils/tenantUtils";
+
+// Verifica sesión real + membresía del usuario en el tenant del header.
+// El header x-tenant-slug solo indica "en qué dashboard estamos" — nunca
+// es suficiente por sí solo para autorizar una escritura.
+async function requireTenantMember(tenantId: string) {
+  const authedSupabase = await createClient();
+  const {
+    data: { user },
+  } = await authedSupabase.auth.getUser();
+
+  if (!user) {
+    return { authedSupabase, error: NextResponse.json({ error: "No autenticado" }, { status: 401 }) };
+  }
+
+  const { data: membership } = await authedSupabase
+    .from("tenant_users")
+    .select("tenant_id")
+    .eq("user_id", user.id)
+    .eq("tenant_id", tenantId)
+    .maybeSingle();
+
+  if (!membership) {
+    return {
+      authedSupabase,
+      error: NextResponse.json({ error: "No autorizado para este tenant" }, { status: 403 }),
+    };
+  }
+
+  return { authedSupabase, error: null };
+}
 
 export async function GET(
   request: Request,
@@ -25,7 +55,12 @@ export async function GET(
       return NextResponse.json({ error: "Tenant not found" }, { status: 404 });
     }
 
-    const { data: tenantProduct, error } = await supabase
+    // Esta respuesta incluye profit_margin: solo el propio equipo del
+    // tenant puede verla, no cualquiera que conozca el slug.
+    const { authedSupabase, error: authError } = await requireTenantMember(tenantId);
+    if (authError) return authError;
+
+    const { data: tenantProduct, error } = await authedSupabase
       .from("tenant_products")
       .select(
         `
@@ -149,7 +184,10 @@ export async function DELETE(
       return NextResponse.json({ error: "Tenant not found" }, { status: 404 });
     }
 
-    const { error } = await supabase
+    const { authedSupabase, error: authError } = await requireTenantMember(tenantId);
+    if (authError) return authError;
+
+    const { error } = await authedSupabase
       .from("tenant_products")
       .delete()
       .eq("perfume_id", id)

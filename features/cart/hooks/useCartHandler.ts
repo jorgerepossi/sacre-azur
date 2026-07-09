@@ -42,15 +42,15 @@ export const useCartHandler = () => {
 
     try {
       const order = items.map((item) => ({
+        id: item.id,
         name: item.name,
         size: item.size,
         quantity: item.quantity,
-        price: item.price,
       }));
 
       const order_code = await saveOrder(
         order,
-        tenant!.id,
+        tenant!.slug,
         customerName,
         customerPhone,
       );
